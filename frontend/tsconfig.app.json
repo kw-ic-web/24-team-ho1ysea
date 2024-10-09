@@ -23,7 +23,9 @@
     "baseUrl": ".",
     "paths": {
       "@apis/*": ["src/apis/*"],
+      "@constants/*": ["src/constants/*"],
       "@components/*": ["src/components/*"],
+      "@hooks/*": ["src/hooks/*"],
       "@router/*": ["src/router/*"],
       "@pages/*": ["src/pages/*"],
       "@utils/*": ["src/utils/*"]
