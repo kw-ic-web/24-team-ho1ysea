@@ -1,5 +1,6 @@
 import { PLAYER_MOVE, PLAYER_SIZE, WORLD_H, WORLD_W } from "@constants/game";
-import { useEffect, useState } from "react";
+import { throttle } from "@utils/throttle";
+import { useCallback, useEffect, useState } from "react";
 
 export const usePlayerPos = (keyState: {
   isLeft: boolean;
@@ -12,6 +13,17 @@ export const usePlayerPos = (keyState: {
     x: 800,
     y: 600,
   });
+
+  // 스로틀을 사용해 cpu 성능에 상관없는 이동을 보장함
+  const movePlayer = useCallback(
+    throttle((dx: number, dy: number) => {
+      setMyPos((prev) => ({
+        x: prev.x + dx,
+        y: prev.y + dy,
+      }));
+    }, 50), // 50ms 간격 이동
+    []
+  );
 
   // 키보드 입력에 따라 플레이어 좌표 변경
   // 만약 게임 WORLD 밖이라면 좌표 변경 X
@@ -32,12 +44,10 @@ export const usePlayerPos = (keyState: {
       dx -= PLAYER_MOVE;
     }
 
-    setMyPos((prev) => ({
-      ...prev,
-      x: prev.x + dx,
-      y: prev.y + dy,
-    }));
-  }, [keyState, myPos.x, myPos.y]);
+    if (dx !== 0 || dy !== 0) {
+      movePlayer(dx, dy);
+    }
+  }, [keyState, movePlayer, myPos]);
 
   // 플레이어 좌표 반환
   return myPos;
