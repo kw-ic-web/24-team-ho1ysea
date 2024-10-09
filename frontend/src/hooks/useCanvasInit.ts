@@ -47,10 +47,6 @@ export const useCanvasInit = (): React.RefObject<HTMLCanvasElement> => {
     // 게임 배경 조절
     ctx.fillStyle = "green";
     ctx.fillRect(0, 0, WORLD_W, WORLD_H);
-
-    // 테스트 rect <- 추후 삭제
-    ctx.fillStyle = "white";
-    ctx.fillRect(50, 50, 100, 100);
   }, []);
 
   // 마운트 시 함수 실행 후 이벤트 리스너 연결, 언마운트 시 이벤트 리스너 제거
