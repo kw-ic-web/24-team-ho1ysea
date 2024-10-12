@@ -1,3 +1,4 @@
+// models/User.js
 const mongoose = require('mongoose');
 
 // 사용자 스키마 설계

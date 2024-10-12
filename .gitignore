@@ -1,0 +1,39 @@
+# Node.js 의존성
+node_modules/
+
+# 환경 변수 파일
+.env
+
+# 로그 파일
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 편집기 설정 파일
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# OS별 파일
+Thumbs.db
+
+# 빌드 출력물
+dist/
+build/
+
+# 테스트 커버리지 결과
+coverage/
+
+# 임시 파일
+tmp/
+temp/
+
+# npm 캐시
+.npm
+
+# 패키지 잠금 파일 (선택 사항)
+package-lock.json
+yarn.lock
