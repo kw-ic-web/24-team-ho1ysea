@@ -37,3 +37,16 @@ export const signUpApi = (
     }
   );
 };
+
+/**
+ * @description 로그인 API
+ */
+export const loginApi = (id: string, password: string) => {
+  return axios.post<{ token: string; userId: string }>(
+    `${import.meta.env.VITE_API_URL}/user/login`,
+    {
+      id,
+      password,
+    }
+  );
+};
