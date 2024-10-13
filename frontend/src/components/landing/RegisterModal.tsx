@@ -1,4 +1,5 @@
 import { useIdCheck } from "@hooks/landing/useIdCheck";
+import { useNicknameCheck } from "@hooks/landing/useNicknameCheck";
 import { usePasswordCheck } from "@hooks/landing/usePasswordCheck";
 import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
@@ -21,6 +22,10 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
 
   // 아이디 검증
   const { isIdCheck, idMsg, handleIdCheckClick } = useIdCheck(id);
+
+  // 닉네임 검증
+  const { isNickNameCheck, nickNameMsg, handleNickNameCheckClick } =
+    useNicknameCheck(nickName);
 
   // 회원가입 버튼 활성화 / 비활성화
   const [isAbleSubmit, setIsAbleSubmit] = useState<boolean>(false);
@@ -57,13 +62,30 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
           />
-          <input
-            type="text"
-            placeholder="Your nickname"
-            className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={nickName}
-            onChange={(e) => setNickName(e.target.value)}
-          />
+          <div className="flex relative">
+            <input
+              type="text"
+              placeholder="Your nickname"
+              className="w-full h-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={nickName}
+              onChange={(e) => setNickName(e.target.value)}
+            />
+            <button
+              className="absolute right-0 p-[10.5px] border-slate-700 bg-slate-700 text-slate-200 transition-colors rounded-r-lg hover:bg-slate-600"
+              onClick={handleNickNameCheckClick}
+            >
+              닉네임 확인
+            </button>
+          </div>
+          <div className="flex justify-end items-center mb-4">
+            <p
+              className={`w-fit text-end ${
+                isNickNameCheck ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {nickNameMsg}
+            </p>
+          </div>
           <div className="flex relative">
             <input
               type="text"
@@ -89,7 +111,6 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
               {idMsg}
             </p>
           </div>
-
           <input
             type="password"
             autoComplete="new-password"
@@ -115,7 +136,6 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
               {pwMsg}
             </p>
           </div>
-
           <input
             type="submit"
             value="회원가입"
