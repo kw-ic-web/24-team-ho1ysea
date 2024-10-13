@@ -1,4 +1,8 @@
-// middleware/auth.js
+// middlewares/authMiddleware.js
+
+require('dotenv').config(); 
+// .env 파일의 내용을 로드 (cf. '.env' 내용 참조하는 파일들은 명시 필요)
+
 const jwt = require('jsonwebtoken');
 
 // 이걸 넘겨준 엔드포인트는 인증된 사용자만 접근할 수 있음

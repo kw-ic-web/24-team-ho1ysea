@@ -4,10 +4,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+require('dotenv').config(); 
+// .env 파일의 내용을 로드 (cf. '.env' 내용 참조하는 파일들은 명시 필요)
+
 
 // 회원가입 함수
 exports.signupUser = async (req, res) => {
-    const { id, nickName, pw } = req.body;
+    const { id, userName, password, nickName } = req.body;
   
     try {
       // 아이디 중복 체크
@@ -16,32 +19,38 @@ exports.signupUser = async (req, res) => {
         return res.status(400).json({ msg: '이미 사용 중인 아이디입니다.' });
       }
   
-      // 닉네임 중복 체크
-      user = await User.findOne({ nickName });
+      // 사용자 이름 중복 체크
+      user = await User.findOne({ userName });
       if (user) {
-        return res.status(400).json({ msg: '이미 사용 중인 닉네임입니다.' });
+        return res.status(400).json({ msg: '사용자 이름이 이미 존재합니다.' });
       }
+
+       // 닉네임 중복 체크
+       user = await User.findOne({ nickName });
+       if (user) {
+         return res.status(400).json({ msg: '닉네임이 이미 존재합니다.' });
+       }
   
       // 새로운 유저 생성
-      user = new User({ id, nickName, pw });
+      user = new User({ id, userName, password, nickName });
   
       // 비밀번호 해싱
       const salt = await bcrypt.genSalt(10);
-      user.pw = await bcrypt.hash(pw, salt);
+      user.password = await bcrypt.hash(password, salt);
   
       // 유저 저장
       await user.save();
   
       res.status(201).json({ message: '회원가입이 완료되었습니다.', userId: user._id });
     } catch (err) {
-      console.error(err.message);
+      console.error(err.message); 
       res.status(500).send('서버 오류');
     }
   };
   
   // 로그인 함수
   exports.loginUser = async (req, res) => {
-    const { id, pw } = req.body;
+    const { id, password } = req.body;
   
     try {
       // 유저 확인
@@ -51,7 +60,7 @@ exports.signupUser = async (req, res) => {
       }
   
       // 비밀번호 확인
-      const isMatch = await bcrypt.compare(pw, user.pw);
+      const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
         return res.status(400).json({ msg: '아이디 또는 비밀번호가 잘못되었습니다.' });
       }
