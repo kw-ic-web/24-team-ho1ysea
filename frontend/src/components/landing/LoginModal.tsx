@@ -1,4 +1,5 @@
 import { loginApi } from "@apis/userRestful";
+import Loading from "@components/common/Loading";
 import { setLocalStorage } from "@utils/localStorage";
 import { isAxiosError } from "axios";
 import { useState } from "react";
@@ -12,6 +13,7 @@ interface Props {
 
 export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [id, setId] = useState<string>("");
   const [pw, setPw] = useState<string>("");
 
@@ -24,8 +26,10 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
       alert("비밀번호를 입력해주세요");
       return;
     }
+    setIsLoading(true);
     loginApi(id, pw)
       .then((res) => {
+        setIsLoading(false);
         console.log(res.data);
         if (res.status === 200) {
           alert("로그인에 성공했습니다");
@@ -34,6 +38,7 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
         }
       })
       .catch((err) => {
+        setIsLoading(false);
         if (isAxiosError(err)) {
           console.log(err.response);
           alert("아이디 또는 비밀번호가 잘못되었습니다");
@@ -55,6 +60,7 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
       onClick={handleBgClick}
     >
+      <Loading isLoading={isLoading} />
       <div className="bg-sky-50 text-gray-800 p-8 rounded-lg shadow-lg w-full max-w-sm">
         <AiFillCloseSquare
           size={30}
