@@ -182,7 +182,6 @@ exports.checkIdAvailability = async (req, res) => {
 };
 
 
-// 사용자 탈퇴 예약 함수(일단 준비해봤는데 성훈이형 판단 부탁)
 exports.scheduleAccountCancellation = async (req, res) => {
   const userId = req.user; // authMiddleware를 통해 사용자 ID를 가져옴
 
@@ -193,8 +192,8 @@ exports.scheduleAccountCancellation = async (req, res) => {
       return res.status(404).json({ msg: '사용자를 찾을 수 없습니다.' });
     }
 
-    // 상태를 "withdrawal planned"으로 업데이트
-    user.status = 'withdrawal planned';
+    // 상태를 "withdrawalPlanned"으로 업데이트
+    user.status = 'withdrawnPlanned';
     await user.save();
 
     res.json({ message: '탈퇴 예약이 완료되었습니다.' });
@@ -215,7 +214,7 @@ exports.scheduleAccountCancellation = async (req, res) => {
 // // 실제 탈퇴 처리 함수 (이 함수는 예약된 사용자를 대상으로 하여 주기적으로 호출됨 -> 매일 자정마다)
 // exports.processAccountCancellation = async () => {
 //   try {
-//     const usersToWithdraw = await User.find({ status: 'withdrawal planned' });
+//     const usersToWithdraw = await User.find({ status: 'withdrawnPlanned' });
 
 //     // 탈퇴된 사용자 처리 (예: 데이터 삭제)
 //     for (const user of usersToWithdraw) {
