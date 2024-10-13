@@ -193,8 +193,8 @@ exports.scheduleAccountCancellation = async (req, res) => {
       return res.status(404).json({ msg: '사용자를 찾을 수 없습니다.' });
     }
 
-    // 상태를 "planned"으로 업데이트
-    user.status = 'planned';
+    // 상태를 "withdrawal planned"으로 업데이트
+    user.status = 'withdrawal planned';
     await user.save();
 
     res.json({ message: '탈퇴 예약이 완료되었습니다.' });
