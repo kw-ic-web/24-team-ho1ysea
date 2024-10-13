@@ -1,3 +1,4 @@
+import { useIdCheck } from "@hooks/landing/useIdCheck";
 import { usePasswordCheck } from "@hooks/landing/usePasswordCheck";
 import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
+  // 입력 field state
   const [userName, setUserName] = useState<string>("");
   const [nickName, setNickName] = useState<string>("");
   const [id, setId] = useState<string>("");
@@ -16,6 +18,10 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
 
   // 비밀번호 검증
   const { isPwCheck, pwMsg } = usePasswordCheck(password, checkPassword);
+
+  // 아이디 검증
+  const { isIdCheck, idMsg, handleIdCheckClick } = useIdCheck(id);
+
   // 회원가입 버튼 활성화 / 비활성화
   const [isAbleSubmit, setIsAbleSubmit] = useState<boolean>(false);
 
@@ -58,14 +64,32 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
             value={nickName}
             onChange={(e) => setNickName(e.target.value)}
           />
-          <input
-            type="text"
-            autoComplete="username"
-            placeholder="ID"
-            className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-          />
+          <div className="flex relative">
+            <input
+              type="text"
+              autoComplete="username"
+              placeholder="ID"
+              className="w-full h-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+            />
+            <button
+              className="absolute right-0 p-[10.5px] border-slate-700 bg-slate-700 text-slate-200 transition-colors rounded-r-lg hover:bg-slate-600"
+              onClick={handleIdCheckClick}
+            >
+              ID 확인
+            </button>
+          </div>
+          <div className="flex justify-end items-center mb-4">
+            <p
+              className={`w-fit text-end ${
+                isIdCheck ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {idMsg}
+            </p>
+          </div>
+
           <input
             type="password"
             autoComplete="new-password"
