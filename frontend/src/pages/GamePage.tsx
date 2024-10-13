@@ -1,7 +1,9 @@
+import TutorialModal from "@components/game/TutorialModal";
 import { PLAYER_SIZE, WORLD_H, WORLD_W } from "@constants/game";
 import { useKeyListener } from "@hooks/useKeyListener";
 import { usePlayerPos } from "@hooks/usePlayerPos";
 import { useStageInit } from "@hooks/useStageInit";
+import { useTutorial } from "@hooks/useTutorial";
 import { Graphics, Stage } from "@pixi/react";
 import { Graphics as GraphicsType } from "pixi.js"; // pixi-react의 Graphics 컴포넌트와 네임 충돌이 발생하므로 이름 변경
 import { useCallback, useEffect } from "react";
@@ -9,8 +11,10 @@ import { useCallback, useEffect } from "react";
 export default function GamePage() {
   // 초기 pixi.js 스테이지의 비율과 크기를 세팅
   const { width, height } = useStageInit();
+  // 튜토리얼 창을 띄울지 결정하고, 닫거나 새로 열기 위한 함수를 반환
+  const { isTutorial, handleCloseTutorial, handleOpenTutorial } = useTutorial();
   // 키보드 이벤트 리스너 연결하고 키보드 상태를 반환
-  const keyState = useKeyListener();
+  const keyState = useKeyListener(!isTutorial);
   // 키보드 이벤트를 받아서 캐릭터 좌표를 반환
   const playerPos = usePlayerPos(keyState);
 
@@ -36,19 +40,22 @@ export default function GamePage() {
   }, [playerPos]);
 
   return (
-    <Stage
-      width={WORLD_W}
-      height={WORLD_H}
-      options={{ backgroundColor: 0x1099bb }}
-      style={{
-        width: width,
-        height: height,
-        display: "block",
-        margin: "0 auto",
-        border: "solid 1px black",
-      }}
-    >
-      <Graphics draw={drawPlayer} />
-    </Stage>
+    <div className={`relative w-[${width}px] h-[${height}px]`}>
+      <TutorialModal isOpen={isTutorial} onClose={handleCloseTutorial} />
+      <Stage
+        width={WORLD_W}
+        height={WORLD_H}
+        options={{ backgroundColor: 0x1099bb }}
+        style={{
+          width: width,
+          height: height,
+          display: "block",
+          margin: "0 auto",
+          border: "solid 1px black",
+        }}
+      >
+        <Graphics draw={drawPlayer} />
+      </Stage>
+    </div>
   );
 }
