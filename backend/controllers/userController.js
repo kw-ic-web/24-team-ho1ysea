@@ -81,3 +81,25 @@ exports.signupUser = async (req, res) => {
       res.status(500).send('서버 오류');
     }
   };
+// 사용자 정보 조회 함수
+exports.getUserInfo = async (req, res) => {
+  try {
+      const userId = req.user; // authMiddleware를 거친 상태
+      const user = await User.findById(userId); // userId로 사용자 조회
+
+      if (!user) {
+          return res.status(404).json({ msg: '사용자를 찾을 수 없습니다.' });
+      }
+
+      // 필요한 정보 반환
+      res.json({
+          username: user.userName,  // 사용자 이름
+          playCount: user.countPlay, // 플레이 횟수
+          nickname: user.nickName,   // 닉네임
+          id: user.id                // id 사용 : 여기 원래 이메일이었는데 value가 같아서
+      });
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).send('서버 오류');
+  }
+};

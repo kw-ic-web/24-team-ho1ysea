@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 // 이걸 넘겨준 엔드포인트는 인증된 사용자만 접근할 수 있음
 // auth 미들웨어가 먼저 실행되어 인증 과정을 처리함
 // 전후처리를 해줌. 지금은 토큰 인증하고 토큰이 유효한지 검증
+
 module.exports = function (req, res, next) {
   // 헤더에서 토큰 가져오기
   const token = req.header('Authorization')?.split(' ')[1];
