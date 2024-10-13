@@ -25,4 +25,10 @@ router.get('/me', authMiddleware, userController.getUserInfo);
 // 유저 정보 수정 엔드포인트 
 router.patch('/me', authMiddleware, userController.updateUserInfo);
 
+// 탈퇴 예약 엔드포인트 (일단 써봤음 판단 부탁)
+router.patch('/', authMiddleware, userController.scheduleAccountCancellation);
+
+// // 탈퇴 처리 엔드포인트
+// router.delete('/', authMiddleware, userController.withdrawAccount); 
+
 module.exports = router;
