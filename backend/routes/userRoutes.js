@@ -21,6 +21,8 @@ router.get('/me', authMiddleware, userController.getUserInfo);
 
 // 아이디 중복 체크 엔드포인트
 //router.get('/check-id', userController.checkIdAvailability);
-  
+
+// 유저 정보 수정 엔드포인트 
+router.patch('/me', authMiddleware, userController.updateUserInfo);
 
 module.exports = router;
