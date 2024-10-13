@@ -3,6 +3,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Report = require('../models/report');
 
 require('dotenv').config(); 
 // .env 파일의 내용을 로드 (cf. '.env' 내용 참조하는 파일들은 명시 필요)
@@ -84,7 +85,7 @@ exports.signupUser = async (req, res) => {
 // 사용자 정보 조회 함수
 exports.getUserInfo = async (req, res) => {
   try {
-      const userId = req.user; // authMiddleware를 거친 상태
+      const userId = req.user.id; // authMiddleware를 거친 상태
       const user = await User.findById(userId); // userId로 사용자 조회
 
       if (!user) {
@@ -106,7 +107,7 @@ exports.getUserInfo = async (req, res) => {
 
 // 사용자 정보 수정 함수
 exports.updateUserInfo = async (req, res) => {
-  const userId = req.user; // authMiddleware를 통해 사용자 ID를 가져옴
+  const userId = req.user.id; // authMiddleware를 통해 사용자 ID를 가져옴
   const { nickName, password } = req.body;
 
   try {
@@ -181,8 +182,42 @@ exports.checkIdAvailability = async (req, res) => {
   }
 };
 
+exports.createReport = async (req, res) => {
+  const { reportedUserId, reason } = req.body;
+  const reporterId = req.user.id;  // authMiddleware를 통해 가져온 사용자 ID
 
-// 사용자 탈퇴 예약 함수(일단 준비해봤는데 성훈이형 판단 부탁)
+  try {
+    // 입력 값 확인
+    if (!reportedUserId || !reason) {
+      return res.status(400).json({ msg: '모든 필드를 입력해주세요.' });
+    }
+    
+
+    // 신고할 유저가 존재하는지 확인
+    const reportedUser = await User.findOne({ id: reportedUserId });
+    if (!reportedUser) {
+      return res.status(404).json({ msg: '신고할 사용자를 찾을 수 없습니다.' });
+    }
+
+
+    // 자신을 신고하는지 체크
+    if (reporterId === reportedUserId) {
+      return res.status(400).json({ msg: '자기 자신을 신고할 수 없습니다.' });
+    }
+    // 신고 생성
+    const newReport = new Report({
+      reporterId,
+      reportedUserId,
+      reason,
+    });
+
+    await newReport.save();
+    res.status(201).json({ message: '신고가 성공적으로 제출되었습니다.' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('서버 오류');
+  }
+};
 exports.scheduleAccountCancellation = async (req, res) => {
   const userId = req.user; // authMiddleware를 통해 사용자 ID를 가져옴
 
@@ -193,8 +228,8 @@ exports.scheduleAccountCancellation = async (req, res) => {
       return res.status(404).json({ msg: '사용자를 찾을 수 없습니다.' });
     }
 
-    // 상태를 "planned"으로 업데이트
-    user.status = 'planned';
+    // 상태를 "withdrawalPlanned"으로 업데이트
+    user.status = 'withdrawnPlanned';
     await user.save();
 
     res.json({ message: '탈퇴 예약이 완료되었습니다.' });
@@ -215,7 +250,7 @@ exports.scheduleAccountCancellation = async (req, res) => {
 // // 실제 탈퇴 처리 함수 (이 함수는 예약된 사용자를 대상으로 하여 주기적으로 호출됨 -> 매일 자정마다)
 // exports.processAccountCancellation = async () => {
 //   try {
-//     const usersToWithdraw = await User.find({ status: 'withdrawal planned' });
+//     const usersToWithdraw = await User.find({ status: 'withdrawnPlanned' });
 
 //     // 탈퇴된 사용자 처리 (예: 데이터 삭제)
 //     for (const user of usersToWithdraw) {

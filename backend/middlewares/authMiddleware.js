@@ -10,18 +10,14 @@ const jwt = require('jsonwebtoken');
 // 전후처리를 해줌. 지금은 토큰 인증하고 토큰이 유효한지 검증
 
 module.exports = function (req, res, next) {
-  // 헤더에서 토큰 가져오기
   const token = req.header('Authorization')?.split(' ')[1];
-
-  // 토큰 확인
   if (!token) {
     return res.status(401).json({ msg: '토큰이 없습니다. 인증이 거부되었습니다.' });
   }
 
-  // 토큰 검증
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded.userId;
+    req.user = { id: decoded.userId }; 
     next();
   } catch (err) {
     res.status(401).json({ msg: '유효하지 않은 토큰입니다.' });
