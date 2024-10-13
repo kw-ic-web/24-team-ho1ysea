@@ -13,14 +13,14 @@ router.post('/signup', userController.signupUser);
 // 로그인 엔드포인트
 router.post('/login', userController.loginUser);
 
-// 유저 정보 조회 엔드포인트(토큰 필요)
-router.get('/me', authMiddleware, userController.getUserInfo);
-
 // 닉네임 중복 체크 엔드포인트
-//router.get('/check-nickname', userController.checkNicknameAvailability);
+router.get('/check-nickname', userController.checkNicknameAvailability);
 
 // 아이디 중복 체크 엔드포인트
-//router.get('/check-id', userController.checkIdAvailability);
+// router.get('/check-id', userController.checkIdAvailability);
+
+// 유저 정보 조회 엔드포인트(토큰 필요)
+router.get('/me', authMiddleware, userController.getUserInfo);
 
 // 유저 정보 수정 엔드포인트 
 router.patch('/me', authMiddleware, userController.updateUserInfo);
