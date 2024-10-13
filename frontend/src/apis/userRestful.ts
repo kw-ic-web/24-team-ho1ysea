@@ -17,3 +17,23 @@ export const nickNameCheckApi = (nickName: string) => {
     `${import.meta.env.VITE_API_URL}/user/check-nickname?nickname=${nickName}`
   );
 };
+
+/**
+ * @description 회원가입 API
+ */
+export const signUpApi = (
+  userName: string,
+  id: string,
+  password: string,
+  nickName: string
+) => {
+  return axios.post<{ message: string }>(
+    `${import.meta.env.VITE_API_URL}/user/signup`,
+    {
+      userName,
+      id,
+      password,
+      nickName,
+    }
+  );
+};

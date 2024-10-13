@@ -1,7 +1,9 @@
+import { signUpApi } from "@apis/userRestful";
 import { useIdCheck } from "@hooks/landing/useIdCheck";
 import { useNicknameCheck } from "@hooks/landing/useNicknameCheck";
 import { usePasswordCheck } from "@hooks/landing/usePasswordCheck";
-import { useState } from "react";
+import { isAxiosError } from "axios";
+import { useEffect, useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 
 interface Props {
@@ -17,22 +19,11 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
   const [password, setPassword] = useState<string>("");
   const [checkPassword, setCheckPassword] = useState<string>("");
 
-  // 비밀번호 검증
-  const { isPwCheck, pwMsg } = usePasswordCheck(password, checkPassword);
-
-  // 아이디 검증
-  const { isIdCheck, idMsg, handleIdCheckClick } = useIdCheck(id);
-
-  // 닉네임 검증
+  const { isPwCheck, pwMsg } = usePasswordCheck(password, checkPassword); // 비밀번호 검증
+  const { isIdCheck, idMsg, handleIdCheckClick } = useIdCheck(id); // 아이디 검증
   const { isNickNameCheck, nickNameMsg, handleNickNameCheckClick } =
-    useNicknameCheck(nickName);
-
-  // 회원가입 버튼 활성화 / 비활성화
-  const [isAbleSubmit, setIsAbleSubmit] = useState<boolean>(false);
-
-  const onSubmit = () => {
-    console.log("회원가입 버튼 클릭");
-  };
+    useNicknameCheck(nickName); // 닉네임 검증
+  const [isAbleSubmit, setIsAbleSubmit] = useState<boolean>(false); // 회원가입 버튼 활성화 / 비활성화
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // 이벤트 버블링으로 인해, target과 currentTarget을 비교하지 않으면
@@ -41,6 +32,36 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
       onPrevClick();
     }
   };
+
+  // 회원가입 버튼 클릭 리스너
+  const onSubmit = () => {
+    signUpApi(userName, id, password, nickName)
+      .then((res) => {
+        console.log(res);
+        alert("회원가입 되었습니다. 로그인 해주세요");
+        onLoginClick();
+      })
+      .catch((err) => {
+        if (isAxiosError(err)) {
+          if (err.status === 400) {
+            console.log(err.response);
+            alert(err.response?.data.message || "오류가 발생했습니다");
+          } else {
+            console.log(err.response);
+            alert("잠시 후 다시 시도해주세요");
+          }
+        }
+      });
+  };
+
+  // 회원 가입 버튼을 활성화할지 최종적으로 결정하는 useEffect
+  useEffect(() => {
+    if (isPwCheck && isIdCheck && isNickNameCheck && userName) {
+      setIsAbleSubmit(true);
+    } else {
+      setIsAbleSubmit(false);
+    }
+  }, [isIdCheck, isNickNameCheck, isPwCheck, userName]);
 
   return (
     <div
@@ -79,7 +100,7 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
           </div>
           <div className="flex justify-end items-center mb-4">
             <p
-              className={`w-fit text-end ${
+              className={`w-fit text-end text-sm ${
                 isNickNameCheck ? "text-green-500" : "text-red-500"
               }`}
             >
@@ -104,7 +125,7 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
           </div>
           <div className="flex justify-end items-center mb-4">
             <p
-              className={`w-fit text-end ${
+              className={`w-fit text-end text-sm ${
                 isIdCheck ? "text-green-500" : "text-red-500"
               }`}
             >
@@ -129,7 +150,7 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
           />
           <div className="flex justify-end items-center mb-4">
             <p
-              className={`w-fit text-end ${
+              className={`w-fit text-end text-sm ${
                 isPwCheck ? "text-green-500" : "text-red-500"
               }`}
             >
