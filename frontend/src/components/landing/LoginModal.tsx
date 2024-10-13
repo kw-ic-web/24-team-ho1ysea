@@ -24,7 +24,7 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
       onClick={handleBgClick}
     >
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+      <div className="bg-sky-50 text-gray-800 p-8 rounded-lg shadow-lg w-full max-w-sm">
         <AiFillCloseSquare
           size={30}
           className=" hover:text-red-500"
@@ -48,7 +48,7 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
             type="submit"
             value="로그인"
             onClick={onSubmit}
-            className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
+            className="w-full font-semibold bg-blue-500 text-sky-100 p-3 rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
           />
         </form>
         <div className="flex justify-end items-center">
