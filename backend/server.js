@@ -15,7 +15,7 @@ app.use(require('cors')());
 
 // 라우트 설정
 // 앞으로 라우트를 추가할 예정
-app.use('/api/user', require('./routes/user'));
+app.use('/api/user', require('./routes/userRoutes'));
 
 
 const PORT = process.env.PORT || 5000;
