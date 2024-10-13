@@ -19,8 +19,12 @@ export const useStageInit = (): {
    */
   const handleViewportSize = useCallback(() => {
     console.log("setViewportSize 실행");
-    const vw = window.innerWidth; // 브라우저의 현재 너비
-    const vh = window.innerHeight; // 브라우저의 현재 높이
+    // innerWidth: 컴퓨터로 접속 시, screen.width: 모바일로 접속 시
+    // innerWidth는 브라우저의 순수 표현 영역 크기라고 하고, screen.width는 접속한 기기의 크기 픽셀값이라는데
+    // 왜 모바일에서 screen.width 사용 안 하면 비율이 깨지는지는 잘 모르겠다..
+    // 암튼 이 둘 중 더 작은 걸 채택해서 vw, vh로 사용해 Stage의 크기를 동적으로 조절!
+    const vw = Math.min(window.innerWidth, window.screen.width);
+    const vh = Math.min(window.innerHeight, window.screen.height);
     let newWidth, newHeight;
 
     // 브라우저 비율과 게임 월드 비율 비교 -> 화면에 다 담길 수 있는 크기 계산
