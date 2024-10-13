@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
  * @description 사용자 키보드 입력을 state로 반환해주는 훅
  * @returns 키보드 입력 state를 반환
  */
-export const useKeyListener = () => {
+export const useKeyListener = (isListen: boolean) => {
   // 사용자가 입력한 키 상태를 관리하는 state
   const [keyState, setKeyState] = useState({
     isLeft: false,
@@ -38,16 +38,22 @@ export const useKeyListener = () => {
   };
 
   useEffect(() => {
-    console.log("키보드 이벤트 리스너 연결");
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
+    if (isListen) {
+      console.log("키보드 이벤트 리스너 연결");
+      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("keyup", handleKeyUp);
+    } else {
+      console.log("키보드 이벤트 리스너 연결 해제");
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    }
 
     return () => {
       console.log("키보드 이벤트 리스너 연결 해제");
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [isListen]);
 
   return keyState;
 };
