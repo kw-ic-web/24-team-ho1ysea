@@ -11,7 +11,12 @@ const userSchema = new mongoose.Schema({
     isAdmin: { type: Boolean, default: false },  // 기본값 false
     topRate: { type: Number, default: 0 },
     coin: { type: Number, default: 0 },
-    countPlay: { type: Number, default: 0 }
+    countPlay: { type: Number, default: 0 },
+    status: {
+        type: String,
+        enum: ['active', 'pending_cancellation', 'canceled'],
+        default: 'active'
+      }
 });
 
 // 사용자 모델 생성
