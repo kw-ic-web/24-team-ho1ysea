@@ -160,3 +160,23 @@ exports.checkNicknameAvailability = async (req, res) => {
     res.status(500).send('서버 오류');
   }
 };
+
+// 아이디 중복 체크 함수
+exports.checkIdAvailability = async (req, res) => {
+  const { id } = req.query; // 쿼리 파라미터에서 id 가져오기
+
+  try {
+    const existingUser = await User.findOne({ id: id });
+
+    // 아이디가 존재할 경우
+    if (existingUser) {
+      return res.json({ isAvailable: false }); // 중복된 아이디
+    }
+
+    // 아이디가 존재하지 않을 경우
+    res.json({ isAvailable: true });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('서버 오류');
+  }
+};

@@ -17,7 +17,7 @@ router.post('/login', userController.loginUser);
 router.get('/check-nickname', userController.checkNicknameAvailability);
 
 // 아이디 중복 체크 엔드포인트
-// router.get('/check-id', userController.checkIdAvailability);
+router.get('/check-id', userController.checkIdAvailability);
 
 // 유저 정보 조회 엔드포인트(토큰 필요)
 router.get('/me', authMiddleware, userController.getUserInfo);
