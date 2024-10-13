@@ -27,7 +27,7 @@ export const signUpApi = (
   password: string,
   nickName: string
 ) => {
-  return axios.post<{ message: string }>(
+  return axios.post<{ message: string; userId: string }>(
     `${import.meta.env.VITE_API_URL}/user/signup`,
     {
       userName,

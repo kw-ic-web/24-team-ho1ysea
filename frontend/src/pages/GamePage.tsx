@@ -1,9 +1,9 @@
 import TutorialModal from "@components/game/TutorialModal";
 import { PLAYER_SIZE, WORLD_H, WORLD_W } from "@constants/game";
-import { useKeyListener } from "@hooks/useKeyListener";
-import { usePlayerPos } from "@hooks/usePlayerPos";
-import { useStageInit } from "@hooks/useStageInit";
-import { useTutorial } from "@hooks/useTutorial";
+import { useKeyListener } from "@hooks/game/useKeyListener";
+import { usePlayerPos } from "@hooks/game/usePlayerPos";
+import { useStageInit } from "@hooks/game/useStageInit";
+import { useTutorial } from "@hooks/game/useTutorial";
 import { Graphics, Stage } from "@pixi/react";
 import { Graphics as GraphicsType } from "pixi.js"; // pixi-react의 Graphics 컴포넌트와 네임 충돌이 발생하므로 이름 변경
 import { useCallback, useEffect } from "react";
