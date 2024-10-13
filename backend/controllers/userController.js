@@ -3,6 +3,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Report = require('../models/report');
 
 require('dotenv').config(); 
 // .env 파일의 내용을 로드 (cf. '.env' 내용 참조하는 파일들은 명시 필요)
@@ -181,7 +182,41 @@ exports.checkIdAvailability = async (req, res) => {
   }
 };
 
+exports.createReport = async (req, res) => {
+  const { reportedUserId, reason } = req.body;
+  const reporterId = req.user.id;  // authMiddleware를 통해 가져온 사용자 ID
 
+  try {
+    // 입력 값 확인
+    if (!reportedUserId || !reason) {
+      return res.status(400).json({ msg: '모든 필드를 입력해주세요.' });
+    }
+
+    // 신고할 유저가 존재하는지 확인
+    const reportedUser = await User.findById(reportedUserId);
+    if (!reportedUser) {
+      return res.status(404).json({ msg: '신고할 사용자를 찾을 수 없습니다.' });
+    }
+
+    // 자신을 신고하는지 체크
+    if (reporterId === reportedUserId) {
+      return res.status(400).json({ msg: '자기 자신을 신고할 수 없습니다.' });
+    }
+
+    // 신고 생성
+    const newReport = new Report({
+      reporterId,
+      reportedUserId,
+      reason
+    });
+
+    await newReport.save();
+    res.status(201).json({ message: '신고가 성공적으로 제출되었습니다.' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('서버 오류');
+  }
+};
 exports.scheduleAccountCancellation = async (req, res) => {
   const userId = req.user; // authMiddleware를 통해 사용자 ID를 가져옴
 

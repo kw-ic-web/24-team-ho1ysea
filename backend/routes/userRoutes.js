@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const Report = require('../models/report');
 const jwt = require('jsonwebtoken');
 const userController = require('../controllers/userController');
 const authMiddleware = require('../middlewares/authMiddleware');
@@ -27,6 +28,9 @@ router.patch('/me', authMiddleware, userController.updateUserInfo);
 
 // 탈퇴 예약 엔드포인트 (일단 써봤음 판단 부탁)
 router.patch('/', authMiddleware, userController.scheduleAccountCancellation);
+
+// 신고 생성
+router.post('/report', authMiddleware,);
 
 // // 탈퇴 처리 엔드포인트
 // router.delete('/', authMiddleware, userController.withdrawAccount); 
