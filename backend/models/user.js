@@ -1,4 +1,4 @@
-// models/User.js
+// models/user.js
 const mongoose = require('mongoose');
 
 // 사용자 스키마 설계
@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     countPlay: { type: Number, default: 0 },
     status: {
         type: String,
-        enum: ['active', 'planned', 'withdrawn'], // 활성 상태, (탈퇴)예정 상태, 탈퇴 상태
+        enum: ['active', 'withdrawnPlanned', 'withdrawn'], // 활성 상태, (탈퇴)예정 상태, 탈퇴 상태
         default: 'active'
       }
 });
