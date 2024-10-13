@@ -85,7 +85,7 @@ exports.signupUser = async (req, res) => {
 // 사용자 정보 조회 함수
 exports.getUserInfo = async (req, res) => {
   try {
-      const userId = req.user; // authMiddleware를 거친 상태
+      const userId = req.user.id; // authMiddleware를 거친 상태
       const user = await User.findById(userId); // userId로 사용자 조회
 
       if (!user) {
@@ -107,7 +107,7 @@ exports.getUserInfo = async (req, res) => {
 
 // 사용자 정보 수정 함수
 exports.updateUserInfo = async (req, res) => {
-  const userId = req.user; // authMiddleware를 통해 사용자 ID를 가져옴
+  const userId = req.user.id; // authMiddleware를 통해 사용자 ID를 가져옴
   const { nickName, password } = req.body;
 
   try {
@@ -185,7 +185,7 @@ exports.checkIdAvailability = async (req, res) => {
 exports.createReport = async (req, res) => {
   const { reportedUserId, reason } = req.body;
   const reporterId = req.user.id;  // authMiddleware를 통해 가져온 사용자 ID
-  
+
   try {
     // 입력 값 확인
     if (!reportedUserId || !reason) {
