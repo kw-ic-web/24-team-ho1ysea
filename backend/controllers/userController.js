@@ -137,7 +137,26 @@ exports.updateUserInfo = async (req, res) => {
     res.status(500).send('서버 오류');
   }
 };
-
-
-
 // 후에 예외처리 추가가 필요할 것 같다(ex. 비번이 너무 짧거나, 특수문자 미포함)
+
+
+// 닉네임 중복 체크 함수
+exports.checkNicknameAvailability = async (req, res) => {
+  const { nickName } = req.query;
+
+  try {
+    const existingUser = await User.findOne({ nickName: nickName });
+
+  // 닉네임이 존재할 경우
+  if (existingUser) {
+    return res.json({ isAvailable: false }); // 중복된 닉네임
+  }
+
+  // 닉네임이 존재하지 않을 경우
+    res.json({ isAvailable: true });
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('서버 오류');
+  }
+};
