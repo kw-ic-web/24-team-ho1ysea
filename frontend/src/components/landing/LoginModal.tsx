@@ -1,4 +1,10 @@
+import { loginApi } from "@apis/userRestful";
+import Loading from "@components/common/Loading";
+import { setLocalStorage } from "@utils/localStorage";
+import { isAxiosError } from "axios";
+import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   onPrevClick: () => void;
@@ -6,8 +12,38 @@ interface Props {
 }
 
 export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [id, setId] = useState<string>("");
+  const [pw, setPw] = useState<string>("");
+
   const onSubmit = () => {
-    console.log("로그인 버튼 클릭");
+    if (!id) {
+      alert("아이디를 입력해주세요");
+      return;
+    }
+    if (!pw) {
+      alert("비밀번호를 입력해주세요");
+      return;
+    }
+    setIsLoading(true);
+    loginApi(id, pw)
+      .then((res) => {
+        setIsLoading(false);
+        console.log(res.data);
+        if (res.status === 200) {
+          alert("로그인에 성공했습니다");
+          setLocalStorage("token", res.data.token);
+          navigate("/game");
+        }
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        if (isAxiosError(err)) {
+          console.log(err.response);
+          alert("아이디 또는 비밀번호가 잘못되었습니다");
+        }
+      });
     return;
   };
 
@@ -24,6 +60,7 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
       onClick={handleBgClick}
     >
+      <Loading isLoading={isLoading} />
       <div className="bg-sky-50 text-gray-800 p-8 rounded-lg shadow-lg w-full max-w-sm">
         <AiFillCloseSquare
           size={30}
@@ -37,12 +74,16 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
             autoComplete="username"
             placeholder="ID"
             className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
           />
           <input
             type="password"
             autoComplete="current-password"
             placeholder="Password"
             className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={pw}
+            onChange={(e) => setPw(e.target.value)}
           />
           <input
             type="submit"

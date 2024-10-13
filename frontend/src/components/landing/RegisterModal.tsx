@@ -1,4 +1,5 @@
 import { signUpApi } from "@apis/userRestful";
+import Loading from "@components/common/Loading";
 import { useIdCheck } from "@hooks/landing/useIdCheck";
 import { useNicknameCheck } from "@hooks/landing/useNicknameCheck";
 import { usePasswordCheck } from "@hooks/landing/usePasswordCheck";
@@ -12,6 +13,8 @@ interface Props {
 }
 
 export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   // 입력 field state
   const [userName, setUserName] = useState<string>("");
   const [nickName, setNickName] = useState<string>("");
@@ -35,13 +38,16 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
 
   // 회원가입 버튼 클릭 리스너
   const onSubmit = () => {
+    setIsLoading(true);
     signUpApi(userName, id, password, nickName)
       .then((res) => {
+        setIsLoading(false);
         console.log(res);
         alert("회원가입 되었습니다. 로그인 해주세요");
         onLoginClick();
       })
       .catch((err) => {
+        setIsLoading(false);
         if (isAxiosError(err)) {
           if (err.status === 400) {
             console.log(err.response);
@@ -68,6 +74,7 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
       onClick={handleBgClick}
     >
+      <Loading isLoading={isLoading} />
       <div className="bg-sky-50 text-gray-800 p-8 rounded-lg shadow-lg w-full max-w-sm">
         <AiFillCloseSquare
           size={30}
