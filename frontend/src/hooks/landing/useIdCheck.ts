@@ -7,6 +7,12 @@ export const useIdCheck = (id: string) => {
   const [idMsg, setIdMsg] = useState<string>("");
 
   const handleIdCheckClick = () => {
+    if (!id) {
+      setIdMsg("아이디를 입력해주세요");
+      setIsIdCheck(false);
+      return;
+    }
+
     idCheckApi(id)
       .then((res) => {
         const { isAvailable } = res.data;

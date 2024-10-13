@@ -7,6 +7,12 @@ export const useNicknameCheck = (nickName: string) => {
   const [nickNameMsg, setNickNameMsg] = useState<string>("");
 
   const handleNickNameCheckClick = () => {
+    if (!nickName) {
+      setNickNameMsg("닉네임을 입력해주세요");
+      setIsNickNameCheck(false);
+      return;
+    }
+
     nickNameCheckApi(nickName)
       .then((res) => {
         const { isAvailable } = res.data;
