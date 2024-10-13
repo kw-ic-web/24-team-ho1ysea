@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     countPlay: { type: Number, default: 0 },
     status: {
         type: String,
-        enum: ['active', 'pending_cancellation', 'canceled'],
+        enum: ['active', 'planned', 'withdrawn'], // 활성 상태, (탈퇴)예정 상태, 탈퇴 상태
         default: 'active'
       }
 });

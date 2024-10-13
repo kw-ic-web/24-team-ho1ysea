@@ -180,3 +180,50 @@ exports.checkIdAvailability = async (req, res) => {
     res.status(500).send('서버 오류');
   }
 };
+
+
+// 사용자 탈퇴 예약 함수(일단 준비해봤는데 성훈이형 판단 부탁)
+exports.scheduleAccountCancellation = async (req, res) => {
+  const userId = req.user; // authMiddleware를 통해 사용자 ID를 가져옴
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ msg: '사용자를 찾을 수 없습니다.' });
+    }
+
+    // 상태를 "planned"으로 업데이트
+    user.status = 'planned';
+    await user.save();
+
+    res.json({ message: '탈퇴 예약이 완료되었습니다.' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('서버 오류');
+  }
+};
+
+/* 
+{"message": "탈퇴를 예약합니다."}  
+  --> API 테스트할 때 body에 이거 넣어주면 탈퇴 예약 메시지 뜨긴 해요
+
+  ↓↓↓↓↓↓↓↓ 아래는 탈퇴 처리함수인데 이것도 판단 부탁 ↓↓↓↓↓↓↓↓↓↓↓↓↓
+*/
+
+
+// // 실제 탈퇴 처리 함수 (이 함수는 예약된 사용자를 대상으로 하여 주기적으로 호출됨 -> 매일 자정마다)
+// exports.processAccountCancellation = async () => {
+//   try {
+//     const usersToWithdraw = await User.find({ status: 'withdrawal planned' });
+
+//     // 탈퇴된 사용자 처리 (예: 데이터 삭제)
+//     for (const user of usersToWithdraw) {
+//       user.status = 'withdrawn'; // 상태 변경
+//       await user.save();
+//       // 필요시 사용자 삭제: await User.findByIdAndDelete(user._id);
+//     }
+//   } catch (err) {
+//     console.error(err.message);
+//   }
+// };
