@@ -1,3 +1,5 @@
+import { usePasswordCheck } from "@hooks/landing/usePasswordCheck";
+import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 
 interface Props {
@@ -6,9 +8,19 @@ interface Props {
 }
 
 export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
+  const [userName, setUserName] = useState<string>("");
+  const [nickName, setNickName] = useState<string>("");
+  const [id, setId] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [checkPassword, setCheckPassword] = useState<string>("");
+
+  // 비밀번호 검증
+  const { isPwCheck, pwMsg } = usePasswordCheck(password, checkPassword);
+  // 회원가입 버튼 활성화 / 비활성화
+  const [isAbleSubmit, setIsAbleSubmit] = useState<boolean>(false);
+
   const onSubmit = () => {
     console.log("회원가입 버튼 클릭");
-    return;
   };
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -24,7 +36,7 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
       onClick={handleBgClick}
     >
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+      <div className="bg-sky-50 text-gray-800 p-8 rounded-lg shadow-lg w-full max-w-sm">
         <AiFillCloseSquare
           size={30}
           className=" hover:text-red-500"
@@ -34,27 +46,58 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
         <form onSubmit={(e) => e.preventDefault()}>
           <input
             type="text"
-            autoComplete="username"
-            placeholder="Your ID"
+            placeholder="Your name"
             className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Your nickname"
+            className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={nickName}
+            onChange={(e) => setNickName(e.target.value)}
+          />
+          <input
+            type="text"
+            autoComplete="username"
+            placeholder="ID"
+            className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
           />
           <input
             type="password"
             autoComplete="new-password"
-            placeholder="Your Password"
+            placeholder="Password"
             className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <input
             type="password"
             autoComplete="new-password"
             placeholder="Check again password"
-            className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={checkPassword}
+            onChange={(e) => setCheckPassword(e.target.value)}
           />
+          <div className="flex justify-end items-center mb-4">
+            <p
+              className={`w-fit text-end ${
+                isPwCheck ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {pwMsg}
+            </p>
+          </div>
+
           <input
             type="submit"
             value="회원가입"
             onClick={onSubmit}
-            className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
+            disabled={!isAbleSubmit}
+            className="w-full font-semibold bg-blue-500 disabled:bg-gray-500 text-sky-100 p-3 rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
           />
         </form>
         <div className="flex justify-end items-center">

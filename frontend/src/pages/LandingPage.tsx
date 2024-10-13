@@ -22,9 +22,9 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="w-screen h-screen relative flex justify-center items-center">
+    <div className="w-screen h-screen relative flex justify-center items-center bg-sky-100 text-gray-800">
       <div className="absolute top-20 left-20">
-        <p className="text-3xl">바다 이야기</p>
+        <p className="text-3xl font-bold">바다 이야기</p>
       </div>
       <div className="absolute right-20 bottom-20">
         <LandingButton onClick={handleLoginBtn}>로그인</LandingButton>
