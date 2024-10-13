@@ -185,29 +185,30 @@ exports.checkIdAvailability = async (req, res) => {
 exports.createReport = async (req, res) => {
   const { reportedUserId, reason } = req.body;
   const reporterId = req.user.id;  // authMiddleware를 통해 가져온 사용자 ID
-
+  
   try {
     // 입력 값 확인
     if (!reportedUserId || !reason) {
       return res.status(400).json({ msg: '모든 필드를 입력해주세요.' });
     }
+    
 
     // 신고할 유저가 존재하는지 확인
-    const reportedUser = await User.findById(reportedUserId);
+    const reportedUser = await User.findOne({ id: reportedUserId });
     if (!reportedUser) {
       return res.status(404).json({ msg: '신고할 사용자를 찾을 수 없습니다.' });
     }
+
 
     // 자신을 신고하는지 체크
     if (reporterId === reportedUserId) {
       return res.status(400).json({ msg: '자기 자신을 신고할 수 없습니다.' });
     }
-
     // 신고 생성
     const newReport = new Report({
       reporterId,
       reportedUserId,
-      reason
+      reason,
     });
 
     await newReport.save();

@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 // 신고 스키마 정의
 const ReportSchema = new mongoose.Schema({
   reporterId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'User',  // User 모델과의 참조 관계 설정
     required: true
   },
   reportedUserId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'User',  // User 모델과의 참조 관계 설정
     required: true
   },

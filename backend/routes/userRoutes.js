@@ -30,7 +30,7 @@ router.patch('/me', authMiddleware, userController.updateUserInfo);
 router.patch('/', authMiddleware, userController.scheduleAccountCancellation);
 
 // 신고 생성
-router.post('/report', authMiddleware,);
+router.post('/report', authMiddleware,userController.createReport);
 
 // // 탈퇴 처리 엔드포인트
 // router.delete('/', authMiddleware, userController.withdrawAccount); 
