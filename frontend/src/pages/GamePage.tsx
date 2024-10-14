@@ -1,3 +1,4 @@
+import ItemInventory from "@components/game/ItemInventory";
 import LeaderBoard from "@components/game/LeaderBoard";
 import TutorialModal from "@components/game/TutorialModal";
 import { PLAYER_SIZE, WORLD_H, WORLD_W } from "@constants/game";
@@ -44,6 +45,7 @@ export default function GamePage() {
     <div className={`relative w-[${width}px] h-[${height}px] bg-stone-800`}>
       <TutorialModal isOpen={isTutorial} onClose={handleCloseTutorial} />
       <LeaderBoard />
+      <ItemInventory />
       <Stage
         width={WORLD_W}
         height={WORLD_H}
