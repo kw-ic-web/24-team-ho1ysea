@@ -17,19 +17,19 @@ exports.signupUser = async (req, res) => {
       // 아이디 중복 체크
       let user = await User.findOne({ id });
       if (user) {
-        return res.status(400).json({ msg: '이미 사용 중인 아이디입니다.' });
+        return res.status(400).json({ message: '이미 사용 중인 아이디입니다.' });
       }
   
       // 사용자 이름 중복 체크
       user = await User.findOne({ userName });
       if (user) {
-        return res.status(400).json({ msg: '사용자 이름이 이미 존재합니다.' });
+        return res.status(400).json({ message: '사용자 이름이 이미 존재합니다.' });
       }
 
        // 닉네임 중복 체크
        user = await User.findOne({ nickName });
        if (user) {
-         return res.status(400).json({ msg: '닉네임이 이미 존재합니다.' });
+         return res.status(400).json({ message: '닉네임이 이미 존재합니다.' });
        }
   
       // 새로운 유저 생성
@@ -57,13 +57,13 @@ exports.signupUser = async (req, res) => {
       // 유저 확인
       const user = await User.findOne({ id });
       if (!user) {
-        return res.status(400).json({ msg: '아이디 또는 비밀번호가 잘못되었습니다.' });
+        return res.status(400).json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' });
       }
   
       // 비밀번호 확인
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ msg: '아이디 또는 비밀번호가 잘못되었습니다.' });
+        return res.status(400).json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' });
       }
   
       // JWT 토큰 발급
@@ -117,7 +117,7 @@ exports.updateUserInfo = async (req, res) => {
     if (nickName) {
       const existingUser = await User.findOne({ nickName: nickName });
       if (existingUser) {
-        return res.status(400).json({ msg: '이미 존재하는 닉네임입니다.' });
+        return res.status(400).json({ message: '이미 존재하는 닉네임입니다.' });
       }
       updates.nickName = nickName; // 닉네임 업데이트
     }
@@ -132,7 +132,7 @@ exports.updateUserInfo = async (req, res) => {
     // 사용자 정보 업데이트
     await User.findByIdAndUpdate(userId, updates, { new: true });
 
-    res.json({ msg: 'User information updated' });
+    res.json({ message: 'User information updated' });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('서버 오류');
@@ -189,20 +189,20 @@ exports.createReport = async (req, res) => {
   try {
     // 입력 값 확인
     if (!reportedUserId || !reason) {
-      return res.status(400).json({ msg: '모든 필드를 입력해주세요.' });
+      return res.status(400).json({ message: '모든 필드를 입력해주세요.' });
     }
     
 
     // 신고할 유저가 존재하는지 확인
     const reportedUser = await User.findOne({ id: reportedUserId });
     if (!reportedUser) {
-      return res.status(404).json({ msg: '신고할 사용자를 찾을 수 없습니다.' });
+      return res.status(404).json({ message: '신고할 사용자를 찾을 수 없습니다.' });
     }
 
 
     // 자신을 신고하는지 체크
     if (reporterId === reportedUserId) {
-      return res.status(400).json({ msg: '자기 자신을 신고할 수 없습니다.' });
+      return res.status(400).json({ message: '자기 자신을 신고할 수 없습니다.' });
     }
     // 신고 생성
     const newReport = new Report({
@@ -225,7 +225,7 @@ exports.scheduleAccountCancellation = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ msg: '사용자를 찾을 수 없습니다.' });
+      return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
     }
 
     // 상태를 "withdrawalPlanned"으로 업데이트
