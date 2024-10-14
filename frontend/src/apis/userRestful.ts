@@ -14,7 +14,7 @@ export const idCheckApi = (id: string) => {
  */
 export const nickNameCheckApi = (nickName: string) => {
   return axios.get<{ isAvailable: boolean }>(
-    `${import.meta.env.VITE_API_URL}/user/check-nickname?nickname=${nickName}`
+    `${import.meta.env.VITE_API_URL}/user/check-nickname?nickName=${nickName}`
   );
 };
 
