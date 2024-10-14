@@ -1,3 +1,4 @@
+import LeaderBoard from "@components/game/LeaderBoard";
 import TutorialModal from "@components/game/TutorialModal";
 import { PLAYER_SIZE, WORLD_H, WORLD_W } from "@constants/game";
 import { useKeyListener } from "@hooks/game/useKeyListener";
@@ -40,8 +41,9 @@ export default function GamePage() {
   }, [playerPos]);
 
   return (
-    <div className={`relative w-[${width}px] h-[${height}px]`}>
+    <div className={`relative w-[${width}px] h-[${height}px] bg-stone-800`}>
       <TutorialModal isOpen={isTutorial} onClose={handleCloseTutorial} />
+      <LeaderBoard />
       <Stage
         width={WORLD_W}
         height={WORLD_H}
