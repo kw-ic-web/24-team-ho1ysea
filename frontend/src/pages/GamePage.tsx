@@ -1,5 +1,6 @@
 import ItemInventory from "@components/game/ItemInventory";
 import LeaderBoard from "@components/game/LeaderBoard";
+import SideButton from "@components/game/SideButton";
 import TutorialModal from "@components/game/TutorialModal";
 import { PLAYER_SIZE, WORLD_H, WORLD_W } from "@constants/game";
 import { useKeyListener } from "@hooks/game/useKeyListener";
@@ -46,6 +47,7 @@ export default function GamePage() {
       <TutorialModal isOpen={isTutorial} onClose={handleCloseTutorial} />
       <LeaderBoard />
       <ItemInventory />
+      <SideButton handleOpenTutorial={handleOpenTutorial} />
       <Stage
         width={WORLD_W}
         height={WORLD_H}

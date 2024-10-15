@@ -32,7 +32,7 @@ export default function TutorialModal({
   if (!isOpen) return null;
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800">
+    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-50">
       <div className="bg-slate-200 p-2 m-2 mx-8 sm:max-w-2xl sm:w-full sm:h-fit sm:p-8 sm:m-4 flex flex-col justify-center items-center shadow-lg rounded-lg">
         <div className="relative w-full text-center font-bold text-xs sm:text-2xl py-3 mx-auto">
           <AiFillCloseSquare
