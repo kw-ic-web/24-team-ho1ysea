@@ -4,7 +4,6 @@ import ShareModal from "@components/game/ShareModal";
 import SideButton from "@components/game/SideButton";
 import TutorialModal from "@components/game/TutorialModal";
 import { PLAYER_SIZE, WORLD_H, WORLD_W } from "@constants/game";
-import { useItemKeyListener } from "@hooks/game/useItemKeyListener";
 import { useKeyListener } from "@hooks/game/useKeyListener";
 import { usePlayerPos } from "@hooks/game/usePlayerPos";
 import { useShare } from "@hooks/game/useShare";
@@ -22,10 +21,8 @@ export default function GamePage() {
 
   // 초기 pixi.js 스테이지의 비율과 크기를 세팅
   const { width, height } = useStageInit();
-  // 캐릭터 이동 관련 키보드 이벤트 리스너 연결하고 키보드 상태를 반환
-  const keyState = useKeyListener(!isTutorial && !isShare);
-  // 아이템 사용 관련 키보드 이벤트 리스너 연결하고 activeItem 상태를 반환
-  const activeItem = useItemKeyListener(!isTutorial && !isShare);
+  // 캐릭터 이동 && 아이템 사용 관련 키보드 이벤트 리스너 연결하고 키보드 상태를 반환
+  const { keyState, activeItem } = useKeyListener(!isTutorial && !isShare);
   // 키보드 이벤트를 받아서 캐릭터 좌표를 반환
   const playerPos = usePlayerPos(keyState);
 
