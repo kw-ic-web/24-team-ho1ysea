@@ -4,8 +4,10 @@ import ShareModal from "@components/game/ShareModal";
 import SideButton from "@components/game/SideButton";
 import TutorialModal from "@components/game/TutorialModal";
 import { PLAYER_SIZE, WORLD_H, WORLD_W } from "@constants/game";
+import { useItemKeyListener } from "@hooks/game/useItemKeyListener";
 import { useKeyListener } from "@hooks/game/useKeyListener";
 import { usePlayerPos } from "@hooks/game/usePlayerPos";
+import { useShare } from "@hooks/game/useShare";
 import { useStageInit } from "@hooks/game/useStageInit";
 import { useTutorial } from "@hooks/game/useTutorial";
 import { Graphics, Stage } from "@pixi/react";
@@ -13,12 +15,17 @@ import { Graphics as GraphicsType } from "pixi.js"; // pixi-react의 Graphics �
 import { useCallback, useEffect } from "react";
 
 export default function GamePage() {
+  // 튜토리얼 모달창을 띄울지 결정하고, 닫거나 새로 열기 위한 함수를 반환
+  const { isTutorial, handleCloseTutorial, handleOpenTutorial } = useTutorial();
+  // 공유 모달창을 열고 닫기 위한 state와 함수를 반환
+  const { isShare, handleOpenShare, handleCloseShare } = useShare();
+
   // 초기 pixi.js 스테이지의 비율과 크기를 세팅
   const { width, height } = useStageInit();
-  // 튜토리얼 창을 띄울지 결정하고, 닫거나 새로 열기 위한 함수를 반환
-  const { isTutorial, handleCloseTutorial, handleOpenTutorial } = useTutorial();
-  // 키보드 이벤트 리스너 연결하고 키보드 상태를 반환
-  const keyState = useKeyListener(!isTutorial);
+  // 캐릭터 이동 관련 키보드 이벤트 리스너 연결하고 키보드 상태를 반환
+  const keyState = useKeyListener(!isTutorial && !isShare);
+  // 아이템 사용 관련 키보드 이벤트 리스너 연결하고 activeItem 상태를 반환
+  const activeItem = useItemKeyListener(!isTutorial && !isShare);
   // 키보드 이벤트를 받아서 캐릭터 좌표를 반환
   const playerPos = usePlayerPos(keyState);
 
@@ -46,10 +53,13 @@ export default function GamePage() {
   return (
     <div className={`relative w-[${width}px] h-[${height}px] bg-stone-800`}>
       <TutorialModal isOpen={isTutorial} onClose={handleCloseTutorial} />
-      <ShareModal isOpen={true} onClose={() => {}} />
+      <ShareModal isOpen={isShare} onClose={handleCloseShare} />
       <LeaderBoard />
-      <ItemInventory />
-      <SideButton handleOpenTutorial={handleOpenTutorial} />
+      <ItemInventory activeItem={activeItem} />
+      <SideButton
+        handleOpenTutorial={handleOpenTutorial}
+        handleOpenShare={handleOpenShare}
+      />
       <Stage
         width={WORLD_W}
         height={WORLD_H}
