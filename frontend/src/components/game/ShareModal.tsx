@@ -9,6 +9,12 @@ export default function ShareModal({
   isOpen,
   onClose,
 }: Props): JSX.Element | null {
+  const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   const handleCopyBtn = async () => {
     try {
       await navigator.clipboard.writeText(window.location.origin);
@@ -22,7 +28,10 @@ export default function ShareModal({
   if (!isOpen) return null;
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-50">
+    <div
+      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-50"
+      onClick={handleBgClick}
+    >
       <div className="bg-slate-200 p-2 m-1 mx-4 max-w-md w-full h-fit flex flex-col justify-center items-center shadow-lg rounded-lg">
         <div className="relative w-full text-center font-bold text-xs sm:text-2xl py-3 mx-auto mb-1">
           <AiFillCloseSquare
