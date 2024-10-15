@@ -1,5 +1,6 @@
 import ItemInventory from "@components/game/ItemInventory";
 import LeaderBoard from "@components/game/LeaderBoard";
+import ShareModal from "@components/game/ShareModal";
 import SideButton from "@components/game/SideButton";
 import TutorialModal from "@components/game/TutorialModal";
 import { PLAYER_SIZE, WORLD_H, WORLD_W } from "@constants/game";
@@ -45,6 +46,7 @@ export default function GamePage() {
   return (
     <div className={`relative w-[${width}px] h-[${height}px] bg-stone-800`}>
       <TutorialModal isOpen={isTutorial} onClose={handleCloseTutorial} />
+      <ShareModal isOpen={true} onClose={() => {}} />
       <LeaderBoard />
       <ItemInventory />
       <SideButton handleOpenTutorial={handleOpenTutorial} />

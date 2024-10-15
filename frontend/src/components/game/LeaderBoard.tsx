@@ -24,7 +24,7 @@ export default function LeaderBoard(): JSX.Element {
   };
 
   return (
-    <div className="absolute rounded-lg bg-black bg-opacity-40 text-slate-100 text-center p-1.5 m-1 right-0 top-0 w-36 text-[6px] sm:text-[10px] sm:top-2 sm:right-2 sm:w-48 sm:p-3 sm:m-2 md:text-[20px] md:w-60 md:top-4 md:right-4 lg:top-6 lg:right-8 xl:top-6 xl:right-12">
+    <div className="absolute rounded-lg bg-black bg-opacity-40 text-slate-200 text-center p-1.5 m-1 right-0 top-0 w-36 text-[6px] sm:text-[10px] sm:top-2 sm:right-2 sm:w-48 sm:p-3 sm:m-2 md:text-[20px] md:w-60 md:top-4 md:right-4 lg:top-6 lg:right-8 xl:top-6 xl:right-12">
       <div className="mb-2 font-bold">🏆 리더보드 🏆</div>
       <ul className="space-y-1 sm:space-y-2">
         {mockData.map((data, idx) => (
