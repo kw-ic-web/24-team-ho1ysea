@@ -1,6 +1,8 @@
-import { useItemKeyListener } from "@hooks/game/useItemKeyListener";
+interface Props {
+  activeItem: number | null;
+}
 
-export default function ItemInventory(): JSX.Element {
+export default function ItemInventory({ activeItem }: Props): JSX.Element {
   // 추후 API로 받아오는 데이터로 교체
   const mockData = [
     { itemName: "이름", image: "주소", itemCount: 2 },
@@ -10,10 +12,8 @@ export default function ItemInventory(): JSX.Element {
     { itemName: "이름", image: "주소", itemCount: 2 },
   ];
 
-  const activeItem = useItemKeyListener();
-
   return (
-    <div className="flex absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-40 text-slate-100">
+    <div className="flex absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-40 text-slate-200">
       {mockData.map((data, idx) => (
         <div
           className={`flex justify-center items-center relative w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-20 lg:h-20 ${
