@@ -1,6 +1,6 @@
 // middlewares/authMiddleware.js
 
-require('dotenv').config(); 
+require('dotenv').config();
 // .env 파일의 내용을 로드 (cf. '.env' 내용 참조하는 파일들은 명시 필요)
 
 const jwt = require('jsonwebtoken');
@@ -17,7 +17,7 @@ module.exports = function (req, res, next) {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { id: decoded.userId }; 
+    req.user = { id: decoded.userId };
     next();
   } catch (err) {
     res.status(401).json({ msg: '유효하지 않은 토큰입니다.' });
