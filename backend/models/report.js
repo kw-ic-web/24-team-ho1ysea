@@ -4,22 +4,22 @@ const mongoose = require('mongoose');
 const ReportSchema = new mongoose.Schema({
   reporterId: {
     type: String,
-    ref: 'User',  // User 모델과의 참조 관계 설정
-    required: true
+    ref: 'User', // User 모델과의 참조 관계 설정
+    required: true,
   },
   reportedUserId: {
     type: String,
-    ref: 'User',  // User 모델과의 참조 관계 설정
-    required: true
+    ref: 'User', // User 모델과의 참조 관계 설정
+    required: true,
   },
   reason: {
     type: String,
-    required: true  // 신고 사유 필수 입력
+    required: true, // 신고 사유 필수 입력
   },
   createdAt: {
     type: Date,
-    default: Date.now  // 신고가 생성된 날짜
-  }
+    default: Date.now, // 신고가 생성된 날짜
+  },
 });
 
 // 신고 모델 생성
