@@ -14,20 +14,22 @@ interface Props {
 export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [id, setId] = useState<string>("");
-  const [pw, setPw] = useState<string>("");
+  const [inputs, setInputs] = useState({
+    id: "",
+    pw: "",
+  });
 
   const onSubmit = () => {
-    if (!id) {
+    if (!inputs.id) {
       alert("아이디를 입력해주세요");
       return;
     }
-    if (!pw) {
+    if (!inputs.pw) {
       alert("비밀번호를 입력해주세요");
       return;
     }
     setIsLoading(true);
-    loginApi(id, pw)
+    loginApi(inputs.id, inputs.pw)
       .then((res) => {
         setIsLoading(false);
         console.log(res.data);
@@ -74,16 +76,20 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
             autoComplete="username"
             placeholder="ID"
             className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
+            value={inputs.id}
+            onChange={(e) =>
+              setInputs((prev) => ({ ...prev, id: e.target.value }))
+            }
           />
           <input
             type="password"
             autoComplete="current-password"
             placeholder="Password"
             className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={pw}
-            onChange={(e) => setPw(e.target.value)}
+            value={inputs.pw}
+            onChange={(e) =>
+              setInputs((prev) => ({ ...prev, pw: e.target.value }))
+            }
           />
           <input
             type="submit"
