@@ -9,7 +9,7 @@ import { useKeyListener } from "@hooks/game/useKeyListener";
 import { useModal } from "@hooks/game/useModal";
 import { usePlayerPos } from "@hooks/game/usePlayerPos";
 import { useStageInit } from "@hooks/game/useStageInit";
-import { Graphics, Stage } from "@pixi/react";
+import { Graphics, Sprite, Stage } from "@pixi/react";
 import { Graphics as GraphicsType } from "pixi.js"; // pixi-react의 Graphics 컴포넌트와 네임 충돌이 발생하므로 이름 변경
 import { useCallback, useEffect } from "react";
 
@@ -63,7 +63,6 @@ export default function GamePage() {
       <Stage
         width={WORLD_W}
         height={WORLD_H}
-        options={{ backgroundColor: 0x1099bb }}
         style={{
           width: width,
           height: height,
@@ -72,6 +71,13 @@ export default function GamePage() {
           border: "solid 1px black",
         }}
       >
+        <Sprite image="/images/map.png" x={0} y={0} />
+        <Sprite
+          image="/images/shop.png"
+          x={WORLD_W - 200}
+          y={WORLD_H - 180}
+          scale={0.4}
+        />
         <Graphics draw={drawPlayer} />
       </Stage>
     </div>

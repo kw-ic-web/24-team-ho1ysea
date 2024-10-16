@@ -9,8 +9,8 @@ export const usePlayerPos = (keyState: {
 }) => {
   // 초기 플레이어 좌표
   const [myPos, setMyPos] = useState<{ x: number; y: number }>({
-    x: 0,
-    y: PLAYER_SIZE,
+    x: 30,
+    y: WORLD_H - 60,
   });
 
   // 키보드 입력에 따라 플레이어 좌표 변경
