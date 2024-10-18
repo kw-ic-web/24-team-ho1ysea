@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  userName: { type: String, required: true },
   // 바다이야기 시트를 원칙으로 하여 api 테스트를 해야 할 것이라 생각하여 추가했어요
   nickName: { type: String, required: true, unique: true },
   isAdmin: { type: Boolean, default: false }, // 기본값 false
