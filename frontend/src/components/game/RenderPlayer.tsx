@@ -3,6 +3,7 @@ import { PlayerPos } from "@@types/PlayerType";
 import { useEffect, useState } from "react";
 import { CHARACTER_H, CHARACTER_W } from "@constants/game";
 import { Sprite } from "@pixi/react";
+import { usePlayerAnimation } from "@hooks/game/usePlayerAnimation";
 
 interface Props {
   playerPos: PlayerPos;
@@ -12,7 +13,7 @@ const baseTexture = PIXI.BaseTexture.from("/images/character.png");
 
 function RenderPlayer({ playerPos }: Props) {
   const { x, y, direction } = playerPos;
-  const [frame, setFrame] = useState(0);
+  const frame = usePlayerAnimation(playerPos);
   const [texture, setTexture] = useState<PIXI.Texture | null>(null);
 
   useEffect(() => {
@@ -34,7 +35,6 @@ function RenderPlayer({ playerPos }: Props) {
       CHARACTER_W,
       CHARACTER_H
     );
-
     const newTexture = new PIXI.Texture(baseTexture, rect);
     setTexture(newTexture);
   }, [direction, frame]);
