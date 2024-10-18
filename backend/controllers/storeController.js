@@ -14,12 +14,14 @@ exports.exchangeTrash = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ msg: "사용자를 찾을 수 없습니다." });
+      return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
     }
 
     // 쓰레기 수량 확인
     if (user.trash < trashAmount) {
-      return res.status(400).json({ msg: "환전할 쓰레기 수량이 부족합니다." });
+      return res
+        .status(400)
+        .json({ message: "환전할 쓰레기 수량이 부족합니다." });
     }
 
     // 환전 비율 (예시로 1:1 비율로 설정)
@@ -72,13 +74,13 @@ exports.buyItem = async (req, res) => {
     const item = await Item.findOne({ itemId });
 
     if (!item) {
-      return res.status(404).json({ msg: "아이템을 찾을 수 없습니다." });
+      return res.status(404).json({ message: "아이템을 찾을 수 없습니다." });
     }
 
     const totalCost = item.cost * quantity;
 
     if (user.coin < totalCost) {
-      return res.status(400).json({ msg: "코인이 부족합니다." });
+      return res.status(400).json({ message: "코인이 부족합니다." });
     }
 
     // 코인 차감
@@ -108,7 +110,7 @@ exports.buyItem = async (req, res) => {
 
     await inventory.save();
 
-    res.json({ message: "Item purchased successfully" });
+    res.json({ message: "아이템 구매 성공" });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("서버 오류");
@@ -125,14 +127,14 @@ exports.sellItem = async (req, res) => {
     const item = await Item.findOne({ itemId });
 
     if (!item) {
-      return res.status(404).json({ msg: "아이템을 찾을 수 없습니다." });
+      return res.status(404).json({ message: "아이템을 찾을 수 없습니다." });
     }
 
     // 인벤토리에서 아이템 확인
     const inventory = await Inventory.findOne({ userid: userId });
 
     if (!inventory) {
-      return res.status(400).json({ msg: "판매할 아이템이 없습니다." });
+      return res.status(400).json({ message: "판매할 아이템이 없습니다." });
     }
 
     const itemIndex = inventory.items.findIndex(
@@ -142,7 +144,7 @@ exports.sellItem = async (req, res) => {
     if (itemIndex === -1 || inventory.items[itemIndex].quantity < quantity) {
       return res
         .status(400)
-        .json({ msg: "판매할 아이템의 수량이 부족합니다." });
+        .json({ message: "판매할 아이템의 수량이 부족합니다." });
     }
 
     // 아이템 수량 감소

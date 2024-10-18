@@ -73,7 +73,7 @@ exports.useItem = async (req, res) => {
     const inventory = await Inventory.findOne({ userid: userId });
 
     if (!inventory) {
-      return res.status(400).json({ msg: "사용할 아이템이 없습니다." });
+      return res.status(400).json({ message: "사용할 아이템이 없습니다." });
     }
 
     const itemIndex = inventory.items.findIndex(
@@ -81,7 +81,7 @@ exports.useItem = async (req, res) => {
     );
 
     if (itemIndex === -1 || inventory.items[itemIndex].quantity < 1) {
-      return res.status(400).json({ msg: "아이템의 수량이 부족합니다." });
+      return res.status(400).json({ message: "아이템의 수량이 부족합니다." });
     }
 
     // 아이템 수량 감소
@@ -95,7 +95,7 @@ exports.useItem = async (req, res) => {
     await inventory.save();
 
     res.json({
-      message: "Item used successfully",
+      message: "아이템 사용 성공",
       id: itemId,
       quantity:
         inventory.items[itemIndex]?.quantity !== undefined
@@ -118,7 +118,7 @@ exports.addItem = async (req, res) => {
     const item = await Item.findOne({ itemId });
 
     if (!item) {
-      return res.status(404).json({ msg: "아이템을 찾을 수 없습니다." });
+      return res.status(404).json({ message: "아이템을 찾을 수 없습니다." });
     }
 
     // 인벤토리 가져오기 또는 생성
@@ -144,7 +144,7 @@ exports.addItem = async (req, res) => {
     await inventory.save();
 
     res.json({
-      message: "Item added successfully",
+      message: "아이템 추가 성공",
       id: itemId,
       quantity:
         inventory.items[itemIndex > -1 ? itemIndex : inventory.items.length - 1]
