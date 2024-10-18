@@ -1,8 +1,8 @@
 import { WORLD_H, WORLD_W } from "@constants/game";
 import { useStageInit } from "@hooks/game/useStageInit";
-import RenderMap from "./RenderMap";
+import RenderMap from "@components/game/render/RenderMap";
+import RenderPlayer from "@components/game/render/RenderPlayer";
 import { PlayerPos } from "@@types/PlayerType";
-import RenderPlayer from "./RenderPlayer";
 import { Stage } from "@pixi/react";
 
 interface Props {
