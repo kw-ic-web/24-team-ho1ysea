@@ -1,3 +1,4 @@
+import { KeyState } from "@@types/PlayerType";
 import { useEffect, useState } from "react";
 
 /**
@@ -6,7 +7,7 @@ import { useEffect, useState } from "react";
  */
 export const useKeyListener = (isListen: boolean) => {
   // 캐릭터를 이동시키는 키 입력 상태를 관리하는 state
-  const [keyState, setKeyState] = useState({
+  const [keyState, setKeyState] = useState<KeyState>({
     isLeft: false,
     isRight: false,
     isTop: false,

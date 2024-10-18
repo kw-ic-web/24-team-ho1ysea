@@ -21,6 +21,7 @@ export default function ItemInventory({ activeItem }: Props): JSX.Element {
               ? "border-yellow-400 border-2"
               : "border-[0.8px]"
           }`}
+          key={idx}
         >
           <div className="p-1">
             <img src="/images/item_test.png" />
