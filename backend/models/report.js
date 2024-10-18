@@ -5,11 +5,13 @@ const ReportSchema = new mongoose.Schema({
   reporterId: {
     type: String,
     ref: "User", // User 모델과의 참조 관계 설정
+
     required: true,
   },
   reportedUserId: {
     type: String,
     ref: "User", // User 모델과의 참조 관계 설정
+
     required: true,
   },
   reason: {

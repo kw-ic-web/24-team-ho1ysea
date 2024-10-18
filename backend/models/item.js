@@ -1,5 +1,6 @@
 // models/item.js
 
+
 const mongoose = require("mongoose");
 
 const itemSchema = new mongoose.Schema({
@@ -11,3 +12,4 @@ const itemSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("Item", itemSchema);
+

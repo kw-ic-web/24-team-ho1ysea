@@ -1,5 +1,4 @@
 // controllers/itemController.js
-
 const Inventory = require("../models/inventory");
 const Item = require("../models/item");
 
@@ -153,5 +152,6 @@ exports.addItem = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send("서버 오류");
+
   }
 };

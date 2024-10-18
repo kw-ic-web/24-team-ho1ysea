@@ -82,6 +82,7 @@ exports.loginUser = async (req, res) => {
   }
 };
 
+
 // 사용자 정보 조회 함수
 exports.getUserInfo = async (req, res) => {
   try {

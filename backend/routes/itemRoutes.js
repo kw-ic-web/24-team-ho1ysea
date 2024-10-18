@@ -1,3 +1,4 @@
+
 const express = require("express");
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.post("/use", authMiddleware, itemController.useItem);
 
 // 아이템 습득 엔드포인트
 router.post("/get", authMiddleware, itemController.addItem);
+
 
 module.exports = router;

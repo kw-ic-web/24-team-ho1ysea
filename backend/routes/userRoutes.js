@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const userController = require("../controllers/userController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
+
 // 회원가입 엔드포인트
 router.post("/signup", userController.signupUser);
 
@@ -24,13 +25,16 @@ router.get("/check-id", userController.checkIdAvailability);
 router.get("/me", authMiddleware, userController.getUserInfo);
 
 // 유저 정보 수정 엔드포인트
+
 router.patch("/me", authMiddleware, userController.updateUserInfo);
+
 
 // 탈퇴 예약 엔드포인트 (일단 써봤음 판단 부탁)
 router.patch("/", authMiddleware, userController.scheduleAccountCancellation);
 
 // 신고 생성
 router.post("/report", authMiddleware, userController.createReport);
+
 
 // // 탈퇴 처리 엔드포인트
 // router.delete('/', authMiddleware, userController.withdrawAccount);
