@@ -2,14 +2,12 @@ import { WORLD_H, WORLD_W } from "@constants/game";
 import { useStageInit } from "@hooks/game/useStageInit";
 import RenderMap from "@components/game/render/RenderMap";
 import RenderPlayer from "@components/game/render/RenderPlayer";
-import { PlayerPos } from "@@types/PlayerType";
 import { Stage } from "@pixi/react";
 
-interface Props {
-  playerPos: PlayerPos;
-}
-
-export default function RenderGame({ playerPos }: Props) {
+/**
+ * @description 게임 요소들을 렌더링하는 컴포넌트
+ */
+export default function RenderGame() {
   // 초기 pixi.js 스테이지의 비율과 크기를 세팅
   const { width, height } = useStageInit();
 
@@ -26,7 +24,7 @@ export default function RenderGame({ playerPos }: Props) {
       }}
     >
       <RenderMap />
-      <RenderPlayer playerPos={playerPos} />
+      <RenderPlayer />
     </Stage>
   );
 }

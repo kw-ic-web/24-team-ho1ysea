@@ -1,8 +1,8 @@
-interface Props {
-  activeItem: number | null;
-}
+import { useKeyStore } from "@store/keyStore";
 
-export default function ItemInventory({ activeItem }: Props): JSX.Element {
+export default function ItemInventory(): JSX.Element {
+  const { activeItem } = useKeyStore();
+
   // 추후 API로 받아오는 데이터로 교체
   const mockData = [
     { itemName: "이름", image: "주소", itemCount: 2 },
