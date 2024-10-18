@@ -16,11 +16,12 @@ export const usePlayerPos = (keyState: {
   isBottom: boolean;
 }) => {
   // 초기 플레이어 좌표
-  const [myPos, setMyPos] = useState<PlayerPos>({
+  const [playerPos, setPlayerPos] = useState<PlayerPos>({
     x: 30,
     y: WORLD_H - 60,
     direction: "bottom",
   });
+  const [isCollideStore, setIsCollideStore] = useState<boolean>(false);
 
   // 키보드 입력에 따라 플레이어 좌표 변경
   // 만약 게임 WORLD 밖이라면 좌표 변경 X
@@ -29,32 +30,33 @@ export const usePlayerPos = (keyState: {
       requestId: number;
     let dx = 0;
     let dy = 0;
-    let direction: typeof myPos.direction;
+    let direction: typeof playerPos.direction;
 
-    if (myPos.y > 0 && keyState.isTop) {
+    if (playerPos.y > 0 && keyState.isTop) {
       dy -= PLAYER_MOVE;
       direction = "up";
     }
-    if (myPos.x + PLAYER_SIZE_W < WORLD_W && keyState.isRight) {
+    if (playerPos.x + PLAYER_SIZE_W < WORLD_W && keyState.isRight) {
       dx += PLAYER_MOVE;
       direction = "right";
     }
-    if (myPos.y + PLAYER_SIZE_H / 2 < WORLD_H && keyState.isBottom) {
+    if (playerPos.y + PLAYER_SIZE_H / 2 < WORLD_H && keyState.isBottom) {
       dy += PLAYER_MOVE;
       direction = "bottom";
     }
-    if (myPos.x + PLAYER_SIZE_W > 0 && keyState.isLeft) {
+    if (playerPos.x + PLAYER_SIZE_W > 0 && keyState.isLeft) {
       dx -= PLAYER_MOVE;
       direction = "left";
     }
 
     if (dx !== 0 || dy !== 0) {
-      const newX = myPos.x + dx / 10;
-      const newY = myPos.y + dy / 10;
+      const newX = playerPos.x + dx / 10;
+      const newY = playerPos.y + dy / 10;
 
       if (!isCollidingStore(newX, newY)) {
+        setIsCollideStore(false);
         const animation = () => {
-          setMyPos({
+          setPlayerPos({
             x: Math.min(Math.max(newX, 0), WORLD_W - PLAYER_SIZE_W),
             y: Math.min(Math.max(newY, 0), WORLD_H - PLAYER_SIZE_H),
             direction,
@@ -64,10 +66,12 @@ export const usePlayerPos = (keyState: {
           if (cnt == 10) cancelAnimationFrame(requestId);
         };
         requestAnimationFrame(animation);
+      } else {
+        setIsCollideStore(true);
       }
     }
-  }, [keyState, myPos]);
+  }, [keyState, playerPos]);
 
   // 플레이어 좌표 반환
-  return myPos;
+  return { playerPos, isCollideStore };
 };

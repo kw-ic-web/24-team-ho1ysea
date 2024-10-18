@@ -9,4 +9,5 @@ export type KeyState = {
   isRight: boolean;
   isTop: boolean;
   isBottom: boolean;
+  isSpace: boolean;
 };

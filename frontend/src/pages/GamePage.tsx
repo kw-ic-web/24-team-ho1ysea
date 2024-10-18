@@ -4,6 +4,7 @@ import RenderGame from "@components/game/RenderGame";
 import SettingModal from "@components/game/SettingModal";
 import ShareModal from "@components/game/ShareModal";
 import SideButton from "@components/game/SideButton";
+import StoreModal from "@components/game/StoreModal";
 import TutorialModal from "@components/game/TutorialModal";
 import { useKeyListener } from "@hooks/game/useKeyListener";
 import { useModal } from "@hooks/game/useModal";
@@ -15,10 +16,18 @@ export default function GamePage() {
   const { isOpen, toggleModal } = useModal();
   // 캐릭터 이동 && 아이템 사용 관련 키보드 이벤트 리스너 연결하고 키보드 상태를 반환
   const { keyState, activeItem } = useKeyListener(
-    !isOpen.tutorial && !isOpen.share && !isOpen.setting
+    !isOpen.tutorial && !isOpen.share && !isOpen.setting && !isOpen.store
   );
-  // 키보드 이벤트를 받아서 캐릭터 좌표를 반환
-  const playerPos = usePlayerPos(keyState);
+  // 키보드 이벤트를 받아서 캐릭터 좌표와 상점과의 충돌 여부를 반환
+  const { playerPos, isCollideStore } = usePlayerPos(keyState);
+
+  // 사용자가 상점 앞에서 Space 키를 누르면 상점 모달 오픈
+  useEffect(() => {
+    if (isCollideStore && keyState.isSpace) {
+      console.log("하이");
+      toggleModal("store");
+    }
+  }, [isCollideStore, keyState.isSpace, toggleModal]);
 
   // 디버깅용 useEffect, 캐릭터 x y값을 콘솔로 출력
   useEffect(() => {
@@ -38,10 +47,11 @@ export default function GamePage() {
         isOpen={isOpen.setting}
         onClose={() => toggleModal("setting")}
       />
+      <StoreModal isOpen={isOpen.store} onClose={() => toggleModal("store")} />
       <LeaderBoard />
       <ItemInventory activeItem={activeItem} />
       <SideButton toggleModal={toggleModal} />
-      <RenderGame keyState={keyState} />
+      <RenderGame playerPos={playerPos} />
     </div>
   );
 }

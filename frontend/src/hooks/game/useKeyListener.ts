@@ -12,6 +12,7 @@ export const useKeyListener = (isListen: boolean) => {
     isRight: false,
     isTop: false,
     isBottom: false,
+    isSpace: false,
   });
   // 아이템을 사용하는 키 입력 상태를 관리하는 state
   const [activeItem, setActiveItem] = useState<number | null>(null);
@@ -25,6 +26,7 @@ export const useKeyListener = (isListen: boolean) => {
       isRight: key === "d" || key === "arrowright",
       isTop: key === "w" || key === "arrowup",
       isBottom: key === "s" || key === "arrowdown",
+      isSpace: key === " ",
     }));
     if (e.key >= "1" && e.key <= "5") {
       setActiveItem(Number(e.key));
@@ -40,6 +42,7 @@ export const useKeyListener = (isListen: boolean) => {
       isRight: prev.isRight && key !== "d" && key !== "arrowright",
       isTop: prev.isTop && key !== "w" && key !== "arrowup",
       isBottom: prev.isBottom && key !== "s" && key !== "arrowdown",
+      isSpace: prev.isSpace && key !== " ",
     }));
     if (e.key >= "1" && e.key <= "5") {
       setActiveItem(null);
