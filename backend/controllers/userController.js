@@ -1,11 +1,11 @@
 // controllers/userController.js
 
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
-const Report = require('../models/report');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const Report = require("../models/report");
 
-require('dotenv').config();
+require("dotenv").config();
 // .env 파일의 내용을 로드 (cf. '.env' 내용 참조하는 파일들은 명시 필요)
 
 // 회원가입 함수
@@ -16,23 +16,17 @@ exports.signupUser = async (req, res) => {
     // 아이디 중복 체크
     let user = await User.findOne({ id });
     if (user) {
-      return res.status(400).json({ message: '이미 사용 중인 아이디입니다.' });
-    }
-
-    // 사용자 이름 중복 체크
-    user = await User.findOne({ userName });
-    if (user) {
-      return res.status(400).json({ message: '사용자 이름이 이미 존재합니다.' });
+      return res.status(400).json({ message: "이미 사용 중인 아이디입니다." });
     }
 
     // 닉네임 중복 체크
     user = await User.findOne({ nickName });
     if (user) {
-      return res.status(400).json({ message: '닉네임이 이미 존재합니다.' });
+      return res.status(400).json({ message: "닉네임이 이미 존재합니다." });
     }
 
     // 새로운 유저 생성
-    user = new User({ id, userName, password, nickName });
+    user = new User({ id, password, nickName });
 
     // 비밀번호 해싱
     const salt = await bcrypt.genSalt(10);
@@ -41,10 +35,12 @@ exports.signupUser = async (req, res) => {
     // 유저 저장
     await user.save();
 
-    res.status(201).json({ message: '회원가입이 완료되었습니다.', userId: user._id });
+    res
+      .status(201)
+      .json({ message: "회원가입이 완료되었습니다.", userId: user._id });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('서버 오류');
+    res.status(500).send("서버 오류");
   }
 };
 
@@ -56,26 +52,37 @@ exports.loginUser = async (req, res) => {
     // 유저 확인
     const user = await User.findOne({ id });
     if (!user) {
-      return res.status(400).json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' });
+      return res
+        .status(400)
+        .json({ message: "아이디 또는 비밀번호가 잘못되었습니다." });
     }
 
     // 비밀번호 확인
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' });
+      return res
+        .status(400)
+        .json({ message: "아이디 또는 비밀번호가 잘못되었습니다." });
     }
 
     // JWT 토큰 발급
     const payload = { userId: user._id };
-    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '5h' }, (err, token) => {
-      if (err) throw err;
-      res.json({ token, userId: user._id });
-    });
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: "5h" },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token, userId: user._id });
+      }
+    );
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('서버 오류');
+    res.status(500).send("서버 오류");
   }
 };
+
+
 // 사용자 정보 조회 함수
 exports.getUserInfo = async (req, res) => {
   try {
@@ -83,19 +90,18 @@ exports.getUserInfo = async (req, res) => {
     const user = await User.findById(userId); // userId로 사용자 조회
 
     if (!user) {
-      return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
+      return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
     }
 
     // 필요한 정보 반환
     res.json({
-      userName: user.userName, // 사용자 이름
       playCount: user.countPlay, // 플레이 횟수
       nickName: user.nickName, // 닉네임
       id: user.id, // id 사용 : 여기 원래 이메일이었는데 value가 같아서
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('서버 오류');
+    res.status(500).send("서버 오류");
   }
 };
 
@@ -111,7 +117,7 @@ exports.updateUserInfo = async (req, res) => {
     if (nickName) {
       const existingUser = await User.findOne({ nickName: nickName });
       if (existingUser) {
-        return res.status(400).json({ message: '이미 존재하는 닉네임입니다.' });
+        return res.status(400).json({ message: "이미 존재하는 닉네임입니다." });
       }
       updates.nickName = nickName; // 닉네임 업데이트
     }
@@ -126,10 +132,10 @@ exports.updateUserInfo = async (req, res) => {
     // 사용자 정보 업데이트
     await User.findByIdAndUpdate(userId, updates, { new: true });
 
-    res.json({ message: 'User information updated' });
+    res.json({ message: "User information updated" });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('서버 오류');
+    res.status(500).send("서버 오류");
   }
 };
 // 후에 예외처리 추가가 필요할 것 같다(ex. 비번이 너무 짧거나, 특수문자 미포함)
@@ -150,7 +156,7 @@ exports.checkNicknameAvailability = async (req, res) => {
     res.json({ isAvailable: true });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('서버 오류');
+    res.status(500).send("서버 오류");
   }
 };
 
@@ -170,7 +176,7 @@ exports.checkIdAvailability = async (req, res) => {
     res.json({ isAvailable: true });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('서버 오류');
+    res.status(500).send("서버 오류");
   }
 };
 
@@ -181,18 +187,22 @@ exports.createReport = async (req, res) => {
   try {
     // 입력 값 확인
     if (!reportedUserId || !reason) {
-      return res.status(400).json({ message: '모든 필드를 입력해주세요.' });
+      return res.status(400).json({ message: "모든 필드를 입력해주세요." });
     }
 
     // 신고할 유저가 존재하는지 확인
     const reportedUser = await User.findOne({ id: reportedUserId });
     if (!reportedUser) {
-      return res.status(404).json({ message: '신고할 사용자를 찾을 수 없습니다.' });
+      return res
+        .status(404)
+        .json({ message: "신고할 사용자를 찾을 수 없습니다." });
     }
 
     // 자신을 신고하는지 체크
     if (reporterId === reportedUserId) {
-      return res.status(400).json({ message: '자기 자신을 신고할 수 없습니다.' });
+      return res
+        .status(400)
+        .json({ message: "자기 자신을 신고할 수 없습니다." });
     }
     // 신고 생성
     const newReport = new Report({
@@ -202,10 +212,10 @@ exports.createReport = async (req, res) => {
     });
 
     await newReport.save();
-    res.status(201).json({ message: '신고가 성공적으로 제출되었습니다.' });
+    res.status(201).json({ message: "신고가 성공적으로 제출되었습니다." });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('서버 오류');
+    res.status(500).send("서버 오류");
   }
 };
 exports.scheduleAccountCancellation = async (req, res) => {
@@ -215,17 +225,17 @@ exports.scheduleAccountCancellation = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
+      return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
     }
 
     // 상태를 "withdrawalPlanned"으로 업데이트
-    user.status = 'withdrawnPlanned';
+    user.status = "withdrawnPlanned";
     await user.save();
 
-    res.json({ message: '탈퇴 예약이 완료되었습니다.' });
+    res.json({ message: "탈퇴 예약이 완료되었습니다." });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('서버 오류');
+    res.status(500).send("서버 오류");
   }
 };
 

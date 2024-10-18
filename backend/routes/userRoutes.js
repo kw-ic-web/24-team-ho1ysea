@@ -1,36 +1,40 @@
 // routes/userRoutes.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const User = require('../models/user');
-const Report = require('../models/report');
-const jwt = require('jsonwebtoken');
-const userController = require('../controllers/userController');
-const authMiddleware = require('../middlewares/authMiddleware');
+const bcrypt = require("bcryptjs");
+const User = require("../models/User");
+const Report = require("../models/report");
+const jwt = require("jsonwebtoken");
+const userController = require("../controllers/userController");
+const authMiddleware = require("../middlewares/authMiddleware");
+
 
 // 회원가입 엔드포인트
-router.post('/signup', userController.signupUser);
+router.post("/signup", userController.signupUser);
 
 // 로그인 엔드포인트
-router.post('/login', userController.loginUser);
+router.post("/login", userController.loginUser);
 
 // 닉네임 중복 체크 엔드포인트
-router.get('/check-nickname', userController.checkNicknameAvailability);
+router.get("/check-nickname", userController.checkNicknameAvailability);
 
 // 아이디 중복 체크 엔드포인트
-router.get('/check-id', userController.checkIdAvailability);
+router.get("/check-id", userController.checkIdAvailability);
 
 // 유저 정보 조회 엔드포인트(토큰 필요)
-router.get('/me', authMiddleware, userController.getUserInfo);
+router.get("/me", authMiddleware, userController.getUserInfo);
 
 // 유저 정보 수정 엔드포인트
-router.patch('/me', authMiddleware, userController.updateUserInfo);
+
+router.patch("/me", authMiddleware, userController.updateUserInfo);
+
 
 // 탈퇴 예약 엔드포인트 (일단 써봤음 판단 부탁)
-router.patch('/', authMiddleware, userController.scheduleAccountCancellation);
+router.patch("/", authMiddleware, userController.scheduleAccountCancellation);
 
 // 신고 생성
-router.post('/report', authMiddleware, userController.createReport);
+router.post("/report", authMiddleware, userController.createReport);
+
 
 // // 탈퇴 처리 엔드포인트
 // router.delete('/', authMiddleware, userController.withdrawAccount);

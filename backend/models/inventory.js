@@ -1,30 +1,17 @@
 // models/inventory.js
-const mongoose = require('mongoose');
 
-// 인벤토리 스키마 설계
+
+const mongoose = require("mongoose");
+
 const inventorySchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
+  userid: { type: String, ref: "User", required: true }, // 회원 데이터와 연결하는 ID
   items: [
     {
-      itemId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Item',
-        required: true,
-      },
-      quantity: {
-        type: Number,
-        default: 1,
-      },
+      itemId: { type: String, required: true }, // 아이템 아이디
+      quantity: { type: Number, default: 1 }, // 수량
     },
   ],
 });
 
-// 인벤토리 모델 생성
-const Inventory = mongoose.model('Inventory', inventorySchema);
+module.exports = mongoose.model("Inventory", inventorySchema);
 
-// 내보내기
-module.exports = Inventory;
