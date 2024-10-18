@@ -22,7 +22,9 @@ export default function GamePage() {
 
   // 디버깅용 useEffect, 캐릭터 x y값을 콘솔로 출력
   useEffect(() => {
-    console.log(`x: ${playerPos.x}, y: ${playerPos.y}`);
+    console.log(
+      `x: ${playerPos.x}, y: ${playerPos.y}, dir: ${playerPos.direction}`
+    );
   }, [playerPos]);
 
   return (
