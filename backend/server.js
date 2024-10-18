@@ -15,6 +15,8 @@ app.use(require("cors")());
 
 // 라우트 설정( 앞으로 라우트를 추가할 예정)
 app.use("/api/user", require("./routes/userRoutes"));
+app.use("/api/store", require("./routes/storeRoutes"));
+app.use("/api/coin", require("./routes/coinRoutes"));
 
 // 매일 자정에 탈퇴 처리 함수 실행
 // cron.schedule('0 0 * * *', userController.processAccountCancellation);   // 신기해서 넣어봤음(탈퇴처리 + 탈퇴예약 2가지 고려해야 함)

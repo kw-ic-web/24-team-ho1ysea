@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
   isAdmin: { type: Boolean, default: false }, // 기본값 false
   topRate: { type: Number, default: 0 },
   coin: { type: Number, default: 0 },
+  trash: { type: Number, default: 10000 }, // 임시 추가 - 환전 api용
   countPlay: { type: Number, default: 0 },
   status: {
     type: String,
