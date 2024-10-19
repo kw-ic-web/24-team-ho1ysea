@@ -2,7 +2,7 @@ import { MyItems, StoreItems } from "@@types/itemsType";
 import { myCoinApi } from "@apis/coinRestful";
 import { allStoreItemsApi, myItemsApi } from "@apis/itemRestful";
 import { getLocalStorage } from "@utils/localStorage";
-import { isAxiosError } from "axios";
+import axios, { isAxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,27 @@ export default function StoreModal({ isOpen, onClose }: Props) {
   const [storeItems, setStoreItems] = useState<StoreItems>([]);
   const [myItems, setMyItems] = useState<MyItems>([]);
   const [myCoin, setMyCoin] = useState(0);
+
+  const handleIncCost = async () => {
+    try {
+      console.log("클릭");
+      const token = getLocalStorage("token");
+
+      // 서버에 요청해 코인을 증가시키는 작업 수행
+      await axios.get(`${import.meta.env.VITE_API_URL}/coin/test`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // 코인의 최신 상태를 다시 서버에서 가져와 상태에 반영
+      const myCoinData = await myCoinApi(token!).then((res) => res.data.coin);
+      console.log("최신 코인 값:", myCoinData);
+
+      // 최신 코인 값으로 덮어쓰기
+      setMyCoin(myCoinData);
+    } catch (err) {
+      console.error("코인 갱신 중 오류:", err);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async (token: string) => {
@@ -35,12 +56,12 @@ export default function StoreModal({ isOpen, onClose }: Props) {
       }
     };
     const token = getLocalStorage("token");
-    if (token) {
-      fetchData(token);
-    } else {
-      navigate("/");
+    if (isOpen) {
+      if (token) {
+        fetchData(token);
+      }
     }
-  }, [navigate]);
+  }, [navigate, isOpen]);
 
   useEffect(() => {
     console.log(storeItems);
@@ -73,7 +94,7 @@ export default function StoreModal({ isOpen, onClose }: Props) {
           />
           <h1>상점</h1>
         </div>
-
+        <button onClick={handleIncCost}>클릭하면 돈오름 ㅋㅋ</button>
         <div className="w-full flex justify-between items-center">
           <div className="mx-2 text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg">
             <p>코인: {myCoin}</p>
