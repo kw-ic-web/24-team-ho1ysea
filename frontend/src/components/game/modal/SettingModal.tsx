@@ -19,7 +19,7 @@ export default function SettingModal({
 
   return (
     <div
-      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-50"
+      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-40"
       onClick={handleBgClick}
     >
       <div className="bg-slate-200 p-2 m-1 mx-4 max-w-md w-full h-fit flex flex-col justify-center items-center shadow-lg rounded-lg">

@@ -4,7 +4,7 @@ const Item = require("../models/item");
 
 // 보유 아이템 조회
 exports.getUserInventory = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   try {
     // 사용자의 인벤토리 가져오기
@@ -152,6 +152,5 @@ exports.addItem = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send("서버 오류");
-
   }
 };

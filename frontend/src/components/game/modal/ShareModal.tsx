@@ -1,3 +1,4 @@
+import { useToastStore } from "@store/toastStore";
 import { AiFillCloseSquare } from "react-icons/ai";
 
 interface Props {
@@ -9,6 +10,8 @@ export default function ShareModal({
   isOpen,
   onClose,
 }: Props): JSX.Element | null {
+  const { showToast } = useToastStore();
+
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -18,10 +21,10 @@ export default function ShareModal({
   const handleCopyBtn = async () => {
     try {
       await navigator.clipboard.writeText(window.location.origin);
-      alert("복사되었습니다");
+      showToast("복사되었습니다");
     } catch (e) {
       console.error(e);
-      alert("복사에 실패했습니다");
+      showToast("복사에 실패했습니다");
     }
   };
 
@@ -29,7 +32,7 @@ export default function ShareModal({
 
   return (
     <div
-      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-50"
+      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-40"
       onClick={handleBgClick}
     >
       <div className="bg-slate-200 p-2 m-1 mx-4 max-w-md w-full h-fit flex flex-col justify-center items-center shadow-lg rounded-lg">

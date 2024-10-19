@@ -1,11 +1,8 @@
-import { MyItems, StoreItems } from "@@types/itemsType";
-import { myCoinApi } from "@apis/coinRestful";
-import { allStoreItemsApi, myItemsApi } from "@apis/itemRestful";
-import { getLocalStorage } from "@utils/localStorage";
-import { isAxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { useItemStore } from "@hooks/game/useItemStore";
+import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { BsCoin, BsTrash } from "react-icons/bs";
+import { CgArrowsExchange } from "react-icons/cg";
 
 interface Props {
   isOpen: boolean;
@@ -13,40 +10,15 @@ interface Props {
 }
 
 export default function StoreModal({ isOpen, onClose }: Props) {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"buy" | "sell">("buy");
-  const [storeItems, setStoreItems] = useState<StoreItems>([]);
-  const [myItems, setMyItems] = useState<MyItems>([]);
-  const [myCoin, setMyCoin] = useState(0);
-
-  useEffect(() => {
-    const fetchData = async (token: string) => {
-      try {
-        const storeItemsData = await allStoreItemsApi().then((res) => res.data);
-        const myItemsData = await myItemsApi(token).then((res) => res.data);
-        const myCoinData = await myCoinApi(token).then((res) => res.data.coin);
-        setStoreItems(storeItemsData);
-        setMyItems(myItemsData);
-        setMyCoin(myCoinData);
-      } catch (err) {
-        if (isAxiosError(err)) {
-          console.error(err.response);
-        }
-      }
-    };
-    const token = getLocalStorage("token");
-    if (token) {
-      fetchData(token);
-    } else {
-      navigate("/");
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    console.log(storeItems);
-    console.log(myItems);
-    console.log(myCoin);
-  }, [myCoin, myItems, storeItems]);
+  const {
+    storeItems,
+    myItems,
+    currency,
+    handleBuyItem,
+    handleSellItem,
+    handleTrashExchange,
+  } = useItemStore(isOpen);
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -74,12 +46,25 @@ export default function StoreModal({ isOpen, onClose }: Props) {
           <h1>상점</h1>
         </div>
 
-        <div className="w-full flex justify-between items-center">
-          <div className="mx-2 text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg">
-            <p>코인: {myCoin}</p>
+        <div className="w-full mt-4 flex justify-between items-center">
+          <div className="flex justify-center items-center gap-1 md:gap-2 mx-2 text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg">
+            <div className="flex justify-center items-center">
+              <BsCoin />: {currency.coin}
+            </div>
+            <button
+              onClick={handleTrashExchange}
+              className="flex justify-center items-center gap-1 px-1 py-0.5 mx-1 my-0.5 bg-slate-700 text-slate-200 transition-colors hover:bg-slate-600 rounded-lg text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base"
+            >
+              <CgArrowsExchange /> 환전
+            </button>
+            <div>
+              <div className="flex justify-center items-center">
+                <BsTrash />: {currency.trash}
+              </div>
+            </div>
           </div>
 
-          <div className="mx-2 flex justify-around mb-1 rounded-lg shadow-lg text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg">
+          <div className="mx-2 flex justify-around mb-1 rounded-lg shadow-lg text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base">
             <button
               className={`px-3 py-1 rounded-l-lg ${
                 activeTab === "buy"
@@ -128,7 +113,10 @@ export default function StoreModal({ isOpen, onClose }: Props) {
                   {item.price} 원
                 </p>
 
-                <button className="text-[8px] md:text-sm block mx-auto w-2/3 py-1.5 px-2 bg-slate-700 text-slate-200 transition-colors rounded-lg hover:bg-slate-600">
+                <button
+                  onClick={() => handleBuyItem(item)}
+                  className="text-[8px] md:text-sm block mx-auto w-2/3 py-1.5 px-2 bg-slate-700 text-slate-200 transition-colors rounded-lg hover:bg-slate-600"
+                >
                   구매하기
                 </button>
               </div>
@@ -146,22 +134,22 @@ export default function StoreModal({ isOpen, onClose }: Props) {
                     className="w-8 md:w-12 bg-slate-300 rounded-full p-1"
                   />
                   <p className="text-center font-bold text-xs sm:text-base md:text-lg">
-                    {item.itemName}
+                    {item.itemName} ({item.quantity}개)
                   </p>
                 </div>
 
                 <p className="hidden sm:block mx-auto text-gray-700 text-[8px] sm:text-sm">
                   {item.description}
                 </p>
-                <p className="mx-auto text-gray-700 text-[8px] sm:text-sm">
-                  {item.quantity} 개
-                </p>
                 <p className="text-blue-400 mx-auto text-[12px] sm:text-sm">
                   {} 원
                 </p>
 
-                <button className="text-[8px] md:text-sm block mx-auto w-2/3 py-1.5 px-2 bg-slate-700 text-slate-200 transition-colors rounded-lg hover:bg-slate-600">
-                  구매하기
+                <button
+                  onClick={() => handleSellItem(item)}
+                  className="text-[8px] md:text-sm block mx-auto w-2/3 py-1.5 px-2 bg-slate-700 text-slate-200 transition-colors rounded-lg hover:bg-slate-600"
+                >
+                  판매하기
                 </button>
               </div>
             ))
