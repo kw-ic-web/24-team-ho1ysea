@@ -1,20 +1,15 @@
 import { WORLD_H, WORLD_W } from "@constants/game";
-import { usePlayerPos } from "@hooks/game/usePlayerPos";
 import { useStageInit } from "@hooks/game/useStageInit";
-import RenderMap from "./RenderMap";
-import { KeyState } from "@@types/PlayerType";
-import RenderPlayer from "./RenderPlayer";
+import RenderMap from "@components/game/render/RenderMap";
+import RenderPlayer from "@components/game/render/RenderPlayer";
 import { Stage } from "@pixi/react";
 
-interface Props {
-  keyState: KeyState;
-}
-
-export default function RenderGame({ keyState }: Props) {
+/**
+ * @description 게임 요소들을 렌더링하는 컴포넌트
+ */
+export default function RenderGame() {
   // 초기 pixi.js 스테이지의 비율과 크기를 세팅
   const { width, height } = useStageInit();
-  // 키보드 이벤트를 받아서 캐릭터 좌표를 반환
-  const playerPos = usePlayerPos(keyState);
 
   return (
     <Stage
@@ -29,7 +24,7 @@ export default function RenderGame({ keyState }: Props) {
       }}
     >
       <RenderMap />
-      <RenderPlayer playerPos={playerPos} />
+      <RenderPlayer />
     </Stage>
   );
 }

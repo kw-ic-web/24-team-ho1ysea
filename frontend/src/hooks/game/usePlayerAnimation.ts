@@ -1,47 +1,29 @@
-import { PlayerPos } from "@@types/PlayerType";
-import { useEffect, useRef, useState } from "react";
+import { useTick } from "@pixi/react";
+import { useKeyStore } from "@store/keyStore";
+import { isKeyActive } from "@utils/isKeyActive";
+import { useRef, useState } from "react";
 
-export const usePlayerAnimation = (playerPos: PlayerPos) => {
+/**
+ * @description 플레이어가 이동 중일 때만 캐릭터 애니메이션을 적용할 수 있도록 frame state를 반환하는 커스텀 훅
+ */
+export const usePlayerAnimation = () => {
+  const { keyState } = useKeyStore();
   const [frame, setFrame] = useState<number>(1);
-  const previousPosRef = useRef<PlayerPos>(playerPos); // 플레이어 이전 위치 추적
-  const lastUpdateTimeRef = useRef<number>(performance.now());
-  const rafIdRef = useRef<number | null>(null); // RAF ID 추적
+  const lastUpdateTimeRef = useRef<number>(0);
 
-  useEffect(() => {
-    const isMoving =
-      previousPosRef.current.x !== playerPos.x ||
-      previousPosRef.current.y !== playerPos.y;
-
-    previousPosRef.current = playerPos;
-
-    // 이동하고 있지 않은 경우
-    if (!isMoving) {
-      setFrame(1); // 캐릭터 프레임을 서있는걸로 변경
-      if (rafIdRef.current) {
-        cancelAnimationFrame(rafIdRef.current); // 등록된 애니메이션 취소
-      }
+  useTick((deltaTime) => {
+    if (!isKeyActive(keyState)) {
+      setFrame(1);
       return;
     }
+    lastUpdateTimeRef.current += deltaTime * 16.66;
 
-    // 이동 중인 경우
-    const animate = (timestamp: number) => {
-      const elapsed = timestamp - lastUpdateTimeRef.current;
-      // 200ms 지난 뒤에만 애니메이션 업데이트
-      if (elapsed > 200) {
-        setFrame((prev) => (prev + 1) % 4);
-        lastUpdateTimeRef.current = timestamp; // 마지막 업데이트 시간 갱신
-      }
-      rafIdRef.current = requestAnimationFrame(animate);
-    };
-    rafIdRef.current = requestAnimationFrame(animate);
-
-    // 애니메이션 예약 클린업
-    return () => {
-      if (rafIdRef.current) {
-        cancelAnimationFrame(rafIdRef.current);
-      }
-    };
-  }, [playerPos]);
+    // 200까지 누적될 때까지 기다렸다가 프레임 변경
+    if (lastUpdateTimeRef.current >= 200) {
+      setFrame((prev) => (prev + 1) % 4);
+      lastUpdateTimeRef.current = 0;
+    }
+  });
 
   return frame;
 };

@@ -28,6 +28,7 @@
       "@hooks/*": ["src/hooks/*"],
       "@router/*": ["src/router/*"],
       "@pages/*": ["src/pages/*"],
+      "@store/*": ["src/store/*"],
       "@utils/*": ["src/utils/*"],
       "@@types/*": ["src/types/*"]
     }

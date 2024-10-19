@@ -2,7 +2,11 @@
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        xs: "400px", // 400px 이하일 때 적용
+      },
+    },
   },
   plugins: [],
 };

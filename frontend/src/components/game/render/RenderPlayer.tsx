@@ -1,19 +1,23 @@
 import * as PIXI from "pixi.js";
-import { PlayerPos } from "@@types/PlayerType";
 import { useEffect, useState } from "react";
 import { CHARACTER_H, CHARACTER_W } from "@constants/game";
 import { Sprite } from "@pixi/react";
 import { usePlayerAnimation } from "@hooks/game/usePlayerAnimation";
-
-interface Props {
-  playerPos: PlayerPos;
-}
+import { usePlayerPos } from "@hooks/game/usePlayerPos";
+import { usePlayerStore } from "@store/playerStore";
 
 const baseTexture = PIXI.BaseTexture.from("/images/character.png");
 
-function RenderPlayer({ playerPos }: Props) {
+/**
+ * @description 플레이어 캐릭터를 렌더링하는 컴포넌트
+ */
+function RenderPlayer() {
+  usePlayerPos();
+
+  const { playerPos } = usePlayerStore();
+  const frame = usePlayerAnimation();
   const { x, y, direction } = playerPos;
-  const frame = usePlayerAnimation(playerPos);
+
   const [texture, setTexture] = useState<PIXI.Texture | null>(null);
 
   useEffect(() => {
@@ -35,6 +39,7 @@ function RenderPlayer({ playerPos }: Props) {
       CHARACTER_W,
       CHARACTER_H
     );
+
     const newTexture = new PIXI.Texture(baseTexture, rect);
     setTexture(newTexture);
   }, [direction, frame]);
