@@ -10,7 +10,7 @@ require("dotenv").config();
 
 // 회원가입 함수
 exports.signupUser = async (req, res) => {
-  const { id, userName, password, nickName } = req.body;
+  const { id, password, nickName } = req.body;
 
   try {
     // 아이디 중복 체크
