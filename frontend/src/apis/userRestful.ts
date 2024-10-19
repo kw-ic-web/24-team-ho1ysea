@@ -1,6 +1,21 @@
 import axios from "axios";
 
 /**
+ * @description 토큰 유효성 검증 API
+ * @param token JWT토큰
+ */
+export const validateTokenApi = (token: string) => {
+  return axios.get<{ message: string }>(
+    `${import.meta.env.VITE_API_URL}/user/validate`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+/**
  * @description ID 중복 여부 검사하는 API
  */
 export const idCheckApi = (id: string) => {
