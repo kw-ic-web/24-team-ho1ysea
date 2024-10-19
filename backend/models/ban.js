@@ -26,7 +26,11 @@ const BanSchema = new mongoose.Schema({
   banDuration: {
     type: Number, // 제재 기간(일수)
     required: true,
-  }
+  },
+  bannedReason: {
+    type: String, // 제재 사유  
+    required: true,
+  } // ex. 신고 사유 : "뉴비 등쳐먹고 다녀요" -> 제재 사유 : "비매너 및 사기"
 });
 
 // 제재 모델 생성
