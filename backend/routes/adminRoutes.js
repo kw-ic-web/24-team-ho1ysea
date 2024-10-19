@@ -32,4 +32,8 @@ router.post("/ban", authMiddleware, adminMiddleware, adminController.banningUser
 // // 관리자 판별
 // router.get("/is-admin", adminController.isAdmin);
 
+
+// 관리자 인증 상태 확인 (현성 요청)
+router.get("/validate", authMiddleware, adminMiddleware, adminController.validateAdmin);
+
 module.exports = router;

@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const Report = require("../models/report");
 const Ban = require("../models/ban")
+const jwt = require("jsonwebtoken");
 
 // 제제당한 유저 조회 로직
 exports.getBannedUsers = async (req, res) => {
@@ -138,3 +139,22 @@ exports.allReports = async (req, res) => {
 
 // // 어드민 판별
 // exports.isAdmin = async (req, res) => {};
+
+
+
+// 관리자 인증 상태 확인 요청 (현성 요청)
+
+exports.validateAdmin = async (req, res) => {
+   // req.user는 authMiddleware에서 설정한 사용자 정보
+
+   if (!req.user) {
+    return res.status(401).json({ message: "인증되지 않은 사용자입니다." });
+  }
+
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ message: "관리자 권한이 필요합니다." });
+  }
+
+  return res.status(200).json({ message: "관리자 인증 성공"});
+
+};
