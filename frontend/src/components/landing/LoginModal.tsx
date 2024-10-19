@@ -1,5 +1,6 @@
 import { loginApi } from "@apis/userRestful";
 import Loading from "@components/common/Loading";
+import { useToastStore } from "@store/toastStore";
 import { setLocalStorage } from "@utils/localStorage";
 import { isAxiosError } from "axios";
 import { useState } from "react";
@@ -13,6 +14,7 @@ interface Props {
 
 export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
   const navigate = useNavigate();
+  const { showToast } = useToastStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [inputs, setInputs] = useState({
     id: "",
@@ -21,11 +23,11 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
 
   const onSubmit = () => {
     if (!inputs.id) {
-      alert("아이디를 입력해주세요");
+      showToast("아이디를 입력해주세요");
       return;
     }
     if (!inputs.pw) {
-      alert("비밀번호를 입력해주세요");
+      showToast("비밀번호를 입력해주세요");
       return;
     }
     setIsLoading(true);
@@ -34,7 +36,7 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
         setIsLoading(false);
         console.log(res.data);
         if (res.status === 200) {
-          alert("로그인에 성공했습니다");
+          showToast("로그인에 성공했습니다");
           setLocalStorage("token", res.data.token);
           navigate("/game");
         }
@@ -43,7 +45,7 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
         setIsLoading(false);
         if (isAxiosError(err)) {
           console.log(err.response);
-          alert("아이디 또는 비밀번호가 잘못되었습니다");
+          showToast("아이디 또는 비밀번호가 잘못되었습니다");
         }
       });
     return;
