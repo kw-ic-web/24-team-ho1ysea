@@ -67,7 +67,7 @@ exports.getStoreItems = async (req, res) => {
 // 아이템 구매
 exports.buyItem = async (req, res) => {
   const { itemId, quantity } = req.body;
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   try {
     const user = await User.findById(userId);

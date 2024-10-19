@@ -1,6 +1,8 @@
-import { MyItems, StoreItems } from "@@types/itemsType";
+import { MyItems } from "@@types/itemsType";
+import { StoreItems } from "@@types/StoreType";
 import { myCoinApi } from "@apis/coinRestful";
-import { allStoreItemsApi, myItemsApi } from "@apis/itemRestful";
+import { myItemsApi } from "@apis/itemRestful";
+import { allStoreItemsApi, buyStoreItemApi } from "@apis/storeRestful";
 import { getLocalStorage } from "@utils/localStorage";
 import axios, { isAxiosError } from "axios";
 import { useEffect, useState } from "react";
@@ -19,21 +21,33 @@ export default function StoreModal({ isOpen, onClose }: Props) {
   const [myItems, setMyItems] = useState<MyItems>([]);
   const [myCoin, setMyCoin] = useState(0);
 
+  const handleBuyItem = async (itemId: string) => {
+    try {
+      const token = getLocalStorage("token");
+      if (!token) return;
+      const message = await buyStoreItemApi(itemId, 1, token).then(
+        (res) => res.data.message
+      );
+      alert(message);
+      const myItemsData = await myItemsApi(token).then((res) => res.data);
+      const myCoinData = await myCoinApi(token!).then((res) => res.data.coin);
+      setMyItems(myItemsData);
+      setMyCoin(myCoinData);
+    } catch (err) {
+      console.error(err);
+      alert("아이템 구매에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    }
+  };
+
   const handleIncCost = async () => {
     try {
       console.log("클릭");
       const token = getLocalStorage("token");
-
-      // 서버에 요청해 코인을 증가시키는 작업 수행
       await axios.get(`${import.meta.env.VITE_API_URL}/coin/test`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      // 코인의 최신 상태를 다시 서버에서 가져와 상태에 반영
       const myCoinData = await myCoinApi(token!).then((res) => res.data.coin);
       console.log("최신 코인 값:", myCoinData);
-
-      // 최신 코인 값으로 덮어쓰기
       setMyCoin(myCoinData);
     } catch (err) {
       console.error("코인 갱신 중 오류:", err);
@@ -149,7 +163,10 @@ export default function StoreModal({ isOpen, onClose }: Props) {
                   {item.price} 원
                 </p>
 
-                <button className="text-[8px] md:text-sm block mx-auto w-2/3 py-1.5 px-2 bg-slate-700 text-slate-200 transition-colors rounded-lg hover:bg-slate-600">
+                <button
+                  onClick={() => handleBuyItem(item.itemId)}
+                  className="text-[8px] md:text-sm block mx-auto w-2/3 py-1.5 px-2 bg-slate-700 text-slate-200 transition-colors rounded-lg hover:bg-slate-600"
+                >
                   구매하기
                 </button>
               </div>
