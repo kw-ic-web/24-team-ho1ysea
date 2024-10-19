@@ -1,7 +1,7 @@
 import { Currency } from "@@types/currencyType";
 import { MyItems } from "@@types/itemsType";
 import { StoreItems } from "@@types/StoreType";
-import { myCoinApi } from "@apis/coinRestful";
+import { myCoinApi, trashExchangeApi } from "@apis/currencyRestful";
 import { myItemsApi } from "@apis/itemRestful";
 import {
   allStoreItemsApi,
@@ -9,7 +9,7 @@ import {
   sellStoreItemApi,
 } from "@apis/storeRestful";
 import { getLocalStorage } from "@utils/localStorage";
-import axios, { isAxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -25,6 +25,9 @@ export const useItemStore = (isOpen: boolean) => {
     trash: 0,
   });
 
+  /**
+   * @description 아이템 구매 핸들 함수
+   */
   const handleBuyItem = useCallback(
     async (item: StoreItems[0]) => {
       try {
@@ -60,6 +63,9 @@ export const useItemStore = (isOpen: boolean) => {
     [navigate]
   );
 
+  /**
+   * @description 아이템 판매 핸들 함수
+   */
   const handleSellItem = useCallback(
     async (item: MyItems[0]) => {
       try {
@@ -95,6 +101,35 @@ export const useItemStore = (isOpen: boolean) => {
     [navigate]
   );
 
+  /**
+   * @description 보유 쓰레기 환전 핸들 함수
+   */
+  const handleTrashExchange = useCallback(async () => {
+    try {
+      const token = getLocalStorage("token");
+      if (!token) {
+        alert("먼저 로그인 해주세요.");
+        navigate("/");
+        return;
+      }
+
+      const { exchangedGold, totalGold } = await trashExchangeApi(
+        currency.trash,
+        token
+      ).then((res) => res.data);
+      alert(exchangedGold + " 원 환전 성공!");
+      setCurrency((prev) => ({ ...prev, coin: totalGold, trash: 0 }));
+    } catch (err) {
+      if (isAxiosError(err)) {
+        console.error(err);
+        if (err.status === 401) {
+          alert("세션이 만료되었습니다. 다시 로그인 해주세요.");
+          navigate("/");
+        }
+      }
+    }
+  }, [currency.trash, navigate]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -127,27 +162,12 @@ export const useItemStore = (isOpen: boolean) => {
     }
   }, [isOpen, navigate]);
 
-  // 추후 제거!!
-  const handleIncCost = useCallback(async () => {
-    try {
-      console.log("클릭");
-      const token = getLocalStorage("token");
-      await axios.get(`${import.meta.env.VITE_API_URL}/coin/test`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const myCoinData = await myCoinApi(token!).then((res) => res.data.coin);
-      setCurrency((prev) => ({ ...prev, coin: myCoinData }));
-    } catch (err) {
-      console.error("코인 갱신 중 오류:", err);
-    }
-  }, []);
-
   return {
     storeItems,
     myItems,
     currency,
     handleBuyItem,
     handleSellItem,
-    handleIncCost,
+    handleTrashExchange,
   };
 };

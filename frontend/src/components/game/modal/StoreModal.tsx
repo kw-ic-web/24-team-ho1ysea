@@ -15,7 +15,7 @@ export default function StoreModal({ isOpen, onClose }: Props) {
     currency,
     handleBuyItem,
     handleSellItem,
-    handleIncCost,
+    handleTrashExchange,
   } = useItemStore(isOpen);
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -43,10 +43,11 @@ export default function StoreModal({ isOpen, onClose }: Props) {
           />
           <h1>상점</h1>
         </div>
-        <button onClick={handleIncCost}>클릭하면 돈오름 ㅋㅋ</button>
+        <button onClick={handleTrashExchange}>쓰레기 환전하기</button>
         <div className="w-full flex justify-between items-center">
           <div className="mx-2 text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg">
             <p>코인: {currency.coin}</p>
+            <p>쓰레기: {currency.trash}</p>
           </div>
 
           <div className="mx-2 flex justify-around mb-1 rounded-lg shadow-lg text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg">

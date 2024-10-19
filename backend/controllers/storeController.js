@@ -7,7 +7,7 @@ const Inventory = require("../models/inventory");
 // trash -> coin 환전
 exports.exchangeTrash = async (req, res) => {
   const { trashAmount } = req.body; // 환전할 쓰레기 수량
-  const userId = req.user.id; // 인증 미들웨어에서 설정한 사용자 ID
+  const userId = req.user._id; // 인증 미들웨어에서 설정한 사용자 ID
 
   try {
     // 유저 정보 가져오기
