@@ -28,14 +28,7 @@ module.exports = async function (req, res, next) {
 
     req.user = user; // 요청 객체에 사용자 정보 추가
 
-    // 사용자 권한에 따라 다른 상태 코드 설정
-    if (user.isAdmin) {
-      res.status(204); // 관리자일 경우
-    } else {
-      res.status(200); // 일반 사용자일 경우
-    }
-
-    next(); //  미들웨어 1개만 유지  & (현성이 요청대로) 상이한 응답코드  
+    next(); //  현성이 요청대로 응답코드로 보내주려 했는데.. 사용자가 관리자 페이지에 접근하는 불상사가 생겨서 미들웨어 추가했다..ㅠㅠ  
 
   } catch (err) {
     res.status(401).json({ message: "유효하지 않은 토큰입니다." });

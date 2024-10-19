@@ -6,7 +6,7 @@ exports.getMyCoin = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findOne({id : userId});
 
     if (!user) {
       return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
