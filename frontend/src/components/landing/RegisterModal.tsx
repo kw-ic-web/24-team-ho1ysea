@@ -2,6 +2,7 @@ import { Inputs } from "@@types/registerTypes";
 import { signUpApi } from "@apis/userRestful";
 import Loading from "@components/common/Loading";
 import { useInputCheck } from "@hooks/landing/useInputCheck";
+import { useToastStore } from "@store/toastStore";
 import { isAxiosError } from "axios";
 import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
@@ -13,6 +14,7 @@ interface Props {
 
 export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { showToast } = useToastStore();
 
   // 입력 field state
   const [inputs, setInputs] = useState<Inputs>({
@@ -46,7 +48,7 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
       .then((res) => {
         setIsLoading(false);
         console.log(res);
-        alert("회원가입 되었습니다. 로그인 해주세요");
+        showToast("회원가입 되었습니다. 로그인 해주세요");
         onLoginClick();
       })
       .catch((err) => {
@@ -54,10 +56,10 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
         if (isAxiosError(err)) {
           if (err.status === 400) {
             console.log(err.response);
-            alert(err.response?.data.message || "오류가 발생했습니다");
+            showToast(err.response?.data.message || "오류가 발생했습니다");
           } else {
             console.log(err.response);
-            alert("잠시 후 다시 시도해주세요");
+            showToast("잠시 후 다시 시도해주세요");
           }
         }
       });

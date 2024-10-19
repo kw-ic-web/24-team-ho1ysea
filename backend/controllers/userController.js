@@ -82,7 +82,6 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-
 // 사용자 정보 조회 함수
 exports.getUserInfo = async (req, res) => {
   try {
@@ -181,12 +180,12 @@ exports.checkIdAvailability = async (req, res) => {
 };
 
 exports.createReport = async (req, res) => {
-  const { reportedUserId,reportednickName ,reason } = req.body;
+  const { reportedUserId, reportednickName, reason } = req.body;
   const reporterId = req.user.id; // authMiddleware를 통해 가져온 사용자 ID
 
   try {
     // 입력 값 확인
-    if (!reportedUserId || ! reportednickName || !reason) {
+    if (!reportedUserId || !reportednickName || !reason) {
       return res.status(400).json({ message: "모든 필드를 입력해주세요." });
     }
 
@@ -209,7 +208,7 @@ exports.createReport = async (req, res) => {
       reporterId,
       reportedUserId,
       reportednickName,
-      reason
+      reason,
     });
 
     await newReport.save();
@@ -238,6 +237,24 @@ exports.scheduleAccountCancellation = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send("서버 오류");
+  }
+};
+
+// 토큰 유효성 검증
+exports.validateToken = (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token)
+      return res.status(401).send({ message: "토큰이 존재하지 않습니다." });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded)
+      return res.status(401).send({ message: "토큰이 유효하지 않습니다." });
+
+    return res.status(200).send({ message: "토큰이 유효합니다." });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send({ message: "서버 오류" });
   }
 };
 
