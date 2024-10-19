@@ -8,3 +8,7 @@ export type MyItems = {
 export type BuyItem = {
   message: string;
 };
+
+export type SellItem = {
+  message: string;
+};

@@ -1,4 +1,4 @@
-import { BuyItem } from "@@types/itemsType";
+import { BuyItem, SellItem } from "@@types/itemsType";
 import { StoreItems } from "@@types/StoreType";
 import axios from "axios";
 
@@ -22,6 +22,28 @@ export const buyStoreItemApi = (
 ) => {
   return axios.post<BuyItem>(
     `${import.meta.env.VITE_API_URL}/store/buy`,
+    {
+      itemId,
+      quantity,
+    },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+};
+
+/**
+ * @description 상점에서 특정 아이템 판매
+ * @param itemId 판매할 아이템
+ * @param quantity 판매할 수량
+ * @param token JWT토큰
+ * @returns
+ */
+export const sellStoreItemApi = (
+  itemId: string,
+  quantity: number,
+  token: string
+) => {
+  return axios.post<SellItem>(
+    `${import.meta.env.VITE_API_URL}/store/sell`,
     {
       itemId,
       quantity,

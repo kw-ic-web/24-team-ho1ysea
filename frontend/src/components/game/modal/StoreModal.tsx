@@ -2,7 +2,11 @@ import { MyItems } from "@@types/itemsType";
 import { StoreItems } from "@@types/StoreType";
 import { myCoinApi } from "@apis/coinRestful";
 import { myItemsApi } from "@apis/itemRestful";
-import { allStoreItemsApi, buyStoreItemApi } from "@apis/storeRestful";
+import {
+  allStoreItemsApi,
+  buyStoreItemApi,
+  sellStoreItemApi,
+} from "@apis/storeRestful";
 import { getLocalStorage } from "@utils/localStorage";
 import axios, { isAxiosError } from "axios";
 import { useEffect, useState } from "react";
@@ -21,14 +25,15 @@ export default function StoreModal({ isOpen, onClose }: Props) {
   const [myItems, setMyItems] = useState<MyItems>([]);
   const [myCoin, setMyCoin] = useState(0);
 
-  const handleBuyItem = async (itemId: string) => {
+  const handleBuyItem = async (item: StoreItems[0]) => {
     try {
+      const { itemId, itemName } = item;
       const token = getLocalStorage("token");
       if (!token) return;
-      const message = await buyStoreItemApi(itemId, 1, token).then(
-        (res) => res.data.message
-      );
-      alert(message);
+
+      await buyStoreItemApi(itemId, 1, token);
+      alert(itemName + " 구매 성공!");
+
       const myItemsData = await myItemsApi(token).then((res) => res.data);
       const myCoinData = await myCoinApi(token!).then((res) => res.data.coin);
       setMyItems(myItemsData);
@@ -36,6 +41,25 @@ export default function StoreModal({ isOpen, onClose }: Props) {
     } catch (err) {
       console.error(err);
       alert("아이템 구매에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    }
+  };
+
+  const handleSellItem = async (item: MyItems[0]) => {
+    try {
+      const { itemId, itemName } = item;
+      const token = getLocalStorage("token");
+      if (!token) return;
+
+      await sellStoreItemApi(itemId, 1, token);
+      alert(itemName + " 판매 성공!");
+
+      const myItemsData = await myItemsApi(token).then((res) => res.data);
+      const myCoinData = await myCoinApi(token!).then((res) => res.data.coin);
+      setMyItems(myItemsData);
+      setMyCoin(myCoinData);
+    } catch (err) {
+      console.error(err);
+      alert("아이템 판매에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
     }
   };
 
@@ -164,7 +188,7 @@ export default function StoreModal({ isOpen, onClose }: Props) {
                 </p>
 
                 <button
-                  onClick={() => handleBuyItem(item.itemId)}
+                  onClick={() => handleBuyItem(item)}
                   className="text-[8px] md:text-sm block mx-auto w-2/3 py-1.5 px-2 bg-slate-700 text-slate-200 transition-colors rounded-lg hover:bg-slate-600"
                 >
                   구매하기
@@ -198,8 +222,11 @@ export default function StoreModal({ isOpen, onClose }: Props) {
                   {} 원
                 </p>
 
-                <button className="text-[8px] md:text-sm block mx-auto w-2/3 py-1.5 px-2 bg-slate-700 text-slate-200 transition-colors rounded-lg hover:bg-slate-600">
-                  구매하기
+                <button
+                  onClick={() => handleSellItem(item)}
+                  className="text-[8px] md:text-sm block mx-auto w-2/3 py-1.5 px-2 bg-slate-700 text-slate-200 transition-colors rounded-lg hover:bg-slate-600"
+                >
+                  판매하기
                 </button>
               </div>
             ))
