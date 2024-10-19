@@ -1,5 +1,4 @@
 export type Inputs = {
-  userName: string;
   nickName: string;
   id: string;
   pw: string;

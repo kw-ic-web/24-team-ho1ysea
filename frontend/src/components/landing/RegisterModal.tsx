@@ -16,7 +16,6 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
 
   // 입력 field state
   const [inputs, setInputs] = useState<Inputs>({
-    userName: "",
     nickName: "",
     id: "",
     pw: "",
@@ -43,7 +42,7 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
   // 회원가입 버튼 클릭 리스너
   const onSubmit = () => {
     setIsLoading(true);
-    signUpApi(inputs.userName, inputs.id, inputs.pw, inputs.nickName)
+    signUpApi(inputs.id, inputs.pw, inputs.nickName)
       .then((res) => {
         setIsLoading(false);
         console.log(res);
@@ -78,14 +77,6 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
         />
         <div className="text-xl font-semibold text-center mb-6">회원가입</div>
         <form onSubmit={(e) => e.preventDefault()}>
-          <input
-            name="userName"
-            type="text"
-            placeholder="Your name"
-            className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={inputs.userName}
-            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-          />
           <div className="flex relative">
             <input
               name="nickName"
@@ -168,12 +159,7 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
             type="submit"
             value="회원가입"
             onClick={onSubmit}
-            disabled={
-              !isChecks.id ||
-              !isChecks.nickName ||
-              !isChecks.pw ||
-              inputs.userName === ""
-            }
+            disabled={!isChecks.id || !isChecks.nickName || !isChecks.pw}
             className="w-full font-semibold bg-blue-500 disabled:bg-gray-500 text-sky-100 p-3 rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
           />
         </form>

@@ -21,16 +21,10 @@ export const nickNameCheckApi = (nickName: string) => {
 /**
  * @description 회원가입 API
  */
-export const signUpApi = (
-  userName: string,
-  id: string,
-  password: string,
-  nickName: string
-) => {
+export const signUpApi = (id: string, password: string, nickName: string) => {
   return axios.post<{ message: string; userId: string }>(
     `${import.meta.env.VITE_API_URL}/user/signup`,
     {
-      userName,
       id,
       password,
       nickName,
