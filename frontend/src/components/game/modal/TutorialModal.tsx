@@ -39,7 +39,7 @@ export default function TutorialModal({
 
   return (
     <div
-      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-50"
+      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-40"
       onClick={handleBgClick}
     >
       <div className="bg-slate-200 p-2 m-2 mx-8 sm:max-w-2xl sm:w-full sm:h-fit sm:p-8 sm:m-4 flex flex-col justify-center items-center shadow-lg rounded-lg">

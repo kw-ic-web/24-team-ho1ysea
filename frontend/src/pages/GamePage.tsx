@@ -11,6 +11,7 @@ import { useModal } from "@hooks/game/useModal";
 import { useEffect } from "react";
 import { usePlayerStore } from "@store/playerStore";
 import { useKeyStore } from "@store/keyStore";
+import ToastModal from "@components/common/ToastModal";
 
 export default function GamePage() {
   const { isCollideStore } = usePlayerStore();
@@ -45,6 +46,7 @@ export default function GamePage() {
       <ItemInventory />
       <SideButton toggleModal={toggleModal} />
       <RenderGame />
+      <ToastModal />
     </div>
   );
 }
