@@ -1,6 +1,8 @@
 import { useItemStore } from "@hooks/game/useItemStore";
 import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
+import { BsCoin, BsTrash } from "react-icons/bs";
+import { CgArrowsExchange } from "react-icons/cg";
 
 interface Props {
   isOpen: boolean;
@@ -43,14 +45,26 @@ export default function StoreModal({ isOpen, onClose }: Props) {
           />
           <h1>상점</h1>
         </div>
-        <button onClick={handleTrashExchange}>쓰레기 환전하기</button>
-        <div className="w-full flex justify-between items-center">
-          <div className="mx-2 text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg">
-            <p>코인: {currency.coin}</p>
-            <p>쓰레기: {currency.trash}</p>
+
+        <div className="w-full mt-4 flex justify-between items-center">
+          <div className="flex justify-center items-center gap-1 md:gap-2 mx-2 text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg">
+            <div className="flex justify-center items-center">
+              <BsCoin />: {currency.coin}
+            </div>
+            <button
+              onClick={handleTrashExchange}
+              className="flex justify-center items-center gap-1 px-1 py-0.5 mx-1 my-0.5 bg-slate-700 text-slate-200 transition-colors hover:bg-slate-600 rounded-lg text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base"
+            >
+              <CgArrowsExchange /> 환전
+            </button>
+            <div>
+              <div className="flex justify-center items-center">
+                <BsTrash />: {currency.trash}
+              </div>
+            </div>
           </div>
 
-          <div className="mx-2 flex justify-around mb-1 rounded-lg shadow-lg text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg">
+          <div className="mx-2 flex justify-around mb-1 rounded-lg shadow-lg text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base">
             <button
               className={`px-3 py-1 rounded-l-lg ${
                 activeTab === "buy"
@@ -120,15 +134,12 @@ export default function StoreModal({ isOpen, onClose }: Props) {
                     className="w-8 md:w-12 bg-slate-300 rounded-full p-1"
                   />
                   <p className="text-center font-bold text-xs sm:text-base md:text-lg">
-                    {item.itemName}
+                    {item.itemName} ({item.quantity}개)
                   </p>
                 </div>
 
                 <p className="hidden sm:block mx-auto text-gray-700 text-[8px] sm:text-sm">
                   {item.description}
-                </p>
-                <p className="mx-auto text-gray-700 text-[8px] sm:text-sm">
-                  {item.quantity} 개
                 </p>
                 <p className="text-blue-400 mx-auto text-[12px] sm:text-sm">
                   {} 원
