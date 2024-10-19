@@ -46,8 +46,53 @@ exports.allUsers = async (req, res) => {
   }
 };
 
-// // 사용자 제제 로직
-// exports.banningUser = async (req, res) => {};
+// 사용자 제제 로직
+exports.banningUser = async (req, res) => {
+  const { userId, banDuration, bannedReason } = req.body;
+
+  try {
+      // 사용자 존재 여부 확인
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
+      }
+
+      // 신고를 통해 사용자 제재
+      // 해당 사용자의 모든 신고를 가져오기!
+      const reports = await Report.find({ reportedUserId: userId });
+      if (reports.length === 0) {
+          return res.status(404).json({ message: "신고 기록이 없습니다." });
+      }
+
+      // 제재 날짜 및 해제 날짜 계산
+      const bannedAt = new Date(); // 현재 날짜를 제재 날짜로 사용
+      const freedomAt = new Date(bannedAt);
+      freedomAt.setDate(bannedAt.getDate() + banDuration); // banDuration을 일 수로 추가
+
+      // 신고 횟수 계산
+      const reportCount = reports.length; // 신고 횟수는 모든 신고의 수로 설정
+
+      // 제재 정보 생성
+      const newBan = new Ban({
+          userId: user.userId,
+          reportedAt: reports.map(report => report.createdAt), // 모든 신고당한 날짜를 배열로 저장
+          reportCount: reportCount,
+          bannedAt: bannedAt,
+          freedomAt: freedomAt,
+          banDuration: banDuration,
+          bannedReason: bannedReason // 관리자가 입력한 제재 사유
+      });
+
+      await newBan.save(); // DB에 제재 정보 저장
+
+      return res.status(200).json({ message: `User banned for ${banDuration} days` });
+  } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: '서버 오류입니다.(adminController)' });
+  }
+};
+
+
 
 // // 전체 유저 신고 수 조회
 // exports.reports = async (req, res) => {};
