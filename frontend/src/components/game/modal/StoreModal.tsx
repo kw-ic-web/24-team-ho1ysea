@@ -1,17 +1,6 @@
-import { MyItems } from "@@types/itemsType";
-import { StoreItems } from "@@types/StoreType";
-import { myCoinApi } from "@apis/coinRestful";
-import { myItemsApi } from "@apis/itemRestful";
-import {
-  allStoreItemsApi,
-  buyStoreItemApi,
-  sellStoreItemApi,
-} from "@apis/storeRestful";
-import { getLocalStorage } from "@utils/localStorage";
-import axios, { isAxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { useItemStore } from "@hooks/game/useItemStore";
+import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
   isOpen: boolean;
@@ -19,93 +8,15 @@ interface Props {
 }
 
 export default function StoreModal({ isOpen, onClose }: Props) {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"buy" | "sell">("buy");
-  const [storeItems, setStoreItems] = useState<StoreItems>([]);
-  const [myItems, setMyItems] = useState<MyItems>([]);
-  const [myCoin, setMyCoin] = useState(0);
-
-  const handleBuyItem = async (item: StoreItems[0]) => {
-    try {
-      const { itemId, itemName } = item;
-      const token = getLocalStorage("token");
-      if (!token) return;
-
-      await buyStoreItemApi(itemId, 1, token);
-      alert(itemName + " 구매 성공!");
-
-      const myItemsData = await myItemsApi(token).then((res) => res.data);
-      const myCoinData = await myCoinApi(token!).then((res) => res.data.coin);
-      setMyItems(myItemsData);
-      setMyCoin(myCoinData);
-    } catch (err) {
-      console.error(err);
-      alert("아이템 구매에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
-    }
-  };
-
-  const handleSellItem = async (item: MyItems[0]) => {
-    try {
-      const { itemId, itemName } = item;
-      const token = getLocalStorage("token");
-      if (!token) return;
-
-      await sellStoreItemApi(itemId, 1, token);
-      alert(itemName + " 판매 성공!");
-
-      const myItemsData = await myItemsApi(token).then((res) => res.data);
-      const myCoinData = await myCoinApi(token!).then((res) => res.data.coin);
-      setMyItems(myItemsData);
-      setMyCoin(myCoinData);
-    } catch (err) {
-      console.error(err);
-      alert("아이템 판매에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
-    }
-  };
-
-  const handleIncCost = async () => {
-    try {
-      console.log("클릭");
-      const token = getLocalStorage("token");
-      await axios.get(`${import.meta.env.VITE_API_URL}/coin/test`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const myCoinData = await myCoinApi(token!).then((res) => res.data.coin);
-      console.log("최신 코인 값:", myCoinData);
-      setMyCoin(myCoinData);
-    } catch (err) {
-      console.error("코인 갱신 중 오류:", err);
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async (token: string) => {
-      try {
-        const storeItemsData = await allStoreItemsApi().then((res) => res.data);
-        const myItemsData = await myItemsApi(token).then((res) => res.data);
-        const myCoinData = await myCoinApi(token).then((res) => res.data.coin);
-        setStoreItems(storeItemsData);
-        setMyItems(myItemsData);
-        setMyCoin(myCoinData);
-      } catch (err) {
-        if (isAxiosError(err)) {
-          console.error(err.response);
-        }
-      }
-    };
-    const token = getLocalStorage("token");
-    if (isOpen) {
-      if (token) {
-        fetchData(token);
-      }
-    }
-  }, [navigate, isOpen]);
-
-  useEffect(() => {
-    console.log(storeItems);
-    console.log(myItems);
-    console.log(myCoin);
-  }, [myCoin, myItems, storeItems]);
+  const {
+    storeItems,
+    myItems,
+    currency,
+    handleBuyItem,
+    handleSellItem,
+    handleIncCost,
+  } = useItemStore(isOpen);
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -135,7 +46,7 @@ export default function StoreModal({ isOpen, onClose }: Props) {
         <button onClick={handleIncCost}>클릭하면 돈오름 ㅋㅋ</button>
         <div className="w-full flex justify-between items-center">
           <div className="mx-2 text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg">
-            <p>코인: {myCoin}</p>
+            <p>코인: {currency.coin}</p>
           </div>
 
           <div className="mx-2 flex justify-around mb-1 rounded-lg shadow-lg text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg">
