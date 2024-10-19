@@ -7,6 +7,11 @@ const BanSchema = new mongoose.Schema({
     ref: "User", // User 모델과의 참조 관계 설정
     required: true,
   },
+  nickName: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // User 모델과의 참조 관계 설정
+    required: true,
+  },
   reportedAt: {
     type: Date,
     required: true, // 신고당한 날짜

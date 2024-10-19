@@ -15,8 +15,8 @@ exports.getBannedUsers = async (req, res) => {
   
       // 응답 포맷에 맞춰 데이터 가공
       const response = bannedUsers.map(ban => ({
-        userId: ban.userId._id,
-        nickName: ban.userId.nickName,
+        userId: ban.userId,
+        nickName: ban.nickName,
         freedomAt: ban.freedomAt // 이거 default 줘야 할지 고민이다
       }));
   
@@ -75,6 +75,7 @@ exports.banningUser = async (req, res) => {
       // 제재 정보 생성
       const newBan = new Ban({
           userId: user.userId,
+          nickName : user.nickName,
           reportedAt: reports.map(report => report.createdAt), // 모든 신고당한 날짜를 배열로 저장
           reportCount: reportCount,
           bannedAt: bannedAt,
@@ -92,10 +93,42 @@ exports.banningUser = async (req, res) => {
   }
 };
 
+ // 전체 유저 신고 수 조회 로직
+exports.allReports = async (req, res) => {
+  try {
+      // 모든 신고를 가져옵니다.
+      const reports = await Report.find();
 
+      // 신고 수를 카운트할 객체를 만듭니다.
+      const reportCounts = {};
 
-// // 전체 유저 신고 수 조회
-// exports.reports = async (req, res) => {};
+      // 각 신고를 반복하며 신고자 정보를 수집합니다.
+      for (const report of reports) {
+          const reportedUserId = report.reportedUserId;
+          const reportednickName = report.reportednickName;
+          
+          // 신고자가 이미 보고된 경우
+          if (reportCounts[reportedUserId]) {
+              reportCounts[reportedUserId].reportCount += 1; // 신고 수 증가
+          } else {
+              reportCounts[reportedUserId] = {
+                  userId: reportedUserId,
+                  nickName: reportednickName, 
+                  reportCount: 1, // 신고 수 초기화
+              };
+          }
+      }
+
+      // 결과를 배열로 변환
+      const result = Object.values(reportCounts);
+
+      return res.status(200).json(result);
+  } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: '서버 오류입니다. (getAllReports)' });
+  }
+};
+
 
 // // 쓰레기 생성 속도 조절
 // exports.trashSpeed = async (req, res) => {};

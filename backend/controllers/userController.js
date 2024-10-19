@@ -181,12 +181,12 @@ exports.checkIdAvailability = async (req, res) => {
 };
 
 exports.createReport = async (req, res) => {
-  const { reportedUserId, reason } = req.body;
+  const { reportedUserId,reportednickName ,reason } = req.body;
   const reporterId = req.user.id; // authMiddleware를 통해 가져온 사용자 ID
 
   try {
     // 입력 값 확인
-    if (!reportedUserId || !reason) {
+    if (!reportedUserId || ! reportednickName || !reason) {
       return res.status(400).json({ message: "모든 필드를 입력해주세요." });
     }
 
@@ -208,7 +208,8 @@ exports.createReport = async (req, res) => {
     const newReport = new Report({
       reporterId,
       reportedUserId,
-      reason,
+      reportednickName,
+      reason
     });
 
     await newReport.save();
@@ -218,6 +219,7 @@ exports.createReport = async (req, res) => {
     res.status(500).send("서버 오류");
   }
 };
+
 exports.scheduleAccountCancellation = async (req, res) => {
   const userId = req.user; // authMiddleware를 통해 사용자 ID를 가져옴
 
