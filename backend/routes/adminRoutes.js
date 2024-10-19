@@ -14,7 +14,7 @@ const adminController = require("../controllers/adminController.js");
 router.get("/banned_users", authMiddleware, adminController.getBannedUsers);
 
 // // 전체 유저 데이터 조회 엔드포인트
-// router.post("/users", adminController.allUsers);
+ router.get("/users", authMiddleware, adminController.allUsers);
 
 // // 사용자 제재 엔드포인트
 // router.post("/ban", adminController.ban);
