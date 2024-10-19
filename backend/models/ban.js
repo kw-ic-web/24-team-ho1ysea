@@ -21,6 +21,7 @@ const BanSchema = new mongoose.Schema({
   },
   freedomAt: {
     type: Date, // 해제 날짜
+    default : null
   },
   banDuration: {
     type: Number, // 제재 기간(일수)
