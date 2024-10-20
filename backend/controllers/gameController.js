@@ -29,3 +29,17 @@ exports.getMyRange = (req, res) => {
     const range = userRanges[userId] || 10; // 기본값 10
     res.json({ range });
   };  
+
+// 사거리 증가
+exports.increaseMyRange = (req, res) => {
+    const userId = req.user.id;
+    const { amount } = req.body;
+  
+    if (typeof amount !== 'number' || amount < 0) {
+      return res.status(400).json({ message: "유효한 증가량을 입력해주세요." });
+    }
+  
+    userRanges[userId] = (userRanges[userId] || 10) + amount; // 증가량 적용
+    res.json({ range: userRanges[userId] });
+  };
+  

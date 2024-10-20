@@ -12,5 +12,7 @@ router.patch("/speed/my/up", authMiddleware, gameController.increaseMySpeed);
 // 사거리 조회
 router.get("/range/my", authMiddleware, gameController.getMyRange);
 
+// 사거리 증가
+router.patch("/range/my/up", authMiddleware, gameController.increaseMyRange);
 
 module.exports = router;
