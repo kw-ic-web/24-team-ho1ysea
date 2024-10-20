@@ -22,3 +22,10 @@ exports.increaseMySpeed = (req, res) => {
     userSpeeds[userId] = (userSpeeds[userId] || 5) + amount; // 증가량 적용
     res.json({ speed: userSpeeds[userId] });
   };
+
+// 사거리 조회
+exports.getMyRange = (req, res) => {
+    const userId = req.user.id;
+    const range = userRanges[userId] || 10; // 기본값 10
+    res.json({ range });
+  };  
