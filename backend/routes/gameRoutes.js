@@ -15,4 +15,7 @@ router.get("/range/my", authMiddleware, gameController.getMyRange);
 // 사거리 증가
 router.patch("/range/my/up", authMiddleware, gameController.increaseMyRange);
 
+// 이동 속도 및 사거리 초기화
+router.patch("/reset", authMiddleware, gameController.resetSpeedAndRange);
+
 module.exports = router;

@@ -43,3 +43,12 @@ exports.increaseMyRange = (req, res) => {
     res.json({ range: userRanges[userId] });
   };
   
+// 이동 속도 및 사거리 초기화  
+exports.resetSpeedAndRange = (req, res) => {
+    const userId = req.user.id;
+    const { speed, range } = req.body;
+  
+    userSpeeds[userId] = speed; // 초기화
+    userRanges[userId] = range; // 초기화
+    res.json({ message: "이동 속도 및 사거리가 초기화되었습니다." });
+  };  
