@@ -14,7 +14,7 @@ export default function StoreModal({ isOpen, onClose }: Props) {
   const {
     storeItems,
     myItems,
-    currency,
+    myCurrency,
     handleBuyItem,
     handleSellItem,
     handleTrashExchange,
@@ -49,7 +49,7 @@ export default function StoreModal({ isOpen, onClose }: Props) {
         <div className="w-full mt-4 flex justify-between items-center">
           <div className="flex justify-center items-center gap-1 md:gap-2 mx-2 text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg">
             <div className="flex justify-center items-center">
-              <BsCoin />: {currency.coin}
+              <BsCoin />: {myCurrency.coin}
             </div>
             <button
               onClick={handleTrashExchange}
@@ -59,7 +59,7 @@ export default function StoreModal({ isOpen, onClose }: Props) {
             </button>
             <div>
               <div className="flex justify-center items-center">
-                <BsTrash />: {currency.trash}
+                <BsTrash />: {myCurrency.trash}
               </div>
             </div>
           </div>
@@ -97,7 +97,7 @@ export default function StoreModal({ isOpen, onClose }: Props) {
               >
                 <div className="w-full flex justify-center gap-4 items-center">
                   <img
-                    src="/images/item_test.png"
+                    src={`/images/items/${item.image}`}
                     alt={item.itemName}
                     className="w-8 md:w-12 bg-slate-300 rounded-full p-1"
                   />
@@ -129,7 +129,7 @@ export default function StoreModal({ isOpen, onClose }: Props) {
               >
                 <div className="w-full flex justify-center gap-4 items-center">
                   <img
-                    src="/images/item_test.png"
+                    src={`/images/items/${item.image}`}
                     alt={item.itemName}
                     className="w-8 md:w-12 bg-slate-300 rounded-full p-1"
                   />

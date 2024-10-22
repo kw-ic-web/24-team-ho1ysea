@@ -1,6 +1,7 @@
 export const WORLD_W = 1280; // 게임 월드 가로 크기
 export const WORLD_H = 768; // 게임 월드 세로 크기
 export const WORLD_RATIO = WORLD_W / WORLD_H; // 게임 월드 비율
+export const TOTAL_INVENTORY_SLOT = 5; // 아이템 인벤토리 칸 수
 
 export const PLAYER_MOVE = 5; // 플레이어 이동 단위
 export const CHARACTER_W = 460; // cell 가로 크기

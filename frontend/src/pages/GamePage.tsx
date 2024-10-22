@@ -16,11 +16,13 @@ import { usePlayerStore } from "@store/playerStore";
 import { useKeyStore } from "@store/keyStore";
 import { useToastStore } from "@store/toastStore";
 import { getLocalStorage } from "@utils/localStorage";
+import { useGameDataStore } from "@store/gameDataStore";
 
 export default function GamePage() {
   const navigate = useNavigate();
   const { showToast } = useToastStore();
   const { isCollideStore } = usePlayerStore();
+  const { initialize } = useGameDataStore();
   const { keyState } = useKeyStore();
   // 설정, 공유, 튜토리얼 모달창을 띄울지 결정하고, 토글시키기 위한 함수를 반환
   const { isOpen, toggleModal } = useModal();
@@ -47,6 +49,7 @@ export default function GamePage() {
           return;
         }
         await validateTokenApi(token).then((res) => res.data.message);
+        await initialize(token);
       } catch (err) {
         if (isAxiosError(err)) {
           console.error(err.response);
@@ -57,7 +60,7 @@ export default function GamePage() {
       }
     };
     validateToken();
-  }, [navigate, showToast]);
+  }, [initialize, navigate, showToast]);
 
   return (
     <div className={`relative bg-stone-800`}>
