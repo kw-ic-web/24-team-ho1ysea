@@ -1,6 +1,7 @@
 export type MyItems = {
   itemId: string;
   itemName: string;
+  image: string;
   quantity: number;
   description: string;
 }[];

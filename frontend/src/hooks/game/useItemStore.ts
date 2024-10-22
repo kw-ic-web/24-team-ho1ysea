@@ -1,17 +1,12 @@
-import { Currency } from "@@types/currencyType";
 import { MyItems } from "@@types/itemsType";
 import { StoreItems } from "@@types/StoreType";
-import { myCoinApi, trashExchangeApi } from "@apis/currencyRestful";
-import { myItemsApi } from "@apis/itemRestful";
-import {
-  allStoreItemsApi,
-  buyStoreItemApi,
-  sellStoreItemApi,
-} from "@apis/storeRestful";
+import { trashExchangeApi } from "@apis/currencyRestful";
+import { buyStoreItemApi, sellStoreItemApi } from "@apis/storeRestful";
+import { useGameDataStore } from "@store/gameDataStore";
 import { useToastStore } from "@store/toastStore";
 import { getLocalStorage } from "@utils/localStorage";
 import { isAxiosError } from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 /**
@@ -20,12 +15,8 @@ import { useNavigate } from "react-router-dom";
 export const useItemStore = (isOpen: boolean) => {
   const navigate = useNavigate();
   const { showToast } = useToastStore();
-  const [storeItems, setStoreItems] = useState<StoreItems>([]);
-  const [myItems, setMyItems] = useState<MyItems>([]);
-  const [currency, setCurrency] = useState<Currency>({
-    coin: 0,
-    trash: 0,
-  });
+  const { myItems, myCurrency, storeItems, fetchMyItems, fetchMyCurrency } =
+    useGameDataStore();
 
   /**
    * @description 아이템 구매 핸들 함수
@@ -44,16 +35,16 @@ export const useItemStore = (isOpen: boolean) => {
         await buyStoreItemApi(itemId, 1, token);
         showToast(itemName + " 구매 성공!");
 
-        const myItemsData = await myItemsApi(token).then((res) => res.data);
-        const myCoinData = await myCoinApi(token!).then((res) => res.data.coin);
-        setMyItems(myItemsData);
-        setCurrency((prev) => ({ ...prev, coin: myCoinData }));
+        fetchMyItems(token);
+        fetchMyCurrency(token);
       } catch (err) {
         if (isAxiosError(err)) {
           console.error(err);
           if (err.status === 401) {
             showToast("세션이 만료되었습니다. 다시 로그인 해주세요.");
             navigate("/");
+          } else if (err.status === 400) {
+            showToast(err.response?.data.message);
           } else {
             showToast(
               "아이템 구매에 문제가 발생했습니다. 잠시 후 다시 시도해주세요."
@@ -62,7 +53,7 @@ export const useItemStore = (isOpen: boolean) => {
         }
       }
     },
-    [navigate, showToast]
+    [fetchMyCurrency, fetchMyItems, navigate, showToast]
   );
 
   /**
@@ -82,16 +73,16 @@ export const useItemStore = (isOpen: boolean) => {
         await sellStoreItemApi(itemId, 1, token);
         showToast(itemName + " 판매 성공!");
 
-        const myItemsData = await myItemsApi(token).then((res) => res.data);
-        const myCoinData = await myCoinApi(token!).then((res) => res.data.coin);
-        setMyItems(myItemsData);
-        setCurrency((prev) => ({ ...prev, coin: myCoinData }));
+        fetchMyItems(token);
+        fetchMyCurrency(token);
       } catch (err) {
         if (isAxiosError(err)) {
           console.error(err);
           if (err.status === 401) {
             showToast("세션이 만료되었습니다. 다시 로그인 해주세요.");
             navigate("/");
+          } else if (err.status === 400) {
+            showToast(err.response?.data.message);
           } else {
             showToast(
               "아이템 판매에 문제가 발생했습니다. 잠시 후 다시 시도해주세요."
@@ -100,7 +91,7 @@ export const useItemStore = (isOpen: boolean) => {
         }
       }
     },
-    [navigate, showToast]
+    [fetchMyCurrency, fetchMyItems, navigate, showToast]
   );
 
   /**
@@ -115,22 +106,24 @@ export const useItemStore = (isOpen: boolean) => {
         return;
       }
 
-      const { exchangedGold, totalGold } = await trashExchangeApi(
-        currency.trash,
+      const exchangedGold = await trashExchangeApi(
+        myCurrency.trash,
         token
-      ).then((res) => res.data);
+      ).then((res) => res.data.exchangedGold);
       showToast(exchangedGold + " 원 환전 성공!");
-      setCurrency((prev) => ({ ...prev, coin: totalGold, trash: 0 }));
+      fetchMyCurrency(token);
     } catch (err) {
       if (isAxiosError(err)) {
         console.error(err);
         if (err.status === 401) {
           showToast("세션이 만료되었습니다. 다시 로그인 해주세요.");
           navigate("/");
+        } else if (err.status === 400) {
+          showToast(err.response?.data.message);
         }
       }
     }
-  }, [currency.trash, navigate, showToast]);
+  }, [myCurrency.trash, navigate, showToast, fetchMyCurrency]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -141,13 +134,8 @@ export const useItemStore = (isOpen: boolean) => {
           navigate("/");
           return;
         }
-
-        const storeItemsData = await allStoreItemsApi().then((res) => res.data);
-        const myItemsData = await myItemsApi(token).then((res) => res.data);
-        const myCoinData = await myCoinApi(token).then((res) => res.data.coin);
-        setStoreItems(storeItemsData);
-        setMyItems(myItemsData);
-        setCurrency((prev) => ({ ...prev, coin: myCoinData }));
+        fetchMyItems(token);
+        fetchMyCurrency(token);
       } catch (err) {
         if (isAxiosError(err)) {
           console.error(err);
@@ -162,12 +150,12 @@ export const useItemStore = (isOpen: boolean) => {
     if (isOpen) {
       fetchData();
     }
-  }, [isOpen, navigate, showToast]);
+  }, [fetchMyCurrency, fetchMyItems, isOpen, navigate, showToast]);
 
   return {
     storeItems,
     myItems,
-    currency,
+    myCurrency,
     handleBuyItem,
     handleSellItem,
     handleTrashExchange,
