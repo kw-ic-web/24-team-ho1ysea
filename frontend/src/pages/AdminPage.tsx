@@ -1,3 +1,4 @@
+import ViewUsers from "@components/admin/ViewUsers";
 import { useValidateAdmin } from "@hooks/admin/useValidateAdmin";
 
 export default function AdminPage() {
@@ -5,8 +6,9 @@ export default function AdminPage() {
   useValidateAdmin();
 
   return (
-    <div>
+    <div className="bg-sky-100 text-gray-800">
       <p>어드민 페이지 임니다</p>
+      <ViewUsers />
     </div>
   );
 }

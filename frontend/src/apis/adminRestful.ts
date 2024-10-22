@@ -1,3 +1,4 @@
+import { Users } from "@@types/adminType";
 import axios from "axios";
 
 /**
@@ -16,4 +17,16 @@ export const isAdminApi = (token: string) => {
       },
     }
   );
+};
+
+/**
+ * @description 모든 유저들의 정보를 가져옴
+ * @param token JWT 토큰
+ */
+export const getAllUsersApi = (token: string) => {
+  return axios.get<Users>(`${import.meta.env.VITE_API_URL}/admin/users`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
