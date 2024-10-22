@@ -1,5 +1,5 @@
 // controllers/adminController.js
-
+const { redisClient, subscriber } = require("../config/db");
 const mongoose = require("mongoose");
 require("dotenv").config(); // 환경 변수를 로드
 const bcrypt = require("bcryptjs");
@@ -131,8 +131,41 @@ exports.allReports = async (req, res) => {
 };
 
 
-// // 쓰레기 생성 속도 조절
-// exports.trashSpeed = async (req, res) => {};
+// 쓰레기 생성 속도 조절
+exports.setTrashSpeed = async (req, res) => {
+  try {
+    const { speed } = req.body;
+    if (typeof speed !== "number" || speed <= 0) {
+      return res.status(400).json({ message: "유효한 속도를 입력해주세요." });
+    }
+    // Redis에 쓰레기 생성 속도 업데이트
+    await redisClient.set("trashGenerationSpeed", speed.toString());
+    return res
+      .status(200)
+      .json({ message: "쓰레기 생성 속도가 재설정되었습니다.", speed });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "서버 오류입니다." });
+  }
+};
+
+// 쓰레기 생성 속도 반환
+exports.getTrashSpeed = async (req, res) => {
+  try {
+    // Redis에서 쓰레기 생성 속도 가져오기
+    const speed = await redisClient.get("trashGenerationSpeed");
+
+    if (!speed) {
+      return res
+        .status(404)
+        .json({ message: "생성 속도가 아직 설정되지 않았습니다." });
+    }
+    return res.status(200).json({ speed: Number(speed) });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "서버 오류입니다." });
+  }
+};
 
 // // 생성 가능한 최대 쓰레기 양 조절
 // exports.trashLimit = async (req, res) => {};

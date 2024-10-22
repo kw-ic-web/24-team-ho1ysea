@@ -1,15 +1,29 @@
 import { Users } from "@@types/adminType";
-import { getAllUsersApi } from "@apis/adminRestful";
+import {
+  getAllUsersApi,
+  getTrashSpeedApi,
+  setTrashSpeedApi,
+} from "@apis/adminRestful";
 import { getLocalStorage } from "@utils/localStorage";
 import { useEffect, useState } from "react";
 
 export default function ViewUsers() {
   const [usersData, setUsersData] = useState<Users>([]);
+  const [test, setTest] = useState();
+  const [test2, setTest2] = useState();
 
   useEffect(() => {
     const fetchUsersData = async (token: string) => {
       const usersDataRes = await getAllUsersApi(token).then((res) => res.data);
       setUsersData(usersDataRes);
+
+      const testRes = await getTrashSpeedApi(token).then((res) => res.data);
+      setTest(testRes);
+
+      const test2Res = await setTrashSpeedApi(token, 100).then(
+        (res) => res.data
+      );
+      setTest2(test2Res);
     };
 
     const token = getLocalStorage("token");
@@ -17,6 +31,9 @@ export default function ViewUsers() {
       fetchUsersData(token);
     }
   }, []);
+
+  console.log(test);
+  console.log(test2);
 
   return (
     <div className="flex flex-col items-center p-6">

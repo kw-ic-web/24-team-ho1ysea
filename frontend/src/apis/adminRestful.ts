@@ -30,3 +30,34 @@ export const getAllUsersApi = (token: string) => {
     },
   });
 };
+
+/**
+ * @description 쓰레기 생성 속도를 가져옴
+ * @param token JWT 토큰
+ */
+export const getTrashSpeedApi = (token: string) => {
+  return axios.get(`${import.meta.env.VITE_API_URL}/admin/trash-speed`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+/**
+ * @description 쓰레기 생성 속도를 재설정함
+ * @param token JWT 토큰
+ * @param newSpeed 새로 설정할 쓰레기 생성 속도
+ */
+export const setTrashSpeedApi = (token: string, newSpeed: number) => {
+  return axios.patch(
+    `${import.meta.env.VITE_API_URL}/admin/trash-speed`,
+    {
+      speed: newSpeed,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
