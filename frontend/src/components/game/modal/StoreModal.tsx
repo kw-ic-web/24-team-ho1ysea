@@ -97,7 +97,7 @@ export default function StoreModal({ isOpen, onClose }: Props) {
               >
                 <div className="w-full flex justify-center gap-4 items-center">
                   <img
-                    src="/images/item_test.png"
+                    src={`/images/items/${item.image}`}
                     alt={item.itemName}
                     className="w-8 md:w-12 bg-slate-300 rounded-full p-1"
                   />

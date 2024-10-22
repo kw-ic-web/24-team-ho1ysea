@@ -53,6 +53,7 @@ exports.getStoreItems = async (req, res) => {
     const responseItems = items.map((item) => ({
       itemId: item.itemId,
       itemName: item.itemName,
+      image: item?.image, // image 필드 추가했습니다 : 현성
       description: item.description,
       price: item.cost, // 'cost' 필드를 'price'로 변경하여 반환
     }));
