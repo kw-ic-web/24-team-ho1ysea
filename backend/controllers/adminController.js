@@ -140,6 +140,8 @@ exports.setTrashSpeed = async (req, res) => {
     }
     // Redis에 쓰레기 생성 속도 업데이트
     await redisClient.set("trashGenerationSpeed", speed.toString());
+    // 추후 값이 바뀌었음을 알려주기 위해 pub 수행
+    await redisClient.publish("trashGenerationSpeed", speed.toString());
     return res
       .status(200)
       .json({ message: "쓰레기 생성 속도가 재설정되었습니다.", speed });
@@ -167,8 +169,45 @@ exports.getTrashSpeed = async (req, res) => {
   }
 };
 
-// // 생성 가능한 최대 쓰레기 양 조절
-// exports.trashLimit = async (req, res) => {};
+// 생성 가능한 최대 쓰레기 양 조절
+exports.setTrashLimit = async (req, res) => {
+  try {
+    const { quantity } = req.body;
+    if (typeof quantity !== "number" || quantity <= 0) {
+      return res
+        .status(400)
+        .json({ message: "유효한 최대 쓰레기 양을 입력해주세요." });
+    }
+    // Redis에 최대 쓰레기 생성량 업데이트
+    await redisClient.set("trashGenerationLimit", quantity.toString());
+    // 추후 값이 바뀌었음을 알려주기 위해 pub 수행
+    await redisClient.publish("trashGenerationLimit", quantity.toString());
+    return res
+      .status(200)
+      .json({ message: "최대 쓰레기 양이 재설정되었습니다.", quantity });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "서버 오류입니다." });
+  }
+};
+
+// 생성 가능한 최대 쓰레기 양 반환
+exports.getTrashLimit = async (req, res) => {
+  try {
+    // Redis에서 최대 쓰레기 생성량 가져오기
+    const quantity = await redisClient.get("trashGenerationLimit");
+
+    if (!quantity) {
+      return res
+        .status(404)
+        .json({ message: "최대 쓰레기 생성량이 아직 설정되지 않았습니다." });
+    }
+    return res.status(200).json({ quantity: Number(quantity) });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "서버 오류입니다." });
+  }
+};
 
 // // 어드민 판별
 // exports.isAdmin = async (req, res) => {};

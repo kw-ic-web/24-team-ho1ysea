@@ -61,3 +61,34 @@ export const setTrashSpeedApi = (token: string, newSpeed: number) => {
     }
   );
 };
+
+/**
+ * @description 최대 쓰레기 생성량을 가져옴
+ * @param token JWT 토큰
+ */
+export const getTrashLimitApi = (token: string) => {
+  return axios.get(`${import.meta.env.VITE_API_URL}/admin/trash-limit`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+/**
+ * @description 최대 쓰레기 생성량을 재설정함
+ * @param token JWT 토큰
+ * @param newLimit 새로 설정할 최대 쓰레기 생성량
+ */
+export const setTrashLimitApi = (token: string, newLimit: number) => {
+  return axios.patch(
+    `${import.meta.env.VITE_API_URL}/admin/trash-limit`,
+    {
+      quantity: newLimit,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

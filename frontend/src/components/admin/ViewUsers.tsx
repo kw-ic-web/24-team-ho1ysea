@@ -1,7 +1,9 @@
 import { Users } from "@@types/adminType";
 import {
   getAllUsersApi,
+  getTrashLimitApi,
   getTrashSpeedApi,
+  setTrashLimitApi,
   setTrashSpeedApi,
 } from "@apis/adminRestful";
 import { getLocalStorage } from "@utils/localStorage";
@@ -17,10 +19,10 @@ export default function ViewUsers() {
       const usersDataRes = await getAllUsersApi(token).then((res) => res.data);
       setUsersData(usersDataRes);
 
-      const testRes = await getTrashSpeedApi(token).then((res) => res.data);
+      const testRes = await getTrashLimitApi(token).then((res) => res.data);
       setTest(testRes);
 
-      const test2Res = await setTrashSpeedApi(token, 100).then(
+      const test2Res = await setTrashLimitApi(token, 100).then(
         (res) => res.data
       );
       setTest2(test2Res);
