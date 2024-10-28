@@ -37,11 +37,37 @@ router.get(
   adminController.allReports
 );
 
-// // 쓰레기 생성 속도 조절
-// router.patch("/trash-speed", adminController.trashSpeed);
+// 쓰레기 생성 속도 조절
+router.patch(
+  "/trash-speed",
+  authMiddleware,
+  adminMiddleware,
+  adminController.setTrashSpeed
+);
 
-// // 생성 가능한 최대 쓰레기 양 조절
-// router.patch("/trash-limit", adminController.trashLimit);
+// 쓰레기 생성 속도 Get 엔드포인트
+router.get(
+  "/trash-speed",
+  authMiddleware,
+  adminMiddleware,
+  adminController.getTrashSpeed
+);
+
+// 생성 가능한 최대 쓰레기 양 조절
+router.patch(
+  "/trash-limit",
+  authMiddleware,
+  adminMiddleware,
+  adminController.setTrashLimit
+);
+
+// 최대 쓰레기 양 Get 엔드포인트
+router.get(
+  "/trash-limit",
+  authMiddleware,
+  adminMiddleware,
+  adminController.getTrashLimit
+);
 
 // // 관리자 판별
 // router.get("/is-admin", adminController.isAdmin);
