@@ -18,4 +18,10 @@ router.patch("/range/my/up", authMiddleware, gameController.increaseMyRange);
 // 이동 속도 및 사거리 초기화
 router.patch("/reset", authMiddleware, gameController.resetSpeedAndRange);
 
+// // 사망 처리
+// router.patch("/death", authMiddleware, gameController.handleDeath);
+
+// // 생존 여부 조회
+// router.get("/is-alive", authMiddleware, gameController.checkIsAlive);
+
 module.exports = router;

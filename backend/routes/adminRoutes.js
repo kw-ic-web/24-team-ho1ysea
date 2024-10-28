@@ -10,18 +10,32 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const adminMiddleware = require("../middlewares/adminMiddleware");
 const adminController = require("../controllers/adminController.js");
 
-
 // 제재당한 유저 조회 엔드포인트
-router.get("/banned_users", authMiddleware,adminMiddleware, adminController.getBannedUsers);
+router.get(
+  "/banned_users",
+  authMiddleware,
+  adminMiddleware,
+  adminController.getBannedUsers
+);
 
 // // 전체 유저 데이터 조회 엔드포인트
 router.get("/users", authMiddleware, adminMiddleware, adminController.allUsers);
 
 // // 사용자 제재 엔드포인트
-router.post("/ban", authMiddleware, adminMiddleware, adminController.banningUser);
+router.post(
+  "/ban",
+  authMiddleware,
+  adminMiddleware,
+  adminController.banningUser
+);
 
 // // 유저별 신고 횟수 전체 조회 엔드포인트
- router.get("/reports",authMiddleware,adminMiddleware, adminController.allReports);
+router.get(
+  "/reports",
+  authMiddleware,
+  adminMiddleware,
+  adminController.allReports
+);
 
 // // 쓰레기 생성 속도 조절
 // router.patch("/trash-speed", adminController.trashSpeed);
@@ -32,8 +46,12 @@ router.post("/ban", authMiddleware, adminMiddleware, adminController.banningUser
 // // 관리자 판별
 // router.get("/is-admin", adminController.isAdmin);
 
-
 // 관리자 인증 상태 확인 (현성 요청)
-router.get("/validate", authMiddleware, adminMiddleware, adminController.validateAdmin);
+router.get(
+  "/validate",
+  authMiddleware,
+  adminMiddleware,
+  adminController.validateAdmin
+);
 
 module.exports = router;
