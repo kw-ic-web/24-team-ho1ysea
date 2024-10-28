@@ -30,12 +30,12 @@ export default function ViewUsers() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center p-6 text-gray-600">
+    <div className="flex flex-col items-center p-6 text-gray-800">
       <Loading isLoading={isLoading} />
       <h1 className="text-2xl font-bold mb-6">전체 유저 정보</h1>
       <div className="w-full max-w-2xl">
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+        <div className="overflow-x-auto rounded-xl border border-gray-300">
+          <table className="min-w-full bg-sky-50 shadow-md">
             <thead>
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-semibold border-b">
@@ -51,7 +51,7 @@ export default function ViewUsers() {
             </thead>
             <tbody>
               {usersData.map((userData, index) => (
-                <tr key={index} className="hover:bg-gray-100">
+                <tr key={index} className="hover:bg-sky-100">
                   <td className="px-6 py-4 border-b">{userData.userId}</td>
                   <td className="px-6 py-4 border-b">{userData.nickName}</td>
                   <td className="px-6 py-4 border-b">{userData.countPlay}</td>

@@ -70,14 +70,12 @@ export default function EditSetting() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center p-6 text-gray-600">
+    <div className="flex flex-col items-center p-6 text-gray-800">
       <Loading isLoading={isLoading} />
       <h1 className="text-2xl font-bold mb-6">게임 설정 변경</h1>
       <div className="w-full max-w-2xl space-y-8">
-        <div className="flex flex-col gap-4 bg-gray-50 p-4 rounded-lg shadow-md">
-          <label className="font-semibold text-lg text-gray-700">
-            쓰레기 생성 속도 (초)
-          </label>
+        <div className="flex flex-col gap-4 bg-sky-50 p-4 rounded-lg shadow-lg">
+          <label className="font-semibold text-lg">쓰레기 생성 속도 (초)</label>
           <input
             type="range"
             min={1}
@@ -86,17 +84,15 @@ export default function EditSetting() {
             onChange={(e) => setTrashSpeed(Number(e.target.value))}
             className="w-full"
           />
-          <div className="text-center">
+          <div className="text-center text-gray-600">
             {trashSpeed === 0
               ? "쓰레기 생성 속도 초기값을 지정해주세요."
               : `${trashSpeed} 초마다 쓰레기가 생성됩니다.`}
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 bg-gray-50 p-4 rounded-lg shadow-md">
-          <label className="font-semibold text-lg text-gray-700">
-            쓰레기 최대량
-          </label>
+        <div className="flex flex-col gap-4 bg-sky-50 p-4 rounded-lg shadow-lg">
+          <label className="font-semibold text-lg">쓰레기 최대량</label>
           <input
             type="range"
             min={1}
@@ -105,7 +101,7 @@ export default function EditSetting() {
             onChange={(e) => setTrashLimit(Number(e.target.value))}
             className="w-full"
           />
-          <div className="text-center">
+          <div className="text-center text-gray-600">
             {trashLimit === 0
               ? "쓰레기 최대량 초기값을 지정해주세요."
               : `최대 ${trashLimit}개의 쓰레기가 존재할 수 있습니다.`}
@@ -115,7 +111,7 @@ export default function EditSetting() {
         <div className="flex justify-center">
           <button
             onClick={updateGameSetting}
-            className="bg-slate-700 hover:bg-slate-600 disabled:bg-slate-400 dis text-white font-semibold py-2 px-6 rounded"
+            className="bg-slate-700 hover:bg-slate-600 disabled:bg-slate-400 text-white font-semibold py-2 px-6 rounded"
             disabled={
               initState !== null &&
               initState.limit === trashLimit &&

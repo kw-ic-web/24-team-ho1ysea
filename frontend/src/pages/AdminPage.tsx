@@ -14,7 +14,7 @@ export default function AdminPage() {
 
   // 권한 검증 완료 후에만 관리자 페이지를 렌더링
   return (
-    <div className="text-gray-800">
+    <div className="text-gray-800 bg-sky-50 min-h-screen">
       <AdminHeader />
       <Outlet />
     </div>
