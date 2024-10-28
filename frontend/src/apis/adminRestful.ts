@@ -1,4 +1,4 @@
-import { TrashLimit, TrashSpeed, Users } from "@@types/adminType";
+import { Report, TrashLimit, TrashSpeed, User } from "@@types/adminType";
 import axios from "axios";
 
 /**
@@ -24,7 +24,19 @@ export const isAdminApi = (token: string) => {
  * @param token JWT 토큰
  */
 export const getAllUsersApi = (token: string) => {
-  return axios.get<Users>(`${import.meta.env.VITE_API_URL}/admin/users`, {
+  return axios.get<User[]>(`${import.meta.env.VITE_API_URL}/admin/users`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+/**
+ * @description 모든 유저들의 신고당한 횟수를 가져옴
+ * @param token JWT 토큰
+ */
+export const getReportsApi = (token: string) => {
+  return axios.get<Report[]>(`${import.meta.env.VITE_API_URL}/admin/reports`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
