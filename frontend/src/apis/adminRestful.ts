@@ -1,4 +1,4 @@
-import { Users } from "@@types/adminType";
+import { TrashLimit, TrashSpeed, Users } from "@@types/adminType";
 import axios from "axios";
 
 /**
@@ -36,11 +36,14 @@ export const getAllUsersApi = (token: string) => {
  * @param token JWT 토큰
  */
 export const getTrashSpeedApi = (token: string) => {
-  return axios.get(`${import.meta.env.VITE_API_URL}/admin/trash-speed`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return axios.get<TrashSpeed>(
+    `${import.meta.env.VITE_API_URL}/admin/trash-speed`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 
 /**
@@ -49,7 +52,7 @@ export const getTrashSpeedApi = (token: string) => {
  * @param newSpeed 새로 설정할 쓰레기 생성 속도
  */
 export const setTrashSpeedApi = (token: string, newSpeed: number) => {
-  return axios.patch(
+  return axios.patch<TrashSpeed>(
     `${import.meta.env.VITE_API_URL}/admin/trash-speed`,
     {
       speed: newSpeed,
@@ -67,11 +70,14 @@ export const setTrashSpeedApi = (token: string, newSpeed: number) => {
  * @param token JWT 토큰
  */
 export const getTrashLimitApi = (token: string) => {
-  return axios.get(`${import.meta.env.VITE_API_URL}/admin/trash-limit`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return axios.get<TrashLimit>(
+    `${import.meta.env.VITE_API_URL}/admin/trash-limit`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 
 /**
@@ -80,7 +86,7 @@ export const getTrashLimitApi = (token: string) => {
  * @param newLimit 새로 설정할 최대 쓰레기 생성량
  */
 export const setTrashLimitApi = (token: string, newLimit: number) => {
-  return axios.patch(
+  return axios.patch<TrashLimit>(
     `${import.meta.env.VITE_API_URL}/admin/trash-limit`,
     {
       quantity: newLimit,

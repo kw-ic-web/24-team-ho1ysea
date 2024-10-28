@@ -2,7 +2,7 @@ import { isAdminApi } from "@apis/adminRestful";
 import { useToastStore } from "@store/toastStore";
 import { getLocalStorage } from "@utils/localStorage";
 import { isAxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 /**
@@ -12,6 +12,7 @@ export const useValidateAdmin = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const showToast = useToastStore((state) => state.showToast);
+  const hasValidated = useRef(false);
 
   useEffect(() => {
     const validateAdmin = async (token: string) => {
@@ -37,6 +38,9 @@ export const useValidateAdmin = () => {
         }
       }
     };
+
+    if (hasValidated.current) return; // 이미 검증된 경우 추가 검증 방지!
+    hasValidated.current = true;
 
     const token = getLocalStorage("token");
     if (token) {

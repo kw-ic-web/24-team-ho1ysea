@@ -1,31 +1,25 @@
 import { Users } from "@@types/adminType";
-import {
-  getAllUsersApi,
-  getTrashLimitApi,
-  getTrashSpeedApi,
-  setTrashLimitApi,
-  setTrashSpeedApi,
-} from "@apis/adminRestful";
+import { getAllUsersApi } from "@apis/adminRestful";
+import Loading from "@components/common/Loading";
 import { getLocalStorage } from "@utils/localStorage";
 import { useEffect, useState } from "react";
 
 export default function ViewUsers() {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [usersData, setUsersData] = useState<Users>([]);
-  const [test, setTest] = useState();
-  const [test2, setTest2] = useState();
 
   useEffect(() => {
     const fetchUsersData = async (token: string) => {
-      const usersDataRes = await getAllUsersApi(token).then((res) => res.data);
-      setUsersData(usersDataRes);
-
-      const testRes = await getTrashLimitApi(token).then((res) => res.data);
-      setTest(testRes);
-
-      const test2Res = await setTrashLimitApi(token, 100).then(
-        (res) => res.data
-      );
-      setTest2(test2Res);
+      try {
+        setIsLoading(true);
+        const usersDataRes = await getAllUsersApi(token).then(
+          (res) => res.data
+        );
+        setIsLoading(false);
+        setUsersData(usersDataRes);
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     const token = getLocalStorage("token");
@@ -34,24 +28,22 @@ export default function ViewUsers() {
     }
   }, []);
 
-  console.log(test);
-  console.log(test2);
-
   return (
-    <div className="flex flex-col items-center p-6">
+    <div className="flex flex-col items-center p-6 text-gray-600">
+      <Loading isLoading={isLoading} />
       <h1 className="text-2xl font-bold mb-6">전체 유저 정보</h1>
       <div className="w-full max-w-2xl">
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
             <thead>
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 border-b">
+                <th className="px-6 py-3 text-left text-sm font-semibold border-b">
                   User ID
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 border-b">
+                <th className="px-6 py-3 text-left text-sm font-semibold border-b">
                   Nickname
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 border-b">
+                <th className="px-6 py-3 text-left text-sm font-semibold border-b">
                   Play Count
                 </th>
               </tr>
