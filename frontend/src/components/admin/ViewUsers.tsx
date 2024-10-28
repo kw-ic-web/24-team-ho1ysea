@@ -12,9 +12,10 @@ export default function ViewUsers() {
     const fetchUsersData = async (token: string) => {
       try {
         setIsLoading(true);
-        const usersDataRes = await getAllUsersApi(token).then(
-          (res) => res.data
-        );
+        const [usersDataRes] = await Promise.all([
+          getAllUsersApi(token).then((res) => res.data),
+          new Promise((resolve) => setTimeout(resolve, 200)), // 최소 로딩 대기시간
+        ]);
         setIsLoading(false);
         setUsersData(usersDataRes);
       } catch (err) {

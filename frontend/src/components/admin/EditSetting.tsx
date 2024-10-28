@@ -51,6 +51,7 @@ export default function EditSetting() {
         const [speedRes, limitRes] = await Promise.all([
           getTrashSpeedApi(token).then((res) => res.data.speed),
           getTrashLimitApi(token).then((res) => res.data.quantity),
+          new Promise((resolve) => setTimeout(resolve, 200)), // 최소 로딩 대기시간
         ]);
         setIsLoading(false);
         setTrashSpeed(speedRes);
