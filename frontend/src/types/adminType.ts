@@ -5,6 +5,12 @@ export type User = {
   reportCount: number;
 };
 
+export type BannedUser = {
+  userId: string;
+  nickName: string;
+  freedomAt: string;
+};
+
 export type Report = {
   userId: string;
   nickName: string;

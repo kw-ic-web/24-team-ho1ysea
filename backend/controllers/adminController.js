@@ -12,7 +12,7 @@ const jwt = require("jsonwebtoken");
 exports.getBannedUsers = async (req, res) => {
   try {
     // Ban 테이블에서 모든 제재 정보를 가져오기
-    const bannedUsers = await Ban.find().populate("userId");
+    const bannedUsers = await Ban.find();
 
     // 응답 포맷에 맞춰 데이터 가공
     const response = bannedUsers.map((ban) => ({
