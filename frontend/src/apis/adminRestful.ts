@@ -1,4 +1,10 @@
-import { Report, TrashLimit, TrashSpeed, User } from "@@types/adminType";
+import {
+  BannedUser,
+  Report,
+  TrashLimit,
+  TrashSpeed,
+  User,
+} from "@@types/adminType";
 import axios from "axios";
 
 /**
@@ -41,6 +47,21 @@ export const getReportsApi = (token: string) => {
       Authorization: `Bearer ${token}`,
     },
   });
+};
+
+/**
+ * @description 밴 당한 유저들의 정보를 가져옴
+ * @param token JWT 토큰
+ */
+export const getBanUsersApi = (token: string) => {
+  return axios.get<BannedUser[]>(
+    `${import.meta.env.VITE_API_URL}/admin/banned-users`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 
 /**
