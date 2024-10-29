@@ -71,13 +71,12 @@ exports.banningUser = async (req, res) => {
 
   try {
     // 사용자 존재 여부 확인
-    const user = await User.find({ userId: userId });
+    const user = await User.findOne({ id: userId });
     if (!user) {
       return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
     }
 
-    // 신고를 통해 사용자 제재
-    // 해당 사용자의 모든 신고를 가져오기!
+    // 신고를 통해 사용자 제재 - 해당 사용자의 모든 신고를 가져오기
     const reports = await Report.find({ reportedUserId: userId });
     if (reports.length === 0) {
       return res.status(404).json({ message: "신고 기록이 없습니다." });
@@ -93,8 +92,8 @@ exports.banningUser = async (req, res) => {
 
     // 제재 정보 생성
     const newBan = new Ban({
-      userId: user.userId,
-      nickName: user.nickName,
+      userId: user.id, // User 모델의 id 필드 참조
+      nickName: user.nickName, // user의 nickName 필드
       reportedAt: reports.map((report) => report.createdAt), // 모든 신고당한 날짜를 배열로 저장
       reportCount: reportCount,
       bannedAt: bannedAt,
@@ -105,11 +104,9 @@ exports.banningUser = async (req, res) => {
 
     await newBan.save(); // DB에 제재 정보 저장
 
-    return res
-      .status(200)
-      .json({ message: `User banned for ${banDuration} days` });
+    return res.status(200).json({ message: `유저 ${banDuration}일 제제 완료` });
   } catch (err) {
-    console.error(err);
+    console.error("Error in banningUser function:", err);
     return res
       .status(500)
       .json({ message: "서버 오류입니다.(adminController)" });
