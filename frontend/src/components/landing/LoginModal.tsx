@@ -7,12 +7,7 @@ import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 
-interface Props {
-  onPrevClick: () => void;
-  onRegisterClick: () => void;
-}
-
-export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
+export default function LoginModal() {
   const navigate = useNavigate();
   const { showToast } = useToastStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -55,7 +50,7 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
     // 이벤트 버블링으로 인해, target과 currentTarget을 비교하지 않으면
     // 모달 내 어떤 요소를 눌러도 모달창이 닫힌다.
     if (e.target === e.currentTarget) {
-      onPrevClick();
+      navigate("/");
     }
   };
 
@@ -69,7 +64,7 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
         <AiFillCloseSquare
           size={30}
           className=" hover:text-red-500"
-          onClick={onPrevClick}
+          onClick={() => navigate("/")}
         />
         <div className="text-xl font-semibold text-center mb-6">로그인</div>
         <form onSubmit={(e) => e.preventDefault()}>
@@ -103,7 +98,7 @@ export default function LoginModal({ onPrevClick, onRegisterClick }: Props) {
         <div className="flex justify-end items-center">
           <p
             className="text-blue-500 hover:text-blue-600 w-fit cursor-pointer text-end mt-1 p-1"
-            onClick={onRegisterClick}
+            onClick={() => navigate("/register")}
           >
             회원가입하기
           </p>
