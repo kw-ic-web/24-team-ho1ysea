@@ -53,7 +53,7 @@ exports.banningUser = async (req, res) => {
 
   try {
       // 사용자 존재 여부 확인
-      const user = await User.findById(userId);
+      const user = await User.find({ userId: userId });
       if (!user) {
           return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
       }

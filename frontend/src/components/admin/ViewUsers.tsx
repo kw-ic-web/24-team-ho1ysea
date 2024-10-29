@@ -1,8 +1,12 @@
+import { User } from "@@types/adminType";
 import Loading from "@components/common/Loading";
+import BanModal from "@components/admin/BanModal";
 import { useUsersData } from "@hooks/admin/useUsersData";
+import { useState } from "react";
 
 export default function ViewUsers() {
   const { usersData, isLoading } = useUsersData();
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   return (
     <div className="flex flex-col items-center p-6 text-gray-800">
@@ -25,6 +29,9 @@ export default function ViewUsers() {
                 <th className="px-6 py-3 text-left text-sm font-semibold border-b">
                   Report Count
                 </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold border-b">
+                  Ban
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -34,12 +41,26 @@ export default function ViewUsers() {
                   <td className="px-6 py-4 border-b">{userData.nickName}</td>
                   <td className="px-6 py-4 border-b">{userData.countPlay}</td>
                   <td className="px-6 py-4 border-b">{userData.reportCount}</td>
+                  <td className="px-6 py-4 border-b">
+                    <button
+                      onClick={() => setSelectedUser(userData)}
+                      className="bg-red-500 text-sm text-slate-200 px-4 py-2 rounded-lg hover:bg-red-400 transition-all"
+                    >
+                      밴하기
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+      {selectedUser && (
+        <BanModal
+          selectedUser={selectedUser}
+          onClose={() => setSelectedUser(null)}
+        />
+      )}
     </div>
   );
 }

@@ -44,6 +44,31 @@ export const getReportsApi = (token: string) => {
 };
 
 /**
+ * @description 사용자를 밴하는 API
+ * @param token JWT 토큰
+ */
+export const banUserApi = (
+  token: string,
+  userId: string,
+  bannedReason: string,
+  banDuration: number
+) => {
+  return axios.post<{ message: string }>(
+    `${import.meta.env.VITE_API_URL}/admin/ban`,
+    {
+      userId,
+      banDuration,
+      bannedReason,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+/**
  * @description 쓰레기 생성 속도를 가져옴
  * @param token JWT 토큰
  */
