@@ -46,7 +46,7 @@ export default function ViewUsers() {
                       onClick={() => setSelectedUser(userData)}
                       className="bg-red-500 text-sm text-slate-200 px-4 py-2 rounded-lg hover:bg-red-400 transition-all"
                     >
-                      재재하기
+                      제재하기
                     </button>
                   </td>
                 </tr>
