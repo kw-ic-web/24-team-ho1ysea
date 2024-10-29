@@ -2,7 +2,7 @@ export type User = {
   userId: string;
   nickName: string;
   countPlay: number;
-  reportCount?: number;
+  reportCount: number;
 };
 
 export type Report = {
