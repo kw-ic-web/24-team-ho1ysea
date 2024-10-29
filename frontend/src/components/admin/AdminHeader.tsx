@@ -11,7 +11,7 @@ export default function AdminHeader() {
               to="/admin/view-users"
               className="p-2 hover:text-gray-400 transition-colors"
             >
-              View Users
+              전체 유저 정보
             </Link>
           </li>
           <li>
@@ -19,7 +19,7 @@ export default function AdminHeader() {
               to="/admin/edit-setting"
               className="p-2 hover:text-gray-400 transition-colors"
             >
-              Edit Setting
+              게임 설정 변경
             </Link>
           </li>
           <li>

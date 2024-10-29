@@ -29,7 +29,7 @@ export default function ViewUsers() {
                 <th className="px-6 py-3 text-left text-sm font-semibold border-b">
                   Report Count
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold border-b">
+                <th className="px-6 py-3 text-center text-sm font-semibold border-b">
                   Ban
                 </th>
               </tr>
@@ -41,12 +41,12 @@ export default function ViewUsers() {
                   <td className="px-6 py-4 border-b">{userData.nickName}</td>
                   <td className="px-6 py-4 border-b">{userData.countPlay}</td>
                   <td className="px-6 py-4 border-b">{userData.reportCount}</td>
-                  <td className="px-6 py-4 border-b">
+                  <td className="px-6 py-4 border-b flex justify-center items-center">
                     <button
                       onClick={() => setSelectedUser(userData)}
                       className="bg-red-500 text-sm text-slate-200 px-4 py-2 rounded-lg hover:bg-red-400 transition-all"
                     >
-                      밴하기
+                      재재하기
                     </button>
                   </td>
                 </tr>

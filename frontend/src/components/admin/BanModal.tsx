@@ -67,22 +67,22 @@ export default function BanModal({ selectedUser, onClose }: Props) {
             className="absolute top-1.5 p-1 w-7 h-7 sm:w-10 sm:h-10 cursor-pointer hover:text-red-500"
             onClick={onClose}
           />
-          <h2>유저 밴</h2>
+          <h2>유저 재재</h2>
         </div>
 
         <p className="mt-4 text-sm">
           <strong>{selectedUser.nickName}</strong> (ID: {selectedUser.userId})
-          유저를 밴하시겠습니까?
+          유저를 재재하시겠습니까?
         </p>
 
         <div className="w-full mt-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            밴 사유
+            재재 사유
           </label>
           <textarea
             className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={3}
-            placeholder="밴 사유를 입력하세요."
+            placeholder="재재 사유를 입력하세요."
             value={bannedReason}
             onChange={(e) => setBannedReason(e.target.value)}
           />
@@ -90,7 +90,7 @@ export default function BanModal({ selectedUser, onClose }: Props) {
 
         <div className="w-full">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            밴 기간 (일)
+            재재 기간 (일)
           </label>
           <input
             type="number"
@@ -114,7 +114,7 @@ export default function BanModal({ selectedUser, onClose }: Props) {
             onClick={handleBan}
             disabled={!bannedReason || banDuration <= 0}
           >
-            밴하기
+            재재하기
           </button>
         </div>
       </div>

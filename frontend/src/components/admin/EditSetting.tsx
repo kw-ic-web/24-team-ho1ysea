@@ -118,7 +118,7 @@ export default function EditSetting() {
               initState.speed === trashSpeed
             }
           >
-            설정 변경 완료
+            설정 변경
           </button>
         </div>
       </div>
