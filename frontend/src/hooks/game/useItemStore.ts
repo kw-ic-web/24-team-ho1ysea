@@ -14,9 +14,12 @@ import { useNavigate } from "react-router-dom";
  */
 export const useItemStore = (isOpen: boolean) => {
   const navigate = useNavigate();
-  const { showToast } = useToastStore();
-  const { myItems, myCurrency, storeItems, fetchMyItems, fetchMyCurrency } =
-    useGameDataStore();
+  const showToast = useToastStore((s) => s.showToast);
+  const myItems = useGameDataStore((s) => s.myItems);
+  const myCurrency = useGameDataStore((s) => s.myCurrency);
+  const storeItems = useGameDataStore((s) => s.storeItems);
+  const fetchMyItems = useGameDataStore((s) => s.fetchMyItems);
+  const fetchMyCurrency = useGameDataStore((s) => s.fetchMyCurrency);
 
   /**
    * @description 아이템 구매 핸들 함수

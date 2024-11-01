@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 export const useValidateAdmin = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-  const showToast = useToastStore((state) => state.showToast);
+  const showToast = useToastStore((s) => s.showToast);
   const hasValidated = useRef(false);
 
   useEffect(() => {

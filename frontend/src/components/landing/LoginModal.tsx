@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function LoginModal() {
   const navigate = useNavigate();
-  const { showToast } = useToastStore();
+  const showToast = useToastStore((s) => s.showToast);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [inputs, setInputs] = useState({
     id: "",

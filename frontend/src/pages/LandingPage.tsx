@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { showToast } = useToastStore();
+  const showToast = useToastStore((s) => s.showToast);
 
   // JWT 토큰이 존재하고 유효한 경우 GamePage로 리다이렉트
   useEffect(() => {

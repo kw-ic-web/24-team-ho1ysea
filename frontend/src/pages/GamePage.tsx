@@ -21,10 +21,10 @@ import { io, Socket } from "socket.io-client";
 
 export default function GamePage() {
   const navigate = useNavigate();
-  const { showToast } = useToastStore();
-  const { isCollideStore } = usePlayerStore();
-  const { initialize } = useGameDataStore();
-  const { keyState } = useKeyStore();
+  const showToast = useToastStore((s) => s.showToast);
+  const isCollideStore = usePlayerStore((s) => s.isCollideStore);
+  const initialize = useGameDataStore((s) => s.initialize);
+  const keyState = useKeyStore((s) => s.keyState);
   // 설정, 공유, 튜토리얼 모달창을 띄울지 결정하고, 토글시키기 위한 함수를 반환
   const { isOpen, toggleModal } = useModal();
 

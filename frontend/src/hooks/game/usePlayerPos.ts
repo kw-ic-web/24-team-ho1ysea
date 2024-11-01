@@ -9,8 +9,8 @@ import { PlayerPos } from "@@types/PlayerType";
  * @description 키 입력에 따라 플레이어 위치를 계산해서 zustand store에 반영하는 커스텀 훅
  */
 export const usePlayerPos = () => {
-  const { keyState } = useKeyStore();
-  const { updatePlayerPos } = usePlayerStore();
+  const keyState = useKeyStore((s) => s.keyState);
+  const updatePlayerPos = usePlayerStore((s) => s.updatePlayerPos);
 
   useTick((deltaTime) => {
     if (!isKeyActive(keyState)) return;
