@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
 import { validateTokenApi } from "@apis/userRestful";
@@ -17,7 +17,7 @@ import { useKeyStore } from "@store/keyStore";
 import { useToastStore } from "@store/toastStore";
 import { getLocalStorage } from "@utils/localStorage";
 import { useGameDataStore } from "@store/gameDataStore";
-import { io, Socket } from "socket.io-client";
+import { useSocket } from "@hooks/game/useSocket";
 
 export default function GamePage() {
   const navigate = useNavigate();
@@ -27,9 +27,7 @@ export default function GamePage() {
   const keyState = useKeyStore((s) => s.keyState);
   // 설정, 공유, 튜토리얼 모달창을 띄울지 결정하고, 토글시키기 위한 함수를 반환
   const { isOpen, toggleModal } = useModal();
-
-  // 소켓 객체를 담아둘 Ref
-  const socketRef = useRef<Socket | null>(null);
+  const socketRef = useSocket();
 
   // 캐릭터 이동 && 아이템 사용 관련 키보드 이벤트 리스너 연결
   useKeyListener(
@@ -66,14 +64,6 @@ export default function GamePage() {
     };
     validateToken();
   }, [initialize, navigate, showToast]);
-
-  // 소켓 ref 생성
-  useEffect(() => {
-    socketRef.current = io(import.meta.env.VITE_SOCKET_URL);
-    return () => {
-      socketRef.current?.disconnect();
-    };
-  }, []);
 
   return (
     <div className={`relative bg-stone-800`}>

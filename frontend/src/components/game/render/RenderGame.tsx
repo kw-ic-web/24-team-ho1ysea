@@ -33,6 +33,8 @@ export default function RenderGame({ socket }: Props) {
       socket.on("updateCharacterPosition", (datas: PlayerInfo[]) => {
         setAnotherPlayersInfo(datas.filter((data) => data.userId !== userId));
       });
+    } else if (!socket) {
+      setAnotherPlayersInfo([]);
     }
   }, [socket, userId]);
 

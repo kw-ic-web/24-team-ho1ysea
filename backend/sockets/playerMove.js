@@ -7,21 +7,20 @@ exports.playerMove = (io, socket) => {
   socket.on("getMyPosition", async (data) => {
     const { userId, nickName, position } = data;
 
-    // Redis에 userId를 키로 가지고, nickName과 position을 value로 가지는 해시셋으로 저장
+    // userId를 키로 사용해 유저 데이터를 Redis에 저장
     await redisClient.hSet(
       "player_positions",
-      socket.id,
+      socket.data.userId,
       JSON.stringify({ userId, nickName, position })
     );
 
-    // Redis에 저장되어있는 플레이어들 정보 가져오기
+    // 저장된 모든 플레이어 정보를 가져와 broadcast
     const players = await redisClient.hGetAll("player_positions");
-    const broadcastData = Object.keys(players).map((socketId) => ({
-      ...JSON.parse(players[socketId]),
+    const broadcastData = Object.keys(players).map((userId) => ({
+      ...JSON.parse(players[userId]),
     }));
+    console.log(broadcastData);
 
-    // 가져온 플레이어들 정보를 배열로 바꿔서 전체 유저에게 broadcast
-    // (socket.broadcast.emit 쓰니까 초기 접속자는 주변 플레이어가 움직이기 전까지 안보이는 문제가 있었음)
     io.emit("updateCharacterPosition", broadcastData);
   });
 };
@@ -31,13 +30,15 @@ exports.playerMove = (io, socket) => {
  */
 exports.playerDisconnect = (socket) => {
   socket.on("disconnect", async () => {
-    await redisClient.hDel("player_positions", socket.id);
-    console.log(`사용자 ${socket.id} 위치 정보가 Redis에서 제거되었습니다.`);
+    await redisClient.hDel("player_positions", socket.data.userId);
+    console.log(
+      `사용자 ${socket.data.userId} 위치 정보가 Redis에서 제거되었습니다.`
+    );
 
     // Redis에 저장되어있는 플레이어들 정보 가져오기
     const players = await redisClient.hGetAll("player_positions");
-    const broadcastData = Object.keys(players).map((socketId) => ({
-      ...JSON.parse(players[socketId]),
+    const broadcastData = Object.keys(players).map((userId) => ({
+      ...JSON.parse(players[userId]),
     }));
 
     // 가져온 플레이어들 정보를 배열로 바꿔서 broadcast
