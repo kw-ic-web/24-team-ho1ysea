@@ -1,40 +1,20 @@
 import * as PIXI from "pixi.js";
+import { PlayerInfo } from "@@types/GameType";
+import { usePlayerAnimation } from "@hooks/game/usePlayerAnimation";
 import { useEffect, useState } from "react";
 import { CHARACTER_H, CHARACTER_W } from "@constants/game";
 import { Sprite, Text } from "@pixi/react";
-import { usePlayerAnimation } from "@hooks/game/usePlayerAnimation";
-import { usePlayerPos } from "@hooks/game/usePlayerPos";
-import { usePlayerStore } from "@store/playerStore";
-import { Socket } from "socket.io-client";
-import { useGameDataStore } from "@store/gameDataStore";
 
 const baseTexture = PIXI.BaseTexture.from("/images/character.png");
 
 interface Props {
-  socket: Socket | null;
+  anotherPlayerInfo: PlayerInfo;
 }
 
-/**
- * @description 플레이어 캐릭터를 렌더링하는 컴포넌트
- */
-function RenderPlayer({ socket }: Props) {
-  usePlayerPos();
-
-  const playerPos = usePlayerStore((s) => s.playerPos);
-  const nickName = useGameDataStore((s) => s.nickName);
-  const userId = useGameDataStore((s) => s.userId);
-
-  const frame = usePlayerAnimation(playerPos);
-  const { x, y, direction } = playerPos;
-
+function RenderAnotherPlayer({ anotherPlayerInfo }: Props) {
+  const { x, y, direction } = anotherPlayerInfo.position;
+  const frame = usePlayerAnimation(anotherPlayerInfo.position);
   const [texture, setTexture] = useState<PIXI.Texture | null>(null);
-
-  useEffect(() => {
-    if (socket && nickName && playerPos) {
-      // 플레이어의 좌표가 바뀔 때마다 서버로 emit
-      socket.emit("getMyPosition", { userId, nickName, position: playerPos });
-    }
-  }, [nickName, playerPos, socket, userId]);
 
   useEffect(() => {
     let row: number;
@@ -65,7 +45,7 @@ function RenderPlayer({ socket }: Props) {
   return (
     <>
       <Text
-        text={nickName}
+        text={anotherPlayerInfo.nickName}
         x={x + 10}
         y={y - 20}
         anchor={0.5}
@@ -76,4 +56,4 @@ function RenderPlayer({ socket }: Props) {
   );
 }
 
-export default RenderPlayer;
+export default RenderAnotherPlayer;

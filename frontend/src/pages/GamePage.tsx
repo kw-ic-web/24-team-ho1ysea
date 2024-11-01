@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
 import { validateTokenApi } from "@apis/userRestful";
@@ -17,7 +17,7 @@ import { useKeyStore } from "@store/keyStore";
 import { useToastStore } from "@store/toastStore";
 import { getLocalStorage } from "@utils/localStorage";
 import { useGameDataStore } from "@store/gameDataStore";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 
 export default function GamePage() {
   const navigate = useNavigate();
@@ -27,6 +27,10 @@ export default function GamePage() {
   const { keyState } = useKeyStore();
   // 설정, 공유, 튜토리얼 모달창을 띄울지 결정하고, 토글시키기 위한 함수를 반환
   const { isOpen, toggleModal } = useModal();
+
+  // 소켓 객체를 담아둘 Ref
+  const socketRef = useRef<Socket | null>(null);
+
   // 캐릭터 이동 && 아이템 사용 관련 키보드 이벤트 리스너 연결
   useKeyListener(
     !isOpen.tutorial && !isOpen.share && !isOpen.setting && !isOpen.store
@@ -63,13 +67,11 @@ export default function GamePage() {
     validateToken();
   }, [initialize, navigate, showToast]);
 
+  // 소켓 ref 생성
   useEffect(() => {
-    const socket = io(import.meta.env.VITE_SOCKET_URL);
-    // 서버로부터 응답을 받을 때 실행되는 이벤트 핸들러
-
-    // 컴포넌트가 언마운트될 때 소켓 연결 해제
+    socketRef.current = io(import.meta.env.VITE_SOCKET_URL);
     return () => {
-      socket.disconnect();
+      socketRef.current?.disconnect();
     };
   }, []);
 
@@ -88,7 +90,7 @@ export default function GamePage() {
       <LeaderBoard />
       <ItemInventory />
       <SideButton toggleModal={toggleModal} />
-      <RenderGame />
+      <RenderGame socket={socketRef.current} />
     </div>
   );
 }
