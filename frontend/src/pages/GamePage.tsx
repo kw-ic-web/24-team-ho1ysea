@@ -17,6 +17,7 @@ import { useKeyStore } from "@store/keyStore";
 import { useToastStore } from "@store/toastStore";
 import { getLocalStorage } from "@utils/localStorage";
 import { useGameDataStore } from "@store/gameDataStore";
+import { io } from "socket.io-client";
 
 export default function GamePage() {
   const navigate = useNavigate();
@@ -61,6 +62,16 @@ export default function GamePage() {
     };
     validateToken();
   }, [initialize, navigate, showToast]);
+
+  useEffect(() => {
+    const socket = io(import.meta.env.VITE_SOCKET_URL);
+    // 서버로부터 응답을 받을 때 실행되는 이벤트 핸들러
+
+    // 컴포넌트가 언마운트될 때 소켓 연결 해제
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <div className={`relative bg-stone-800`}>

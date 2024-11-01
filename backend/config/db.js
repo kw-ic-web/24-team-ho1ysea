@@ -13,10 +13,7 @@ subscriber.on("error", (err) => console.error("Redis 구독 오류:", err));
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log("MongoDB에 연결되었습니다.");
 
     await redisClient.connect();
