@@ -3,8 +3,8 @@ import { useGameDataStore } from "@store/gameDataStore";
 import { useKeyStore } from "@store/keyStore";
 
 export default function ItemInventory(): JSX.Element {
-  const myItems = useGameDataStore((state) => state.myItems);
-  const { activeItem } = useKeyStore();
+  const myItems = useGameDataStore((s) => s.myItems);
+  const activeItem = useKeyStore((s) => s.activeItem);
 
   // 인벤토리 슬롯을 항상 유지하기 위해서 TOTAL_INVENTORY_SLOT 만큼의 배열을 만들고, 내부에 아이템을 채움 -> 아이템 없으면 null 남음
   const itemSlots = new Array(TOTAL_INVENTORY_SLOT)

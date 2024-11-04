@@ -86,7 +86,7 @@ exports.loginUser = async (req, res) => {
 exports.getUserInfo = async (req, res) => {
   try {
     const userId = req.user.id; // authMiddleware를 거친 상태
-    const user = await User.findById(userId); // userId로 사용자 조회
+    const user = await User.findOne({ id: userId }); // userId로 사용자 조회
 
     if (!user) {
       return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });

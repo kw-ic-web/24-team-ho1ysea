@@ -17,7 +17,7 @@ export default function BanModal({ selectedUser, onClose }: Props) {
   const [banDuration, setBanDuration] = useState<number>(3);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const showToast = useToastStore((state) => state.showToast);
+  const showToast = useToastStore((s) => s.showToast);
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {

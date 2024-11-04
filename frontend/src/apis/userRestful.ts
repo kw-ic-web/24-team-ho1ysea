@@ -59,3 +59,18 @@ export const loginApi = (id: string, password: string) => {
     }
   );
 };
+
+/**
+ * @description 사용자 정보를 받아오는 API
+ * @param token JWT 토큰
+ */
+export const userInfoApi = (token: string) => {
+  return axios.get<{ playCount: number; nickName: string; id: string }>(
+    `${import.meta.env.VITE_API_URL}/user/me`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

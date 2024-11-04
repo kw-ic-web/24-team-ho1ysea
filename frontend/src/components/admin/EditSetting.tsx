@@ -10,7 +10,7 @@ import { getLocalStorage } from "@utils/localStorage";
 import { useEffect, useState } from "react";
 
 export default function EditSetting() {
-  const showToast = useToastStore((state) => state.showToast);
+  const showToast = useToastStore((s) => s.showToast);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [trashSpeed, setTrashSpeed] = useState<number>(0);

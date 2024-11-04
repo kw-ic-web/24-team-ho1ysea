@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 export default function RegisterModal() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { showToast } = useToastStore();
+  const showToast = useToastStore((s) => s.showToast);
 
   // 입력 field state
   const [inputs, setInputs] = useState<Inputs>({

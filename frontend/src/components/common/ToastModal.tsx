@@ -1,7 +1,8 @@
 import { useToastStore } from "@store/toastStore";
 
 export default function ToastModal() {
-  const { toasts, removeToast } = useToastStore();
+  const toasts = useToastStore((s) => s.toasts);
+  const removeToast = useToastStore((s) => s.removeToast);
 
   return (
     <div className="fixed bottom-16 left-1/2 transform -translate-x-1/2 space-y-2 z-50">

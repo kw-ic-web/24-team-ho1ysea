@@ -17,15 +17,18 @@ import { useKeyStore } from "@store/keyStore";
 import { useToastStore } from "@store/toastStore";
 import { getLocalStorage } from "@utils/localStorage";
 import { useGameDataStore } from "@store/gameDataStore";
+import { useSocket } from "@hooks/game/useSocket";
 
 export default function GamePage() {
   const navigate = useNavigate();
-  const { showToast } = useToastStore();
-  const { isCollideStore } = usePlayerStore();
-  const { initialize } = useGameDataStore();
-  const { keyState } = useKeyStore();
+  const showToast = useToastStore((s) => s.showToast);
+  const isCollideStore = usePlayerStore((s) => s.isCollideStore);
+  const initialize = useGameDataStore((s) => s.initialize);
+  const keyState = useKeyStore((s) => s.keyState);
   // 설정, 공유, 튜토리얼 모달창을 띄울지 결정하고, 토글시키기 위한 함수를 반환
   const { isOpen, toggleModal } = useModal();
+  const socketRef = useSocket();
+
   // 캐릭터 이동 && 아이템 사용 관련 키보드 이벤트 리스너 연결
   useKeyListener(
     !isOpen.tutorial && !isOpen.share && !isOpen.setting && !isOpen.store
@@ -77,7 +80,7 @@ export default function GamePage() {
       <LeaderBoard />
       <ItemInventory />
       <SideButton toggleModal={toggleModal} />
-      <RenderGame />
+      <RenderGame socket={socketRef.current} />
     </div>
   );
 }
