@@ -1,6 +1,17 @@
-const { playerMove } = require("./playerMove");
-const { joinGameRoom, leaveGameRoom } = require("./manageGameRoom");
+// backend/sockets/socketHandler.js
+
+const { playerMove } = require("./eventHandler/playerMove");
+const {
+  joinGameRoom,
+  leaveGameRoom,
+} = require("./eventHandler/manageGameRoom");
 const { removeUserData } = require("../utils/redisHandler");
+const {
+  getUserTrash,
+  generateRandomTrash,
+  generateRandomObstacle,
+  generateRandomItem,
+} = require("./eventHandler/gameEvent");
 
 module.exports = socketHandler = (io) => {
   io.on("connection", (socket) => {
@@ -12,6 +23,10 @@ module.exports = socketHandler = (io) => {
     joinGameRoom(io, socket);
     leaveGameRoom(io, socket);
     playerMove(io, socket);
+    getUserTrash(io, socket);
+    generateRandomTrash(io, socket);
+    generateRandomObstacle(io, socket);
+    generateRandomItem(io, socket);
 
     // 소켓 연결이 끊겼을 때
     socket.on("disconnect", async () => {

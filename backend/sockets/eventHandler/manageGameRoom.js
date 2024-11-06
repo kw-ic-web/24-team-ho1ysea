@@ -1,4 +1,6 @@
-const { removeUserData } = require("../utils/redisHandler");
+// backend/sockets/eventHandler/manageGameRoom.js
+
+const { removeUserData } = require("../../utils/redisHandler");
 
 /**
  * @description 특정 플레이어가 바다로 이동 시 room에 추가

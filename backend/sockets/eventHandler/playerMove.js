@@ -1,4 +1,6 @@
-const { updateUserData } = require("../utils/redisHandler");
+// backend/sockets/eventHandler/playerMove.js
+
+const { updateUserData } = require("../../utils/redisHandler");
 
 /**
  * @description 특정 플레이어가 이동하면, gameRoom 내의 모든 플레이어들에게 브로드캐스트
