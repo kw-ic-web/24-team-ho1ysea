@@ -1,9 +1,19 @@
 // server.js
 require("dotenv").config();
 const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 const { connectDB } = require("./config/db");
+const socketHandler = require("./sockets/socketHandler");
 
 const app = express();
+
+// 소켓 서버 초기 설정
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] },
+});
+socketHandler(io);
 
 // MongoDB + Redis 연결
 connectDB();
@@ -25,4 +35,6 @@ app.use("/api/game", require("./routes/gameRoutes"));
 // cron.schedule('0 0 * * *', userController.processAccountCancellation);   // 신기해서 넣어봤음(탈퇴처리 + 탈퇴예약 2가지 고려해야 함)
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`서버가 포트 ${PORT}에서 실행 중입니다.`));
+server.listen(PORT, () =>
+  console.log(`서버가 포트 ${PORT}에서 실행 중입니다.`)
+);

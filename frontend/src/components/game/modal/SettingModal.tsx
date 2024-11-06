@@ -1,4 +1,8 @@
+import { isAdminApi } from "@apis/adminRestful";
+import { getLocalStorage } from "@utils/localStorage";
+import { useEffect, useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 interface Props {
   isOpen: boolean;
@@ -9,11 +13,26 @@ export default function SettingModal({
   isOpen,
   onClose,
 }: Props): JSX.Element | null {
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
+
+  useEffect(() => {
+    const validate = async (token: string) => {
+      isAdminApi(token)
+        .then(() => setIsAdmin(true))
+        .catch(() => setIsAdmin(false));
+    };
+
+    const token = getLocalStorage("token");
+    if (token) {
+      validate(token);
+    }
+  }, []);
 
   if (!isOpen) return null;
 
@@ -30,10 +49,41 @@ export default function SettingModal({
           />
           <h1>게임 설정</h1>
         </div>
-        <div className="my-8">
-          {/* 게임 설정은 추후 뭔가 더 추가되어야 넣을게 떠오를듯.. */}
-          <p>배경음악</p>
-          <p>효과음</p>
+        <div className="w-2/3">
+          <div className="mt-6 space-y-4 text-center">
+            <div className="space-y-0.5">
+              <label className="block text-start text-sm font-medium text-gray-800">
+                배경음악 조절
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer"
+              />
+            </div>
+
+            <div className="space-y-0.5">
+              <label className="block text-start text-sm font-medium text-gray-800">
+                효과음 조절
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer"
+              />
+            </div>
+
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="block pb-2 text-sm font-semibold text-blue-600 hover:text-blue-800"
+              >
+                관리자 페이지로 이동
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>

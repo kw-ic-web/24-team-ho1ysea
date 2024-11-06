@@ -6,7 +6,9 @@ import { useEffect } from "react";
  */
 export const useKeyListener = (isListen: boolean) => {
   // zustand store에 명시한 업데이트 함수들
-  const { updateKeyDown, updateKeyUp, updateActiveItem } = useKeyStore();
+  const updateKeyDown = useKeyStore((s) => s.updateKeyDown);
+  const updateKeyUp = useKeyStore((s) => s.updateKeyUp);
+  const updateActiveItem = useKeyStore((s) => s.updateActiveItem);
 
   // 키보드를 눌렀을 때 이벤트 리스너 콜백 함수
   const handleKeyDown = (e: KeyboardEvent) => {

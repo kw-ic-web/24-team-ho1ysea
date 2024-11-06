@@ -4,9 +4,12 @@ import { StoreItems } from "@@types/StoreType";
 import { myCoinApi } from "@apis/currencyRestful";
 import { myItemsApi } from "@apis/itemRestful";
 import { allStoreItemsApi } from "@apis/storeRestful";
+import { userInfoApi } from "@apis/userRestful";
 import { create } from "zustand";
 
 interface GameDataStore {
+  nickName: string;
+  userId: string;
   myItems: MyItems;
   myCurrency: Currency;
   storeItems: StoreItems;
@@ -22,6 +25,8 @@ interface GameDataStore {
  * @description 사용자가 보유한 아이템 / 재화 데이터를 관리하는 zustand 스토어
  */
 export const useGameDataStore = create<GameDataStore>((set) => ({
+  nickName: "",
+  userId: "",
   myItems: [],
   myCurrency: { coin: 0, trash: 0 },
   storeItems: [],
@@ -30,13 +35,18 @@ export const useGameDataStore = create<GameDataStore>((set) => ({
   initialize: async (token: string) => {
     set((prev) => ({ ...prev, isLoading: true }));
     try {
-      const [itemsRes, coinRes, storeItemsRes] = await Promise.all([
-        myItemsApi(token).then((res) => res.data),
-        myCoinApi(token).then((res) => res.data.coin),
-        allStoreItemsApi().then((res) => res.data),
-      ]);
+      const [userInfoRes, itemsRes, coinRes, storeItemsRes] = await Promise.all(
+        [
+          userInfoApi(token).then((res) => res.data),
+          myItemsApi(token).then((res) => res.data),
+          myCoinApi(token).then((res) => res.data.coin),
+          allStoreItemsApi().then((res) => res.data),
+        ]
+      );
       set((prev) => ({
         ...prev,
+        nickName: userInfoRes.nickName,
+        userId: userInfoRes.id,
         myItems: itemsRes,
         myCurrency: { coin: coinRes, trash: prev.myCurrency.trash },
         storeItems: storeItemsRes,

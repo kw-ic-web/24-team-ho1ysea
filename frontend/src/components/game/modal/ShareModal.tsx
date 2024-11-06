@@ -10,7 +10,7 @@ export default function ShareModal({
   isOpen,
   onClose,
 }: Props): JSX.Element | null {
-  const { showToast } = useToastStore();
+  const showToast = useToastStore((s) => s.showToast);
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {

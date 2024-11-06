@@ -3,17 +3,17 @@ const mongoose = require("mongoose");
 // 제재 스키마 정의
 const BanSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "User", // User 모델과의 참조 관계 설정
     required: true,
   },
   nickName: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "User", // User 모델과의 참조 관계 설정
     required: true,
   },
   reportedAt: {
-    type: Date,
+    type: [Date],
     required: true, // 신고당한 날짜
   },
   reportCount: {
@@ -26,16 +26,16 @@ const BanSchema = new mongoose.Schema({
   },
   freedomAt: {
     type: Date, // 해제 날짜
-    default : null
+    default: null,
   },
   banDuration: {
     type: Number, // 제재 기간(일수)
     required: true,
   },
   bannedReason: {
-    type: String, // 제재 사유  
+    type: String, // 제재 사유
     required: true,
-  } // ex. 신고 사유 : "뉴비 등쳐먹고 다녀요" -> 제재 사유 : "비매너 및 사기"
+  }, // ex. 신고 사유 : "뉴비 등쳐먹고 다녀요" -> 제재 사유 : "비매너 및 사기"
 });
 
 // 제재 모델 생성

@@ -12,7 +12,7 @@ const adminController = require("../controllers/adminController.js");
 
 // 제재당한 유저 조회 엔드포인트
 router.get(
-  "/banned_users",
+  "/banned-users",
   authMiddleware,
   adminMiddleware,
   adminController.getBannedUsers

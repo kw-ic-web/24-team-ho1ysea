@@ -1,29 +1,14 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
 import { validateTokenApi } from "@apis/userRestful";
-import LandingButton from "@components/landing/LandingButton";
-import LoginModal from "@components/landing/LoginModal";
-import RegisterModal from "@components/landing/RegisterModal";
 import { useToastStore } from "@store/toastStore";
 import { getLocalStorage } from "@utils/localStorage";
+import { Link } from "react-router-dom";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { showToast } = useToastStore();
-  const [openModal, setOpenModal] = useState<string>("");
-
-  const handleLoginBtn = () => {
-    setOpenModal("login");
-  };
-
-  const handleRegisterBtn = () => {
-    setOpenModal("register");
-  };
-
-  const handleGoPrevBtn = () => {
-    setOpenModal("");
-  };
+  const showToast = useToastStore((s) => s.showToast);
 
   // JWT 토큰이 존재하고 유효한 경우 GamePage로 리다이렉트
   useEffect(() => {
@@ -52,22 +37,21 @@ export default function LandingPage() {
       <div className="absolute top-20 left-20">
         <p className="text-3xl font-bold">바다 이야기</p>
       </div>
-      <div className="absolute right-20 bottom-20">
-        <LandingButton onClick={handleLoginBtn}>로그인</LandingButton>
-        <LandingButton onClick={handleRegisterBtn}>회원가입</LandingButton>
+      <div className="absolute flex flex-col text-center right-20 bottom-20">
+        <Link
+          to="login"
+          className="bg-blue-500 hover:bg-blue-600 min-w-28 px-3 py-2 m-2 border rounded-xl text-slate-200"
+        >
+          로그인
+        </Link>
+        <Link
+          to="register"
+          className="bg-blue-500 hover:bg-blue-600 min-w-28 px-3 py-2 m-2 border rounded-xl text-slate-200"
+        >
+          회원가입
+        </Link>
       </div>
-      {openModal === "login" && (
-        <LoginModal
-          onPrevClick={handleGoPrevBtn}
-          onRegisterClick={handleRegisterBtn}
-        />
-      )}
-      {openModal === "register" && (
-        <RegisterModal
-          onPrevClick={handleGoPrevBtn}
-          onLoginClick={handleLoginBtn}
-        />
-      )}
+      <Outlet />
     </div>
   );
 }

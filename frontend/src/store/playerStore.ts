@@ -16,6 +16,7 @@ interface PlayerStoreType {
     dy: number,
     direction: PlayerPos["direction"]
   ) => void;
+  resetPlayerPos: () => void;
 }
 
 /**
@@ -51,4 +52,10 @@ export const usePlayerStore = create<PlayerStoreType>((set) => ({
         };
       }
     }),
+  resetPlayerPos: () => {
+    set({
+      isCollideStore: false,
+      playerPos: { x: 30, y: WORLD_H - 60, direction: "bottom" },
+    });
+  },
 }));

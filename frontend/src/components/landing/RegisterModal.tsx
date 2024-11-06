@@ -6,15 +6,12 @@ import { useToastStore } from "@store/toastStore";
 import { isAxiosError } from "axios";
 import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
-interface Props {
-  onPrevClick: () => void;
-  onLoginClick: () => void;
-}
-
-export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
+export default function RegisterModal() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { showToast } = useToastStore();
+  const showToast = useToastStore((s) => s.showToast);
 
   // 입력 field state
   const [inputs, setInputs] = useState<Inputs>({
@@ -37,7 +34,7 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
     // 이벤트 버블링으로 인해, target과 currentTarget을 비교하지 않으면
     // 모달 내 어떤 요소를 눌러도 모달창이 닫힌다.
     if (e.target === e.currentTarget) {
-      onPrevClick();
+      navigate("/");
     }
   };
 
@@ -49,7 +46,7 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
         setIsLoading(false);
         console.log(res);
         showToast("회원가입 되었습니다. 로그인 해주세요");
-        onLoginClick();
+        navigate("/login");
       })
       .catch((err) => {
         setIsLoading(false);
@@ -75,7 +72,7 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
         <AiFillCloseSquare
           size={30}
           className=" hover:text-red-500"
-          onClick={onPrevClick}
+          onClick={() => navigate("/")}
         />
         <div className="text-xl font-semibold text-center mb-6">회원가입</div>
         <form onSubmit={(e) => e.preventDefault()}>
@@ -168,7 +165,7 @@ export default function RegisterModal({ onPrevClick, onLoginClick }: Props) {
         <div className="flex justify-end items-center">
           <p
             className="text-blue-500 hover:text-blue-600 w-fit cursor-pointer text-end mt-1 p-1"
-            onClick={onLoginClick}
+            onClick={() => navigate("/login")}
           >
             로그인하기
           </p>
