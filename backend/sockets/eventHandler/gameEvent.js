@@ -24,6 +24,7 @@ exports.generateRandomTrash = (io) => {
   setInterval(async () => {
     const trashData = await generateTrash();
     io.to("gameRoom").emit("generateRandomTrash", trashData); // gameRoom 내의 모든 클라이언트에게 브로드캐스트
+    console.log("쓰레기 생성 이벤트 실행!");
   }, 5000);
 };
 
@@ -32,6 +33,7 @@ exports.generateRandomObstacle = (io) => {
   setInterval(async () => {
     const obstacleData = await generateObstacle();
     io.to("gameRoom").emit("generateRandomObstacle", obstacleData); // gameRoom 내의 모든 클라이언트에게 브로드캐스트
+    console.log("방해요소 생성 이벤트 실행!");
   }, 10000);
 };
 
@@ -40,5 +42,6 @@ exports.generateRandomItem = (io) => {
   setInterval(async () => {
     const itemData = await generateItem();
     io.to("gameRoom").emit("generateRandomItem", itemData);
+    console.log("아이템 생성 이벤트 실행!");
   }, 15000);
 };

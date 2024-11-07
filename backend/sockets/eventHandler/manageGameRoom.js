@@ -1,14 +1,27 @@
 // backend/sockets/eventHandler/manageGameRoom.js
 
-const { removeUserData } = require("../../utils/redisHandler");
+const {
+  removeUserData,
+  getTrashPositions,
+  getObstaclePositions,
+  getItemPositions,
+} = require("../../utils/redisHandler");
 
 /**
  * @description 특정 플레이어가 바다로 이동 시 room에 추가
  */
 exports.joinGameRoom = (io, socket) => {
-  socket.on("joinGame", (userId) => {
+  socket.on("joinGame", async (userId) => {
     console.log(`${userId}가 gameRoom에 접속했습니다.`);
     socket.join("gameRoom");
+
+    // 방에 새로 들어온 유저에게 게임 데이터를 모두 전달
+    const trashs = await getTrashPositions();
+    const obstacles = await getObstaclePositions();
+    const items = await getItemPositions();
+    socket.emit("generateRandomTrash", trashs);
+    socket.emit("generateRandomObstacle", obstacles);
+    socket.emit("generateRandomItem", items);
   });
 };
 
@@ -23,8 +36,11 @@ exports.leaveGameRoom = (io, socket) => {
     // gameRoom에서 나간 플레이어를 Redis에서 제거
     const broadcastData = await removeUserData(userId);
 
-    // 방에서 나간 유저에게 다른 플레이어 정보를 모두 제거하도록 함
+    // 방에서 나간 유저에게 게임 데이터를 모두 제거하도록 emit
     socket.emit("updateCharacterPosition", []);
+    socket.emit("generateRandomTrash", []);
+    socket.emit("generateRandomObstacle", []);
+    socket.emit("generateRandomItem", []);
 
     // 제거하고 남은 플레이어들 정보를 gameRoom 방 전체에 브로드캐스트
     io.to("gameRoom").emit("updateCharacterPosition", broadcastData);
