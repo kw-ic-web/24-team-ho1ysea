@@ -3,7 +3,7 @@ import { useTick } from "@pixi/react";
 import { useKeyStore } from "@store/keyStore";
 import { usePlayerStore } from "@store/playerStore";
 import { isKeyActive } from "@utils/isKeyActive";
-import { PlayerPos } from "@@types/PlayerType";
+import { PlayerPos } from "@@types/GameType";
 
 /**
  * @description 키 입력에 따라 플레이어 위치를 계산해서 zustand store에 반영하는 커스텀 훅

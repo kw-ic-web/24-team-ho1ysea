@@ -1,4 +1,4 @@
-import { PlayerPos } from "@@types/PlayerType";
+import { PlayerPos } from "@@types/GameType";
 import { useTick } from "@pixi/react";
 import { useRef, useState, useEffect } from "react";
 

@@ -5,7 +5,7 @@ import {
   WORLD_H,
   WORLD_W,
 } from "@constants/game";
-import { PlayerPos } from "@@types/PlayerType";
+import { PlayerPos } from "@@types/GameType";
 import { isCollidingStore } from "@utils/isCollidingStore";
 
 interface PlayerStoreType {
