@@ -1,5 +1,8 @@
 // controllers/gameController.js
 
+const Trash = require("../models/trash");
+const Obstacle = require("../models/obstacle");
+
 let userSpeeds = {}; // 사용자별 이동 속도 저장
 let userRanges = {}; // 사용자별 사거리 저장
 
@@ -57,6 +60,32 @@ exports.resetSpeedAndRange = (req, res) => {
 exports.handleDeath = (req, res) => {
   // 사망 처리 로직 (예: 사용자 상태 변경 등)
   res.json({ message: "Player has died" });
+};
+
+// 전체 쓰레기 조회
+exports.getAllTrash = async (req, res) => {
+  try {
+    const trashItems = await Trash.find();
+    res.json(trashItems);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "쓰레기 목록을 가져오는 중 오류가 발생했습니다." });
+  }
+};
+
+// 전체 방해요소 조회
+exports.getAllObstacles = async (req, res) => {
+  try {
+    const obstacles = await Obstacle.find();
+    res.json(obstacles);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "방해요소 목록을 가져오는 중 오류가 발생했습니다." });
+  }
 };
 
 // // 생존 여부 조회
