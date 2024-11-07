@@ -5,6 +5,8 @@ const { v4: uuidv4 } = require("uuid");
 // 이거 고유id를 부여하는 방법 중 하나라, 좀 더 편한 대체 방안 있으면 수정해도 좋아요!
 // Mongoose 모델 임포트
 const Item = require("../models/item");
+const Trash = require("../models/trash");
+const Obstacle = require("../models/obstacle");
 
 // 유저의 보유 쓰레기량 조회 함수
 exports.getUserTrashData = async (userId) => {
@@ -23,24 +25,53 @@ const generateRandomPosition = () => {
 
 // 쓰레기 생성 함수
 exports.generateTrash = async () => {
+  // 데이터베이스에서 총 쓰레기 개수 가져오기
+  const trashCount = await Trash.countDocuments();
+
+  if (trashCount === 0) {
+    throw new Error("데이터베이스에 쓰레기가 없습니다.");
+  }
+
+  // 랜덤 인덱스 생성
+  const randomIndex = Math.floor(Math.random() * trashCount);
+
+  // 랜덤한 쓰레기 아이템 가져오기
+  const randomTrash = await Trash.findOne().skip(randomIndex).exec();
+
   const objectId = uuidv4();
-  const trashId = "trashIdFromDB"; // 실제 DB에서 가져와야 함
+  const trashId = randomTrash.trashId; // Trash 모델의 trashId 필드 사용
   const position = generateRandomPosition();
 
   const newTrash = { objectId, trashId, position };
 
-  // Redis에 저장
+  // 직렬화해서 Redis에 저장
   await redisClient.lPush("trashPositions", JSON.stringify(newTrash));
 
   // 전체 쓰레기 리스트 반환
+  // redisClient.lRange(key, start, stop) 메서드를 사용하여,리스트를 가져옴
+  // 매개변수 0은 시작, -1은 끝을 의미함.
   const trashList = await redisClient.lRange("trashPositions", 0, -1);
+  // 아이템 개별로 파싱해서 값 리턴
   return trashList.map((item) => JSON.parse(item));
 };
 
 // 방해요소 생성 함수
 exports.generateObstacle = async () => {
+  // 데이터베이스에서 총 방해요소 개수 가져오기
+  const obstacleCount = await Obstacle.countDocuments();
+
+  if (obstacleCount === 0) {
+    throw new Error("데이터베이스에 방해요소가 없습니다.");
+  }
+
+  // 랜덤 인덱스 생성
+  const randomIndex = Math.floor(Math.random() * obstacleCount);
+
+  // 랜덤한 방해요소 가져오기
+  const randomObstacle = await Obstacle.findOne().skip(randomIndex).exec();
+
   const objectId = uuidv4();
-  const obstacleId = "obstacleIdFromDB"; // 실제 DB에서 가져와야 함
+  const obstacleId = randomObstacle.obstacleId; // Obstacle 모델의 obstacleId 필드 사용
   const position = generateRandomPosition();
 
   const newObstacle = { objectId, obstacleId, position };
