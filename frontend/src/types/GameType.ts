@@ -1,7 +1,16 @@
-import { PlayerPos } from "./PlayerType";
-
 export type PlayerInfo = {
   userId: string;
   nickName: string;
   position: PlayerPos;
+};
+
+export type PlayerPos = {
+  x: number;
+  y: number;
+  direction: "up" | "right" | "bottom" | "left";
+};
+
+export type ObjectPos = {
+  x: number;
+  y: number;
 };

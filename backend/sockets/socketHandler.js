@@ -12,8 +12,20 @@ const {
   generateRandomObstacle,
   generateRandomItem,
 } = require("./eventHandler/gameEvent");
+const { redisClient } = require("../config/db");
 
 module.exports = socketHandler = (io) => {
+  /* 게임 요소들 생성 interval 이벤트들은 "한번만" 실행되야 함.
+     기존 위치에 두면, 플레이어가 입장할때마다 interval 이벤트들이 중복으로 등록되게 됨!
+     그래서 위로 뺐다!
+     추가로, 그냥 빼니까 redisClient 초기화 이전에 실행되면서 에러 발생했음
+     그래서 redisClient가 connect 된 뒤에 한 번만 실행시키는 방식으로 최종 해결 */
+  redisClient.on("connect", () => {
+    generateRandomTrash(io);
+    generateRandomObstacle(io);
+    generateRandomItem(io);
+  });
+
   io.on("connection", (socket) => {
     // 소켓 연결을 하는 과정에서 (handshake) userId를 받아 미리 저장해둠!
     console.log("사용자 연결:", socket.handshake.query.userId);
@@ -23,10 +35,7 @@ module.exports = socketHandler = (io) => {
     joinGameRoom(io, socket);
     leaveGameRoom(io, socket);
     playerMove(io, socket);
-    getUserTrash(io, socket);
-    generateRandomTrash(io, socket);
-    generateRandomObstacle(io, socket);
-    generateRandomItem(io, socket);
+    // getUserTrash(io, socket);
 
     // 소켓 연결이 끊겼을 때
     socket.on("disconnect", async () => {
