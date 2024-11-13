@@ -75,3 +75,33 @@ exports.getItemPositions = async () => {
   const itemList = await redisClient.lRange("itemPositions", 0, -1);
   return itemList.map((item) => JSON.parse(item));
 };
+
+// 특정 쓰레기를 Redis에서 제거하는 함수
+exports.removeTrashPosition = async (objectId) => {
+  const trashList = await redisClient.lRange("trashPositions", 0, -1);
+
+  for (let item of trashList) {
+    const parsedItem = JSON.parse(item);
+    if (parsedItem.objectId === objectId) {
+      await redisClient.lRem("trashPositions", 1, item);
+      console.log(`쓰레기 ${objectId}가 제거되었습니다.`);
+      return true;
+    }
+  }
+  return false;
+};
+
+// 특정 아이템을 Redis에서 제거하는 함수
+exports.removeItemPosition = async (objectId) => {
+  const itemList = await redisClient.lRange("itemPositions", 0, -1);
+
+  for (let item of itemList) {
+    const parsedItem = JSON.parse(item);
+    if (parsedItem.objectId === objectId) {
+      await redisClient.lRem("itemPositions", 1, item);
+      console.log(`아이템 ${objectId}가 제거되었습니다.`);
+      return true;
+    }
+  }
+  return false;
+};
