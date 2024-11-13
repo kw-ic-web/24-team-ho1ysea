@@ -20,6 +20,14 @@ exports.playerMove = (io, socket) => {
 
     // console.log(broadcastData);
 
+    // 충돌 체크 수행 (collisionDistance가 있으면 사용하고, 없으면 기본값 50 사용)
+    const collisionResult = await checkCollision(userId, position);
+
+    // 충돌이 발생한 경우 클라이언트에게 알림
+    if (collisionResult) {
+      socket.emit("collision", collisionResult);
+    }
+
     // gameRoom 방 전체에 브로드캐스트
     io.to("gameRoom").emit("updateCharacterPosition", broadcastData);
   });

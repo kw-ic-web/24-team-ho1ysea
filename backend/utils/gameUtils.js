@@ -8,6 +8,8 @@ const {
   getObstaclePositions,
   updateItemPositions,
   getItemPositions,
+  removeTrashPosition,
+  removeItemPosition,
 } = require("./redisHandler");
 const { v4: uuidv4 } = require("uuid");
 // 이거 고유id를 부여하는 방법 중 하나라, 좀 더 편한 대체 방안 있으면 수정해도 좋아요!
@@ -15,6 +17,15 @@ const { v4: uuidv4 } = require("uuid");
 const Item = require("../models/item");
 const Trash = require("../models/trash");
 const Obstacle = require("../models/obstacle");
+
+// 두 위치 간의 충돌 여부를 판단하는 함수
+function isColliding(position1, position2, collisionDistance = 50) {
+  const distance = Math.sqrt(
+    Math.pow(position1.x - position2.x, 2) +
+      Math.pow(position1.y - position2.y, 2)
+  ); // 유클리디안 거리 사용
+  return distance < collisionDistance;
+}
 
 // 유저의 보유 쓰레기량 조회 함수
 exports.getUserTrashData = async (userId) => {
@@ -110,4 +121,35 @@ exports.generateItem = async () => {
   // 업데이트된 전체 아이템 데이터 가져오기
   const itemList = await getItemPositions();
   return itemList;
+};
+
+// 충돌 체크 함수
+exports.checkCollision = async (userId, position, collisionDistance = 50) => {
+  // 쓰레기와의 충돌 체크
+  const trashList = await getTrashPositions();
+  for (let trash of trashList) {
+    if (isColliding(position, trash.position, collisionDistance)) {
+      // 충돌한 쓰레기를 Redis에서 제거
+      await removeTrashPosition(trash.objectId);
+      console.log(`쓰레기 ${trash.objectId}를 수집했습니다.`);
+      // 충돌한 쓰레기 정보를 반환
+      return { type: "trash", data: trash };
+    }
+  }
+
+  // 아이템과의 충돌 체크
+  const itemList = await getItemPositions();
+  for (let item of itemList) {
+    if (isColliding(position, item.position, collisionDistance)) {
+      // 충돌한 아이템을 Redis에서 제거
+      await removeItemPosition(item.objectId);
+      console.log(`아이템 ${item.objectId}를 수집했습니다.`);
+      // 충돌한 아이템 정보를 반환
+      return { type: "item", data: item };
+    }
+  }
+
+  // 충돌이 없는 경우 null 반환
+  // 클라이언트에게 collision event를 발생시키지 않음
+  return null;
 };

@@ -40,7 +40,7 @@ exports.generateRandomTrash = async (io) => {
 
       // 쓰레기 최대치 도달 시 생성 X
       if (trashData.length > trashLimit) {
-        console.log("쓰레기가 꽉 찼습니다.");
+        // console.log("쓰레기가 꽉 찼습니다.");
         return;
       }
 
