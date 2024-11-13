@@ -1,5 +1,6 @@
 // backend/sockets/eventHandler/playerMove.js
 
+const { checkCollision } = require("../../utils/gameUtils");
 const { updateUserData } = require("../../utils/redisHandler");
 
 /**
@@ -24,8 +25,10 @@ exports.playerMove = (io, socket) => {
     const collisionResult = await checkCollision(userId, position);
 
     // 충돌이 발생한 경우 클라이언트에게 알림
-    if (collisionResult) {
-      socket.emit("collision", collisionResult);
+    if (collisionResult && collisionResult.type === "trash") {
+      io.to("gameRoom").emit("collisionTrash", collisionResult.data);
+    } else if (collisionResult && collisionResult.type === "item") {
+      io.to("gameRoom").emit("collisionItem", collisionResult.data);
     }
 
     // gameRoom 방 전체에 브로드캐스트

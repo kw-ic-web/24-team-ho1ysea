@@ -1,3 +1,5 @@
+import { ObjectPos } from "./GameType";
+
 export type MyItems = {
   itemId: string;
   itemName: string;
@@ -12,4 +14,10 @@ export type BuyItem = {
 
 export type SellItem = {
   message: string;
+};
+
+export type GameItem = {
+  objectId: string;
+  itemId: "item001" | "item002";
+  position: ObjectPos;
 };

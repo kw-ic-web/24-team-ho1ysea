@@ -133,7 +133,8 @@ exports.checkCollision = async (userId, position, collisionDistance = 50) => {
       await removeTrashPosition(trash.objectId);
       console.log(`쓰레기 ${trash.objectId}를 수집했습니다.`);
       // 충돌한 쓰레기 정보를 반환
-      return { type: "trash", data: trash };
+      const updatedTrashList = await getTrashPositions();
+      return { type: "trash", data: updatedTrashList };
     }
   }
 
@@ -145,7 +146,8 @@ exports.checkCollision = async (userId, position, collisionDistance = 50) => {
       await removeItemPosition(item.objectId);
       console.log(`아이템 ${item.objectId}를 수집했습니다.`);
       // 충돌한 아이템 정보를 반환
-      return { type: "item", data: item };
+      const updatedItemList = await getItemPositions();
+      return { type: "item", data: updatedItemList };
     }
   }
 

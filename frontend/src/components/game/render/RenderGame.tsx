@@ -12,6 +12,8 @@ import { Obstacle } from "@@types/obstacleType";
 import { useGameDataStore } from "@store/gameDataStore";
 import { Trash } from "@@types/trashType";
 import RenderTrash from "./RenderTrash";
+import { GameItem } from "@@types/itemsType";
+import RenderItem from "./RenderItem";
 
 interface Props {
   socket: Socket | null;
@@ -32,6 +34,7 @@ export default function RenderGame({ socket }: Props) {
   );
   const [obstacleInfo, setObstacleInfo] = useState<Obstacle[]>([]);
   const [trashInfo, setTrashInfo] = useState<Trash[]>([]);
+  const [itemInfo, setItemInfo] = useState<GameItem[]>([]);
 
   // 소켓이 오픈됐고, 플레이어 아이디를 잘 받아왔으면 서버로부터 updateCharacterPosition 이벤트 수신 시작
   useEffect(() => {
@@ -42,13 +45,23 @@ export default function RenderGame({ socket }: Props) {
       socket.on("generateRandomObstacle", (data: Obstacle[]) => {
         setObstacleInfo(data);
       });
+      socket.on("generateRandomItem", (data: GameItem[]) => {
+        setItemInfo(data);
+      });
       socket.on("generateRandomTrash", (data: Trash[]) => {
         setTrashInfo(data);
+      });
+      socket.on("collisionTrash", (collisionTrashRes: Trash[]) => {
+        setTrashInfo(collisionTrashRes);
+      });
+      socket.on("collisionItem", (collisionItemRes: GameItem[]) => {
+        setItemInfo(collisionItemRes);
       });
     } else if (!socket) {
       setAnotherPlayersInfo([]);
       setObstacleInfo([]);
       setTrashInfo([]);
+      setItemInfo([]);
     }
   }, [socket, userId]);
 
@@ -81,6 +94,10 @@ export default function RenderGame({ socket }: Props) {
 
       {trashInfo.map((trash) => (
         <RenderTrash key={trash.objectId} trash={trash} />
+      ))}
+
+      {itemInfo.map((item) => (
+        <RenderItem key={item.objectId} item={item} />
       ))}
     </Stage>
   );
