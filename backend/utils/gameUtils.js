@@ -151,6 +151,19 @@ exports.checkCollision = async (userId, position, collisionDistance = 50) => {
     }
   }
 
+  // 장애물과의 충돌 체크
+  const obstacleList = await getObstaclePositions();
+  for (let obstacle of obstacleList) {
+    if (isColliding(position, obstacle.position, collisionDistance)) {
+      // 충돌한 장애물을 Redis에서 제거
+      await removeObstaclePosition(obstacle.objectId);
+      console.log(`장애물 ${obstacle.objectId}에 충돌했습니다.`);
+      // 충돌한 장애물 정보를 반환
+      const updatedObstacleList = await getObstaclePositions();
+      return { type: "obstacle", data: updatedObstacleList };
+    }
+  }
+
   // 충돌이 없는 경우 null 반환
   // 클라이언트에게 collision event를 발생시키지 않음
   return null;
