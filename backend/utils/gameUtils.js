@@ -10,6 +10,7 @@ const {
   getItemPositions,
   removeTrashPosition,
   removeItemPosition,
+  removeObstaclePosition,
 } = require("./redisHandler");
 const { v4: uuidv4 } = require("uuid");
 // 이거 고유id를 부여하는 방법 중 하나라, 좀 더 편한 대체 방안 있으면 수정해도 좋아요!
@@ -36,9 +37,14 @@ exports.getUserTrashData = async (userId) => {
 // 랜덤 위치 생성 함수 (좌표 제한 적용)
 // 활용도 높아서 같은 파일 내 다른 함수들도 이 유틸 참조합니다 :)
 const generateRandomPosition = () => {
+  const px = 50;
+  const py = 50;
+  const w = 1280 - 2 * px;
+  const h = 500 - 2 * py;
+
   return {
-    x: Math.floor(Math.random() * 1280), // x 범위: 0 < x < 1280
-    y: Math.floor(Math.random() * 500), // y 범위: 0 < y < 500
+    x: Math.round(Math.random() * w) + px, // x 범위: 50 < x < 1230
+    y: Math.round(Math.random() * h) + py, // y 범위: 50 < y < 450
   };
 };
 

@@ -7,7 +7,6 @@ const {
 } = require("./eventHandler/manageGameRoom");
 const { removeUserData } = require("../utils/redisHandler");
 const {
-  getUserTrash,
   generateRandomTrash,
   generateRandomObstacle,
   generateRandomItem,

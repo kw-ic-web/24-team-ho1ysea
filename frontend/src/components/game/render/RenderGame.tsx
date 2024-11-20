@@ -57,6 +57,9 @@ export default function RenderGame({ socket }: Props) {
       socket.on("collisionItem", (collisionItemRes: GameItem[]) => {
         setItemInfo(collisionItemRes);
       });
+      socket.on("collisionObstacle", (collisionObstacleRes: Obstacle[]) => {
+        setObstacleInfo(collisionObstacleRes);
+      });
     } else if (!socket) {
       setAnotherPlayersInfo([]);
       setObstacleInfo([]);

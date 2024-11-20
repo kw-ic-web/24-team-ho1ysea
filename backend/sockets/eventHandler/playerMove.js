@@ -29,6 +29,8 @@ exports.playerMove = (io, socket) => {
       io.to("gameRoom").emit("collisionTrash", collisionResult.data);
     } else if (collisionResult && collisionResult.type === "item") {
       io.to("gameRoom").emit("collisionItem", collisionResult.data);
+    } else if (collisionResult && collisionResult.type === "obstacle") {
+      io.to("gameRoom").emit("collisionObstacle", collisionResult.data);
     }
 
     // gameRoom 방 전체에 브로드캐스트
