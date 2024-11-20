@@ -80,10 +80,10 @@ exports.getItemPositions = async () => {
 exports.removeTrashPosition = async (objectId) => {
   const trashList = await redisClient.lRange("trashPositions", 0, -1);
 
-  for (let item of trashList) {
-    const parsedItem = JSON.parse(item);
-    if (parsedItem.objectId === objectId) {
-      await redisClient.lRem("trashPositions", 1, item);
+  for (let trash of trashList) {
+    const parsedTrash = JSON.parse(Trash);
+    if (parsedTrash.objectId === objectId) {
+      await redisClient.lRem("trashPositions", 1, trash);
       console.log(`쓰레기 ${objectId}가 제거되었습니다.`);
       return true;
     }
@@ -100,6 +100,21 @@ exports.removeItemPosition = async (objectId) => {
     if (parsedItem.objectId === objectId) {
       await redisClient.lRem("itemPositions", 1, item);
       console.log(`아이템 ${objectId}가 제거되었습니다.`);
+      return true;
+    }
+  }
+  return false;
+};
+
+// 특정 장애물을 Redis에서 제거하는 함수
+exports.removeObstaclePosition = async (objectId) => {
+  const obstacleList = await redisClient.lRange("obstaclePositions", 0, -1);
+
+  for (let obstacle of obstacleList) {
+    const parsedObstacle = JSON.parse(obstacle);
+    if (parsedObstacle.objectId === objectId) {
+      await redisClient.lRem("obstaclePositions", 1, obstacle);
+      console.log(`장애물 ${objectId}가 제거되었습니다.`);
       return true;
     }
   }
