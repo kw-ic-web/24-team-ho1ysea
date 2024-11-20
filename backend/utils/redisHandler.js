@@ -81,7 +81,7 @@ exports.removeTrashPosition = async (objectId) => {
   const trashList = await redisClient.lRange("trashPositions", 0, -1);
 
   for (let trash of trashList) {
-    const parsedTrash = JSON.parse(Trash);
+    const parsedTrash = JSON.parse(trash);
     if (parsedTrash.objectId === objectId) {
       await redisClient.lRem("trashPositions", 1, trash);
       console.log(`쓰레기 ${objectId}가 제거되었습니다.`);
