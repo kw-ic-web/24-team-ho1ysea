@@ -64,7 +64,7 @@ exports.getAllItemDescriptions = async (req, res) => {
 
 // 아이템 사용
 exports.useItem = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
   const { itemId } = req.body;
 
   try {

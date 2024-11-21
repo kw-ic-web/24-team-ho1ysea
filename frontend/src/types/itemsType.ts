@@ -16,6 +16,12 @@ export type SellItem = {
   message: string;
 };
 
+export type UseItem = {
+  message: string;
+  id: string;
+  quantity: number;
+};
+
 export type GameItem = {
   objectId: string;
   itemId: "item001" | "item002";

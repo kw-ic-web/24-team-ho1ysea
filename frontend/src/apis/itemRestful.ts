@@ -1,4 +1,4 @@
-import { MyItems } from "@@types/itemsType";
+import { MyItems, UseItem } from "@@types/itemsType";
 import axios from "axios";
 
 /**
@@ -10,4 +10,18 @@ export const myItemsApi = (token: string) => {
       Authorization: `Bearer ${token}`,
     },
   });
+};
+
+export const utilizeItemApi = (token: string, itemId: string) => {
+  return axios.post<UseItem>(
+    `${import.meta.env.VITE_API_URL}/item/use`,
+    {
+      itemId,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
