@@ -27,6 +27,7 @@ export default function RenderGame({ socket }: Props) {
   const { width, height } = useStageInit();
   // 플레이어의 아이디
   const userId = useGameDataStore((s) => s.userId);
+  const setMyTrashAmount = useGameDataStore((s) => s.setMyTrashAmount);
 
   // 플레이어를 제외한 나머지 유저의 정보가 담길 배열 <- 소켓에서 가져오는 데이터를 필터링해서 저장
   const [anotherPlayersInfo, setAnotherPlayersInfo] = useState<PlayerInfo[]>(
@@ -60,13 +61,16 @@ export default function RenderGame({ socket }: Props) {
       socket.on("collisionObstacle", (collisionObstacleRes: Obstacle[]) => {
         setObstacleInfo(collisionObstacleRes);
       });
+      socket.on("getTrashAmount", (trashAmountRes: number) => {
+        setMyTrashAmount(trashAmountRes);
+      });
     } else if (!socket) {
       setAnotherPlayersInfo([]);
       setObstacleInfo([]);
       setTrashInfo([]);
       setItemInfo([]);
     }
-  }, [socket, userId]);
+  }, [setMyTrashAmount, socket, userId]);
 
   return (
     <Stage

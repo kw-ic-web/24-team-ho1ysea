@@ -1,6 +1,9 @@
 // backend/sockets/eventHandler/playerMove.js
 
-const { checkCollision } = require("../../utils/gameUtils");
+const {
+  checkCollision,
+  updateUserTrashAmount,
+} = require("../../utils/gameUtils");
 const { updateUserData } = require("../../utils/redisHandler");
 
 /**
@@ -26,7 +29,14 @@ exports.playerMove = (io, socket) => {
 
     // 충돌이 발생한 경우 클라이언트에게 알림
     if (collisionResult && collisionResult.type === "trash") {
+      // 전체 플레이어한테는 쓰레기가 사라짐을 전달하고
       io.to("gameRoom").emit("collisionTrash", collisionResult.data);
+      // 쓰레기와 충돌한 플레이어에게는 업데이트된 trashAmount도 전달
+      const trashAmount = await updateUserTrashAmount(
+        socket.data.userId,
+        collisionResult.trashId === "trash001" ? 2 : 1
+      );
+      socket.emit("getTrashAmount", trashAmount);
     } else if (collisionResult && collisionResult.type === "item") {
       io.to("gameRoom").emit("collisionItem", collisionResult.data);
     } else if (collisionResult && collisionResult.type === "obstacle") {

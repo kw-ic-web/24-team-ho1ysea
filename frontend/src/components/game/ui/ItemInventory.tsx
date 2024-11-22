@@ -3,7 +3,7 @@ import { TOTAL_INVENTORY_SLOT } from "@constants/game";
 import { useGameDataStore } from "@store/gameDataStore";
 import { useKeyStore } from "@store/keyStore";
 import { getLocalStorage } from "@utils/localStorage";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 export default function ItemInventory(): JSX.Element {
   const myItems = useGameDataStore((s) => s.myItems);
@@ -11,9 +11,9 @@ export default function ItemInventory(): JSX.Element {
   const activeItem = useKeyStore((s) => s.activeItem);
 
   // 인벤토리 슬롯을 항상 유지하기 위해서 TOTAL_INVENTORY_SLOT 만큼의 배열을 만들고, 내부에 아이템을 채움 -> 아이템 없으면 null 남음
-  const itemSlots = new Array(TOTAL_INVENTORY_SLOT)
-    .fill(null)
-    .map((_, i) => myItems[i]);
+  const itemSlots = useMemo(() => {
+    return new Array(TOTAL_INVENTORY_SLOT).fill(null).map((_, i) => myItems[i]);
+  }, [myItems]);
 
   useEffect(() => {
     const utilizeItem = async () => {
@@ -35,7 +35,7 @@ export default function ItemInventory(): JSX.Element {
     };
 
     utilizeItem();
-  }, [activeItem, fetchMyItems, itemSlots]);
+  }, [activeItem, fetchMyItems]);
 
   return (
     <div className="flex absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-40 text-slate-200">

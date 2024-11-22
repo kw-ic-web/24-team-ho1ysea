@@ -1,4 +1,3 @@
-import { PLAYER_MOVE } from "@constants/game";
 import { useTick } from "@pixi/react";
 import { useKeyStore } from "@store/keyStore";
 import { usePlayerStore } from "@store/playerStore";
@@ -8,7 +7,7 @@ import { PlayerPos } from "@@types/GameType";
 /**
  * @description 키 입력에 따라 플레이어 위치를 계산해서 zustand store에 반영하는 커스텀 훅
  */
-export const usePlayerPos = () => {
+export const usePlayerPos = (playerSpeed: number) => {
   const keyState = useKeyStore((s) => s.keyState);
   const updatePlayerPos = usePlayerStore((s) => s.updatePlayerPos);
 
@@ -20,19 +19,19 @@ export const usePlayerPos = () => {
     let direction: PlayerPos["direction"] = "bottom";
 
     if (keyState.isTop) {
-      dy -= PLAYER_MOVE * deltaTime;
+      dy -= playerSpeed * deltaTime;
       direction = "up";
     }
     if (keyState.isRight) {
-      dx += PLAYER_MOVE * deltaTime;
+      dx += playerSpeed * deltaTime;
       direction = "right";
     }
     if (keyState.isBottom) {
-      dy += PLAYER_MOVE * deltaTime;
+      dy += playerSpeed * deltaTime;
       direction = "bottom";
     }
     if (keyState.isLeft) {
-      dx -= PLAYER_MOVE * deltaTime;
+      dx -= playerSpeed * deltaTime;
       direction = "left";
     }
 

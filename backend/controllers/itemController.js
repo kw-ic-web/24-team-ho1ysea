@@ -1,6 +1,13 @@
 // controllers/itemController.js
+const {
+  USE_ITEM_001,
+  USE_ITEM_002,
+  USE_ITEM_003,
+  USE_ITEM_004,
+} = require("../config/constant");
 const Inventory = require("../models/inventory");
 const Item = require("../models/item");
+const { setUserRange, setUserSpeed } = require("../utils/redisHandler");
 
 // 보유 아이템 조회
 exports.getUserInventory = async (req, res) => {
@@ -93,6 +100,21 @@ exports.useItem = async (req, res) => {
 
     await inventory.save();
 
+    // 소켓쪽에서 반영되도록 redis로 아이템에 해당하는 효과 업데이트
+    if (itemId === "item001") {
+      console.log("그물 사용");
+      await setUserRange(req.user.id, USE_ITEM_001);
+    } else if (itemId === "item002") {
+      console.log("물갈퀴 사용");
+      await setUserSpeed(req.user.id, USE_ITEM_002);
+    } else if (itemId === "item003") {
+      console.log("잠수복 사용");
+      await setUserSpeed(req.user.id, USE_ITEM_003);
+    } else if (itemId === "item004") {
+      console.log("뜰채 사용");
+      await setUserRange(req.user.id, USE_ITEM_004);
+    }
+
     res.json({
       message: "아이템 사용 성공",
       id: itemId,
@@ -107,50 +129,50 @@ exports.useItem = async (req, res) => {
   }
 };
 
-// 아이템 습득
-exports.addItem = async (req, res) => {
-  const userId = req.user.id;
-  const { itemId } = req.body;
+// // 아이템 습득
+// exports.addItem = async (req, res) => {
+//   const userId = req.user.id;
+//   const { itemId } = req.body;
 
-  try {
-    // 아이템 존재 여부 확인
-    const item = await Item.findOne({ itemId });
+//   try {
+//     // 아이템 존재 여부 확인
+//     const item = await Item.findOne({ itemId });
 
-    if (!item) {
-      return res.status(404).json({ message: "아이템을 찾을 수 없습니다." });
-    }
+//     if (!item) {
+//       return res.status(404).json({ message: "아이템을 찾을 수 없습니다." });
+//     }
 
-    // 인벤토리 가져오기 또는 생성
-    let inventory = await Inventory.findOne({ userid: userId });
+//     // 인벤토리 가져오기 또는 생성
+//     let inventory = await Inventory.findOne({ userid: userId });
 
-    if (!inventory) {
-      inventory = new Inventory({ userid: userId, items: [] });
-    }
+//     if (!inventory) {
+//       inventory = new Inventory({ userid: userId, items: [] });
+//     }
 
-    // 아이템이 이미 있는지 확인
-    const itemIndex = inventory.items.findIndex(
-      (invItem) => invItem.itemId === itemId
-    );
+//     // 아이템이 이미 있는지 확인
+//     const itemIndex = inventory.items.findIndex(
+//       (invItem) => invItem.itemId === itemId
+//     );
 
-    if (itemIndex > -1) {
-      // 이미 아이템이 있으면 수량 증가
-      inventory.items[itemIndex].quantity += 1;
-    } else {
-      // 아이템이 없으면 추가
-      inventory.items.push({ itemId, quantity: 1 });
-    }
+//     if (itemIndex > -1) {
+//       // 이미 아이템이 있으면 수량 증가
+//       inventory.items[itemIndex].quantity += 1;
+//     } else {
+//       // 아이템이 없으면 추가
+//       inventory.items.push({ itemId, quantity: 1 });
+//     }
 
-    await inventory.save();
+//     await inventory.save();
 
-    res.json({
-      message: "아이템 추가 성공",
-      id: itemId,
-      quantity:
-        inventory.items[itemIndex > -1 ? itemIndex : inventory.items.length - 1]
-          .quantity,
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("서버 오류");
-  }
-};
+//     res.json({
+//       message: "아이템 추가 성공",
+//       id: itemId,
+//       quantity:
+//         inventory.items[itemIndex > -1 ? itemIndex : inventory.items.length - 1]
+//           .quantity,
+//     });
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send("서버 오류");
+//   }
+// };
