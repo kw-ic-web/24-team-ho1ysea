@@ -45,7 +45,7 @@ exports.playerMove = (io, socket) => {
       console.log("충돌한 아이템 정보:", collisionResult.id);
       socket.emit("getItem", collisionResult.id);
       // 프론트에서는 이 이벤트를 수신하면 item 습득 API로 다시 요청을 날리고, 인벤토리 정보를 새로고침함
-    } else if (collisionResult.type === "obstacle") {
+    } else if (collisionResult && collisionResult.type === "obstacle") {
       // 전체 플레이어에게 장애물이 사라졌음을 알림
       io.to("gameRoom").emit("collisionObstacle", collisionResult.data);
 
