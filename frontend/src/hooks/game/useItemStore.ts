@@ -18,6 +18,7 @@ export const useItemStore = (isOpen: boolean) => {
   const myItems = useGameDataStore((s) => s.myItems);
   const myCurrency = useGameDataStore((s) => s.myCurrency);
   const storeItems = useGameDataStore((s) => s.storeItems);
+  const setMyTrashAmount = useGameDataStore((s) => s.setMyTrashAmount);
   const fetchMyItems = useGameDataStore((s) => s.fetchMyItems);
   const fetchMyCurrency = useGameDataStore((s) => s.fetchMyCurrency);
 
@@ -114,6 +115,7 @@ export const useItemStore = (isOpen: boolean) => {
         token
       ).then((res) => res.data.exchangedGold);
       showToast(exchangedGold + " 원 환전 성공!");
+      setMyTrashAmount(0); // 환전 끝나면 쓰레기 량 초기화
       fetchMyCurrency(token);
     } catch (err) {
       if (isAxiosError(err)) {
@@ -126,7 +128,13 @@ export const useItemStore = (isOpen: boolean) => {
         }
       }
     }
-  }, [myCurrency.trash, navigate, showToast, fetchMyCurrency]);
+  }, [
+    myCurrency.trash,
+    showToast,
+    setMyTrashAmount,
+    fetchMyCurrency,
+    navigate,
+  ]);
 
   useEffect(() => {
     const fetchData = async () => {

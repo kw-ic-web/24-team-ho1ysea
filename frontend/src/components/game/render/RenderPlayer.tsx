@@ -18,7 +18,8 @@ interface Props {
  * @description 플레이어 캐릭터를 렌더링하는 컴포넌트
  */
 function RenderPlayer({ socket }: Props) {
-  usePlayerPos();
+  const [playerSpeed, setPlayerSpeed] = useState<number>(5);
+  const [playerRange, setPlayerRange] = useState<number>(50);
 
   const playerPos = usePlayerStore((s) => s.playerPos);
   const nickName = useGameDataStore((s) => s.nickName);
@@ -28,6 +29,21 @@ function RenderPlayer({ socket }: Props) {
   const { x, y, direction } = playerPos;
 
   const [texture, setTexture] = useState<PIXI.Texture | null>(null);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("getPlayerSpeed", (speed: number) => {
+        console.log("getPlayerSpeed: ", speed);
+        setPlayerSpeed(speed);
+      });
+      socket.on("getPlayerRange", (range: number) => {
+        console.log("getPlayerRange: ", range);
+        setPlayerRange(range);
+      });
+    }
+  }, [socket]);
+
+  usePlayerPos(playerSpeed);
 
   useEffect(() => {
     if (socket && nickName && playerPos) {

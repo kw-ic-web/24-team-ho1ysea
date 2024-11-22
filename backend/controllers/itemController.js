@@ -1,6 +1,13 @@
 // controllers/itemController.js
+const {
+  USE_ITEM_001,
+  USE_ITEM_002,
+  USE_ITEM_003,
+  USE_ITEM_004,
+} = require("../config/constant");
 const Inventory = require("../models/inventory");
 const Item = require("../models/item");
+const { setUserRange, setUserSpeed } = require("../utils/redisHandler");
 
 // 보유 아이템 조회
 exports.getUserInventory = async (req, res) => {
@@ -64,7 +71,7 @@ exports.getAllItemDescriptions = async (req, res) => {
 
 // 아이템 사용
 exports.useItem = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
   const { itemId } = req.body;
 
   try {
@@ -93,6 +100,21 @@ exports.useItem = async (req, res) => {
 
     await inventory.save();
 
+    // 소켓쪽에서 반영되도록 redis로 아이템에 해당하는 효과 업데이트
+    if (itemId === "item001") {
+      console.log("그물 사용");
+      await setUserRange(req.user.id, USE_ITEM_001);
+    } else if (itemId === "item002") {
+      console.log("물갈퀴 사용");
+      await setUserSpeed(req.user.id, USE_ITEM_002);
+    } else if (itemId === "item003") {
+      console.log("잠수복 사용");
+      await setUserSpeed(req.user.id, USE_ITEM_003);
+    } else if (itemId === "item004") {
+      console.log("뜰채 사용");
+      await setUserRange(req.user.id, USE_ITEM_004);
+    }
+
     res.json({
       message: "아이템 사용 성공",
       id: itemId,
@@ -109,7 +131,7 @@ exports.useItem = async (req, res) => {
 
 // 아이템 습득
 exports.addItem = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
   const { itemId } = req.body;
 
   try {

@@ -9,11 +9,14 @@ import { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
 import { PlayerInfo } from "@@types/GameType";
 import { Obstacle } from "@@types/obstacleType";
-import { useGameDataStore } from "@store/gameDataStore";
-import { Trash } from "@@types/trashType";
-import RenderTrash from "./RenderTrash";
 import { GameItem } from "@@types/itemsType";
+import { Trash } from "@@types/trashType";
+import { useGameDataStore } from "@store/gameDataStore";
+import RenderTrash from "./RenderTrash";
 import RenderItem from "./RenderItem";
+import RenderWarning from "./RenderWarning";
+import { getItemApi } from "@apis/itemRestful";
+import { getLocalStorage } from "@utils/localStorage";
 
 interface Props {
   socket: Socket | null;
@@ -27,7 +30,8 @@ export default function RenderGame({ socket }: Props) {
   const { width, height } = useStageInit();
   // 플레이어의 아이디
   const userId = useGameDataStore((s) => s.userId);
-
+  const setMyTrashAmount = useGameDataStore((s) => s.setMyTrashAmount);
+  const fetchMyItems = useGameDataStore((s) => s.fetchMyItems);
   // 플레이어를 제외한 나머지 유저의 정보가 담길 배열 <- 소켓에서 가져오는 데이터를 필터링해서 저장
   const [anotherPlayersInfo, setAnotherPlayersInfo] = useState<PlayerInfo[]>(
     []
@@ -60,13 +64,30 @@ export default function RenderGame({ socket }: Props) {
       socket.on("collisionObstacle", (collisionObstacleRes: Obstacle[]) => {
         setObstacleInfo(collisionObstacleRes);
       });
+      socket.on("getTrashAmount", (trashAmountRes: number) => {
+        setMyTrashAmount(trashAmountRes);
+      });
+      socket.on("getItem", async (itemId: string) => {
+        console.log(`itemId: ${itemId}`);
+        try {
+          const token = getLocalStorage("token");
+          if (token) {
+            // 습득한 아이템을 백엔드 mongodb에 업데이트하도록 요청을 날리고
+            await getItemApi(token, itemId);
+            // 끝나면 인벤토리 내 아이템 정보를 다시 받아와서 zustand state를 업데이트하는 함수 실행
+            await fetchMyItems(token);
+          }
+        } catch (e) {
+          console.error("아이템 주운거 처리하다 에러 발생", e);
+        }
+      });
     } else if (!socket) {
       setAnotherPlayersInfo([]);
       setObstacleInfo([]);
       setTrashInfo([]);
       setItemInfo([]);
     }
-  }, [socket, userId]);
+  }, [fetchMyItems, setMyTrashAmount, socket, userId]);
 
   return (
     <Stage
@@ -91,9 +112,13 @@ export default function RenderGame({ socket }: Props) {
       ))}
 
       {/* 방해요소 (상어, 해파리) 렌더링 */}
-      {obstacleInfo.map((obstacle) => (
-        <RenderObstacle key={obstacle.objectId} obstacle={obstacle} />
-      ))}
+      {obstacleInfo.map((obstacle) =>
+        obstacle.isActive === 0 ? (
+          <RenderWarning key={obstacle.objectId} obstacle={obstacle} />
+        ) : (
+          <RenderObstacle key={obstacle.objectId} obstacle={obstacle} />
+        )
+      )}
 
       {trashInfo.map((trash) => (
         <RenderTrash key={trash.objectId} trash={trash} />

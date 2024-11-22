@@ -11,6 +11,7 @@ const {
   removeTrashPosition,
   removeItemPosition,
   removeObstaclePosition,
+  getUserRange,
 } = require("./redisHandler");
 const { v4: uuidv4 } = require("uuid");
 // 이거 고유id를 부여하는 방법 중 하나라, 좀 더 편한 대체 방안 있으면 수정해도 좋아요!
@@ -20,7 +21,7 @@ const Trash = require("../models/trash");
 const Obstacle = require("../models/obstacle");
 
 // 두 위치 간의 충돌 여부를 판단하는 함수
-function isColliding(position1, position2, collisionDistance = 50) {
+function isColliding(position1, position2, collisionDistance) {
   const distance = Math.sqrt(
     Math.pow(position1.x - position2.x, 2) +
       Math.pow(position1.y - position2.y, 2)
@@ -32,6 +33,23 @@ function isColliding(position1, position2, collisionDistance = 50) {
 exports.getUserTrashData = async (userId) => {
   const trashAmount = await redisClient.hGet("user_trash", userId);
   return { userId, trashAmount: parseInt(trashAmount) || 0 };
+};
+
+// 유저의 보유 쓰레기량을 증가시키고, 반환하는 함수
+exports.updateUserTrashAmount = async (userId, increase) => {
+  // 해당 유저가 처음 쓰레기를 주울 때는 Redis에 값이 없을거임
+  const trashAmount = (await redisClient.hGet("user_trash", userId)) || "0";
+  await redisClient.hSet(
+    "user_trash",
+    userId,
+    JSON.stringify(parseFloat(trashAmount) + increase)
+  );
+  return parseFloat(trashAmount) + increase;
+};
+
+// 유저의 보유 쓰레기량을 제거하는 함수
+exports.removeUserTrashAmount = async (userId) => {
+  await redisClient.hDel("user_trash", userId);
 };
 
 // 랜덤 위치 생성 함수 (좌표 제한 적용)
@@ -119,10 +137,12 @@ exports.generateItem = async () => {
 
   const objectId = uuidv4();
   const itemId = randomItem.itemId; // Item 모델의 itemId 필드 사용
+  const image = randomItem.image; // Item 모델에 명시된 이미지명 사용
   const position = generateRandomPosition();
 
-  // Redis에 업데이트
-  await updateItemPositions(objectId, itemId, position);
+  // Redis에 새로 생긴 아이템 업데이트할 때, mongosh에 있는 이미지명까지 저장
+  console.log("아이템생성: ", itemId);
+  await updateItemPositions(objectId, itemId, image, position);
 
   // 업데이트된 전체 아이템 데이터 가져오기
   const itemList = await getItemPositions();
@@ -130,17 +150,23 @@ exports.generateItem = async () => {
 };
 
 // 충돌 체크 함수
-exports.checkCollision = async (userId, position, collisionDistance = 50) => {
+// type: trash | item | obstacle
+// id: trashId | itemId | obstacleId
+exports.checkCollision = async (userId, position) => {
+  // Redis에서 해당 플레이어의 사거리를 가져옴
+  const collisionDistance = await getUserRange(userId);
+
   // 쓰레기와의 충돌 체크
   const trashList = await getTrashPositions();
   for (let trash of trashList) {
     if (isColliding(position, trash.position, collisionDistance)) {
       // 충돌한 쓰레기를 Redis에서 제거
       await removeTrashPosition(trash.objectId);
-      console.log(`쓰레기 ${trash.objectId}를 수집했습니다.`);
+      // console.log(`쓰레기 ${trash.objectId}를 수집했습니다.`);
       // 충돌한 쓰레기 정보를 반환
       const updatedTrashList = await getTrashPositions();
-      return { type: "trash", data: updatedTrashList };
+      // 충돌한 쓰레기의 아이디를 함께 리턴해서 신문지인지 플라스틱 병인지 확인
+      return { type: "trash", id: trash.trashId, data: updatedTrashList };
     }
   }
 
@@ -150,10 +176,11 @@ exports.checkCollision = async (userId, position, collisionDistance = 50) => {
     if (isColliding(position, item.position, collisionDistance)) {
       // 충돌한 아이템을 Redis에서 제거
       await removeItemPosition(item.objectId);
-      console.log(`아이템 ${item.objectId}를 수집했습니다.`);
+      // console.log(`아이템 ${item.objectId}를 수집했습니다.`);
       // 충돌한 아이템 정보를 반환
       const updatedItemList = await getItemPositions();
-      return { type: "item", data: updatedItemList };
+      // 충돌한 아이템의 아이디를 함께 리턴해서 어떤 아이템인지 확인
+      return { type: "item", id: item.itemId, data: updatedItemList };
     }
   }
 
@@ -163,10 +190,15 @@ exports.checkCollision = async (userId, position, collisionDistance = 50) => {
     if (isColliding(position, obstacle.position, collisionDistance)) {
       // 충돌한 장애물을 Redis에서 제거
       await removeObstaclePosition(obstacle.objectId);
-      console.log(`장애물 ${obstacle.objectId}에 충돌했습니다.`);
+      // console.log(`장애물 ${obstacle.objectId}에 충돌했습니다.`);
       // 충돌한 장애물 정보를 반환
       const updatedObstacleList = await getObstaclePositions();
-      return { type: "obstacle", data: updatedObstacleList };
+      // 충돌한 방해요소의 아이디를 함께 리턴해서 어떤 방해요소인지 확인
+      return {
+        type: "obstacle",
+        id: obstacle.obstacleId,
+        data: updatedObstacleList,
+      };
     }
   }
 

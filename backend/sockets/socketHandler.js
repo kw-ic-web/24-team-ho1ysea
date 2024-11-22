@@ -5,13 +5,22 @@ const {
   joinGameRoom,
   leaveGameRoom,
 } = require("./eventHandler/manageGameRoom");
-const { removeUserData } = require("../utils/redisHandler");
+const {
+  removeUserData,
+  removeUserSpeed,
+  removeUserRange,
+} = require("../utils/redisHandler");
 const {
   generateRandomTrash,
   generateRandomObstacle,
   generateRandomItem,
 } = require("./eventHandler/gameEvent");
+const { playerStatus } = require("./eventHandler/playerStatus");
 const { redisClient } = require("../config/db");
+const { removeUserTrashAmount } = require("../utils/gameUtils");
+
+// userId-socketId 매핑
+const userSocketIdMap = new Map(); // key: userId, value: socketId
 
 module.exports = socketHandler = (io) => {
   /* 게임 요소들 생성 interval 이벤트들은 "한번만" 실행되야 함.
@@ -29,17 +38,26 @@ module.exports = socketHandler = (io) => {
     // 소켓 연결을 하는 과정에서 (handshake) userId를 받아 미리 저장해둠!
     console.log("사용자 연결:", socket.handshake.query.userId);
     socket.data = { userId: socket.handshake.query.userId };
+    // userId - socketId 맵에 추가
+    userSocketIdMap.set(socket.handshake.query.userId, socket.id);
 
     // 여기에 각 소켓 컨트롤러 함수들을 넣어주면 될듯
     joinGameRoom(io, socket);
     leaveGameRoom(io, socket);
     playerMove(io, socket);
-    // getUserTrash(io, socket);
+    playerStatus(io, userSocketIdMap);
+    // getUserTrash(socket);
 
     // 소켓 연결이 끊겼을 때
     socket.on("disconnect", async () => {
-      // 연결 해제된 플레이어를 Redis에서 제거
+      // 연결 해제된 플레이어와 관련된 데이터를 Redis에서 제거
       const broadcastData = await removeUserData(socket.data.userId);
+      await removeUserSpeed(socket.data.userId);
+      await removeUserRange(socket.data.userId);
+      await removeUserTrashAmount(socket.data.userId);
+
+      // userId - socketId 맵에서 제거
+      userSocketIdMap.delete(socket.handshake.query.userId);
       // 제거하고 남은 플레이어들 정보를 gameRoom 방 전체에 브로드캐스트
       io.to("gameRoom").emit("updateCharacterPosition", broadcastData);
     });

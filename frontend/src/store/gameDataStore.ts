@@ -17,6 +17,7 @@ interface GameDataStore {
 
   initialize: (token: string) => Promise<void>;
   fetchMyItems: (token: string) => Promise<void>;
+  setMyTrashAmount: (newTrashAmount: number) => void; // 보유 쓰레기량 업데이트하는 setter 함수
   fetchMyCurrency: (token: string) => Promise<void>;
   fetchStoreItems: () => Promise<void>;
 }
@@ -68,6 +69,13 @@ export const useGameDataStore = create<GameDataStore>((set) => ({
       set((prev) => ({ ...prev, isLoading: false }));
       throw err;
     }
+  },
+  setMyTrashAmount: (newTrashAmount) => {
+    console.log(newTrashAmount);
+    set((prev) => ({
+      ...prev,
+      myCurrency: { ...prev.myCurrency, trash: newTrashAmount },
+    }));
   },
   fetchMyCurrency: async (token: string) => {
     set((prev) => ({ ...prev, isLoading: true }));
