@@ -2,13 +2,15 @@ import { utilizeItemApi } from "@apis/itemRestful";
 import { TOTAL_INVENTORY_SLOT } from "@constants/game";
 import { useGameDataStore } from "@store/gameDataStore";
 import { useKeyStore } from "@store/keyStore";
+import { useToastStore } from "@store/toastStore";
 import { getLocalStorage } from "@utils/localStorage";
 import { useEffect, useMemo } from "react";
 
 export default function ItemInventory(): JSX.Element {
   const myItems = useGameDataStore((s) => s.myItems);
-  const fetchMyItems = useGameDataStore((s) => s.fetchMyItems);
   const activeItem = useKeyStore((s) => s.activeItem);
+  const fetchMyItems = useGameDataStore((s) => s.fetchMyItems);
+  const showToast = useToastStore((s) => s.showToast);
 
   // 인벤토리 슬롯을 항상 유지하기 위해서 TOTAL_INVENTORY_SLOT 만큼의 배열을 만들고, 내부에 아이템을 채움 -> 아이템 없으면 null 남음
   const itemSlots = useMemo(() => {
@@ -27,6 +29,7 @@ export default function ItemInventory(): JSX.Element {
             );
             console.log(data);
             await fetchMyItems(token);
+            showToast(`${itemSlots[activeItem - 1].itemName} 사용 완료!`);
           }
         }
       } catch (e) {
@@ -35,7 +38,7 @@ export default function ItemInventory(): JSX.Element {
     };
 
     utilizeItem();
-  }, [activeItem, fetchMyItems]);
+  }, [activeItem, fetchMyItems, showToast]);
 
   return (
     <div className="flex absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-40 text-slate-200">
