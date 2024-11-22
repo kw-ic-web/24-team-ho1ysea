@@ -49,8 +49,6 @@ function RenderPlayer({ socket }: Props) {
     if (socket && nickName && playerPos) {
       // 플레이어의 좌표가 바뀔 때마다 서버로 emit
       socket.emit("getMyPosition", { userId, nickName, position: playerPos });
-      // 이동속도가 변경되면 이를 반영
-      socket.on("getPlayerSpeed", (speed: number) => setPlayerSpeed(speed));
     }
   }, [nickName, playerPos, socket, userId]);
 
