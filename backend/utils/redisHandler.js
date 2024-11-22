@@ -9,7 +9,7 @@ exports.removeObstaclePosition = async (objectId) => {
     const parsedObstacle = JSON.parse(obstacle);
     if (parsedObstacle.objectId === objectId) {
       await redisClient.lRem("obstaclePositions", 1, obstacle);
-      console.log(`장애물 ${objectId}가 제거되었습니다.`);
+      // console.log(`장애물 ${objectId}가 제거되었습니다.`);
       return true;
     }
   }
@@ -19,7 +19,7 @@ exports.removeObstaclePosition = async (objectId) => {
 // 연결 해제된 플레이어를 플레이어 포지션 Redis에서 제거하고, 남은 전체 데이터 리턴
 exports.removeUserData = async (userId) => {
   await redisClient.hDel("playerPositions", userId);
-  console.log(`사용자 ${userId} 위치 정보가 Redis에서 제거되었습니다.`);
+  // console.log(`사용자 ${userId} 위치 정보가 Redis에서 제거되었습니다.`);
 
   // Redis에 저장되어있는 플레이어들 정보 가져오기
   const players = await redisClient.hGetAll("playerPositions");
@@ -89,8 +89,8 @@ exports.getObstaclePositions = async () => {
 };
 
 // 새로 생성한 아이템(게임 맵에 떠있는)을 Redis에 저장
-exports.updateItemPositions = async (objectId, itemId, position) => {
-  const newItem = { objectId, itemId, position };
+exports.updateItemPositions = async (objectId, itemId, image, position) => {
+  const newItem = { objectId, itemId, image, position }; // 이미지명도 추가
   await redisClient.lPush("itemPositions", JSON.stringify(newItem));
   return true;
 };
@@ -109,7 +109,7 @@ exports.removeTrashPosition = async (objectId) => {
     const parsedTrash = JSON.parse(trash);
     if (parsedTrash.objectId === objectId) {
       await redisClient.lRem("trashPositions", 1, trash);
-      console.log(`쓰레기 ${objectId}가 제거되었습니다.`);
+      // console.log(`쓰레기 ${objectId}가 제거되었습니다.`);
       return true;
     }
   }
@@ -124,7 +124,7 @@ exports.removeItemPosition = async (objectId) => {
     const parsedItem = JSON.parse(item);
     if (parsedItem.objectId === objectId) {
       await redisClient.lRem("itemPositions", 1, item);
-      console.log(`아이템 ${objectId}가 제거되었습니다.`);
+      // console.log(`아이템 ${objectId}가 제거되었습니다.`);
       return true;
     }
   }
@@ -139,7 +139,7 @@ exports.removeObstaclePosition = async (objectId) => {
     const parsedObstacle = JSON.parse(obstacle);
     if (parsedObstacle.objectId === objectId) {
       await redisClient.lRem("obstaclePositions", 1, obstacle);
-      console.log(`장애물 ${objectId}가 제거되었습니다.`);
+      // console.log(`장애물 ${objectId}가 제거되었습니다.`);
       return true;
     }
   }

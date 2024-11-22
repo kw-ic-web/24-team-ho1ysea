@@ -129,50 +129,50 @@ exports.useItem = async (req, res) => {
   }
 };
 
-// // 아이템 습득
-// exports.addItem = async (req, res) => {
-//   const userId = req.user.id;
-//   const { itemId } = req.body;
+// 아이템 습득
+exports.addItem = async (req, res) => {
+  const userId = req.user._id;
+  const { itemId } = req.body;
 
-//   try {
-//     // 아이템 존재 여부 확인
-//     const item = await Item.findOne({ itemId });
+  try {
+    // 아이템 존재 여부 확인
+    const item = await Item.findOne({ itemId });
 
-//     if (!item) {
-//       return res.status(404).json({ message: "아이템을 찾을 수 없습니다." });
-//     }
+    if (!item) {
+      return res.status(404).json({ message: "아이템을 찾을 수 없습니다." });
+    }
 
-//     // 인벤토리 가져오기 또는 생성
-//     let inventory = await Inventory.findOne({ userid: userId });
+    // 인벤토리 가져오기 또는 생성
+    let inventory = await Inventory.findOne({ userid: userId });
 
-//     if (!inventory) {
-//       inventory = new Inventory({ userid: userId, items: [] });
-//     }
+    if (!inventory) {
+      inventory = new Inventory({ userid: userId, items: [] });
+    }
 
-//     // 아이템이 이미 있는지 확인
-//     const itemIndex = inventory.items.findIndex(
-//       (invItem) => invItem.itemId === itemId
-//     );
+    // 아이템이 이미 있는지 확인
+    const itemIndex = inventory.items.findIndex(
+      (invItem) => invItem.itemId === itemId
+    );
 
-//     if (itemIndex > -1) {
-//       // 이미 아이템이 있으면 수량 증가
-//       inventory.items[itemIndex].quantity += 1;
-//     } else {
-//       // 아이템이 없으면 추가
-//       inventory.items.push({ itemId, quantity: 1 });
-//     }
+    if (itemIndex > -1) {
+      // 이미 아이템이 있으면 수량 증가
+      inventory.items[itemIndex].quantity += 1;
+    } else {
+      // 아이템이 없으면 추가
+      inventory.items.push({ itemId, quantity: 1 });
+    }
 
-//     await inventory.save();
+    await inventory.save();
 
-//     res.json({
-//       message: "아이템 추가 성공",
-//       id: itemId,
-//       quantity:
-//         inventory.items[itemIndex > -1 ? itemIndex : inventory.items.length - 1]
-//           .quantity,
-//     });
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send("서버 오류");
-//   }
-// };
+    res.json({
+      message: "아이템 추가 성공",
+      id: itemId,
+      quantity:
+        inventory.items[itemIndex > -1 ? itemIndex : inventory.items.length - 1]
+          .quantity,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("서버 오류");
+  }
+};

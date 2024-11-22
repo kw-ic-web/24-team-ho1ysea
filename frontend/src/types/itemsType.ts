@@ -24,6 +24,7 @@ export type UseItem = {
 
 export type GameItem = {
   objectId: string;
-  itemId: "item001" | "item002";
+  image: string;
+  itemId: "item001" | "item002" | "item003" | "item004";
   position: ObjectPos;
 };

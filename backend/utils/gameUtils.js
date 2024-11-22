@@ -137,10 +137,12 @@ exports.generateItem = async () => {
 
   const objectId = uuidv4();
   const itemId = randomItem.itemId; // Item 모델의 itemId 필드 사용
+  const image = randomItem.image; // Item 모델에 명시된 이미지명 사용
   const position = generateRandomPosition();
 
-  // Redis에 업데이트
-  await updateItemPositions(objectId, itemId, position);
+  // Redis에 새로 생긴 아이템 업데이트할 때, mongosh에 있는 이미지명까지 저장
+  console.log("아이템생성: ", itemId);
+  await updateItemPositions(objectId, itemId, image, position);
 
   // 업데이트된 전체 아이템 데이터 가져오기
   const itemList = await getItemPositions();
@@ -148,6 +150,8 @@ exports.generateItem = async () => {
 };
 
 // 충돌 체크 함수
+// type: trash | item | obstacle
+// id: trashId | itemId | obstacleId
 exports.checkCollision = async (userId, position) => {
   // Redis에서 해당 플레이어의 사거리를 가져옴
   const collisionDistance = await getUserRange(userId);
@@ -158,11 +162,11 @@ exports.checkCollision = async (userId, position) => {
     if (isColliding(position, trash.position, collisionDistance)) {
       // 충돌한 쓰레기를 Redis에서 제거
       await removeTrashPosition(trash.objectId);
-      console.log(`쓰레기 ${trash.objectId}를 수집했습니다.`);
+      // console.log(`쓰레기 ${trash.objectId}를 수집했습니다.`);
       // 충돌한 쓰레기 정보를 반환
       const updatedTrashList = await getTrashPositions();
       // 충돌한 쓰레기의 아이디를 함께 리턴해서 신문지인지 플라스틱 병인지 확인
-      return { type: "trash", trashId: trash.trashId, data: updatedTrashList };
+      return { type: "trash", id: trash.trashId, data: updatedTrashList };
     }
   }
 
@@ -172,11 +176,11 @@ exports.checkCollision = async (userId, position) => {
     if (isColliding(position, item.position, collisionDistance)) {
       // 충돌한 아이템을 Redis에서 제거
       await removeItemPosition(item.objectId);
-      console.log(`아이템 ${item.objectId}를 수집했습니다.`);
+      // console.log(`아이템 ${item.objectId}를 수집했습니다.`);
       // 충돌한 아이템 정보를 반환
       const updatedItemList = await getItemPositions();
       // 충돌한 아이템의 아이디를 함께 리턴해서 어떤 아이템인지 확인
-      return { type: "item", itemId: item.itemId, data: updatedItemList };
+      return { type: "item", id: item.itemId, data: updatedItemList };
     }
   }
 
@@ -186,13 +190,13 @@ exports.checkCollision = async (userId, position) => {
     if (isColliding(position, obstacle.position, collisionDistance)) {
       // 충돌한 장애물을 Redis에서 제거
       await removeObstaclePosition(obstacle.objectId);
-      console.log(`장애물 ${obstacle.objectId}에 충돌했습니다.`);
+      // console.log(`장애물 ${obstacle.objectId}에 충돌했습니다.`);
       // 충돌한 장애물 정보를 반환
       const updatedObstacleList = await getObstaclePositions();
       // 충돌한 방해요소의 아이디를 함께 리턴해서 어떤 방해요소인지 확인
       return {
         type: "obstacle",
-        obstacleId: obstacle.obstacleId,
+        id: obstacle.obstacleId,
         data: updatedObstacleList,
       };
     }

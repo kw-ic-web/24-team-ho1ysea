@@ -6,12 +6,12 @@ interface Props {
 }
 
 export default function RenderItem({ item }: Props) {
-  const image =
-    item.itemId === "item001"
-      ? "/images/items/dipNet.png"
-      : "/images/items/flipper.png";
-
   return (
-    <Sprite image={image} x={item.position.x} y={item.position.y} scale={0.1} />
+    <Sprite
+      image={`/images/items/${item.image}`}
+      x={item.position.x}
+      y={item.position.y}
+      scale={0.1}
+    />
   );
 }

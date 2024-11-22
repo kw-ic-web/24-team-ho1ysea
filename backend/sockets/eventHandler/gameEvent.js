@@ -12,12 +12,16 @@ const {
   removeObstaclePosition,
   updateObstacleStatus,
 } = require("../../utils/redisHandler");
-
 const Obstacle = require("../../models/obstacle");
 const { v4: uuidv4 } = require("uuid");
-
-const MAX_OBSTACLE = 20;
-const MAX_ITEMS = 8;
+const {
+  MAX_OBSTACLE,
+  MAX_ITEMS,
+  TIMER_OBSTACLE_GENERATION,
+  TIMER_ITEM_GENERATION,
+  TIMER_OBSTACLE_ACTIVATION,
+  TIMER_OBSTACLE_REMOVE,
+} = require("../../config/constant");
 
 const generateRandomPosition = () => {
   const px = 50;
@@ -119,16 +123,15 @@ exports.generateRandomObstacle = (io) => {
       return;
     }
     io.to("gameRoom").emit("generateRandomObstacle", obstacleList); // gameRoom 내의 모든 클라이언트에게 브로드캐스트
-    console.log("방해요소 생성 이벤트 실행!");
+    // console.log("방해요소 생성 이벤트 실행!");
 
-    // 1초후
     setTimeout(async () => {
       await updateObstacleStatus(objectId, obstacleId, position);
 
       const obstacleList = await getObstaclePositions();
 
       io.to("gameRoom").emit("generateRandomObstacle", obstacleList); // gameRoom 내의 모든 클라이언트에게 브로드캐스트
-      console.log("방해요소 상태 업데이트");
+      // console.log("방해요소 상태 업데이트");
 
       // 3초후
       setTimeout(async () => {
@@ -137,10 +140,10 @@ exports.generateRandomObstacle = (io) => {
         const obstacleList = await getObstaclePositions();
 
         io.to("gameRoom").emit("generateRandomObstacle", obstacleList); // gameRoom 내의 모든 클라이언트에게 브로드캐스트
-        console.log("방해요소 상태 업데이트");
-      }, 2000);
-    }, 1000);
-  }, 10000);
+        // console.log("방해요소 상태 업데이트");
+      }, TIMER_OBSTACLE_REMOVE);
+    }, TIMER_OBSTACLE_ACTIVATION);
+  }, TIMER_OBSTACLE_GENERATION);
 };
 
 // 아이템 랜덤 생성 이벤트
@@ -154,6 +157,6 @@ exports.generateRandomItem = (io) => {
       return;
     }
     io.to("gameRoom").emit("generateRandomItem", itemData);
-    console.log("아이템 생성 이벤트 실행!");
-  }, 15000);
+    // console.log("아이템 생성 이벤트 실행!");
+  }, TIMER_ITEM_GENERATION);
 };
