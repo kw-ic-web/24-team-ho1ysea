@@ -9,11 +9,12 @@ import { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
 import { PlayerInfo } from "@@types/GameType";
 import { Obstacle } from "@@types/obstacleType";
-import { useGameDataStore } from "@store/gameDataStore";
-import { Trash } from "@@types/trashType";
-import RenderTrash from "./RenderTrash";
 import { GameItem } from "@@types/itemsType";
+import { Trash } from "@@types/trashType";
+import { useGameDataStore } from "@store/gameDataStore";
+import RenderTrash from "./RenderTrash";
 import RenderItem from "./RenderItem";
+import RenderWarning from "./RenderWarning";
 
 interface Props {
   socket: Socket | null;
@@ -95,9 +96,13 @@ export default function RenderGame({ socket }: Props) {
       ))}
 
       {/* 방해요소 (상어, 해파리) 렌더링 */}
-      {obstacleInfo.map((obstacle) => (
-        <RenderObstacle key={obstacle.objectId} obstacle={obstacle} />
-      ))}
+      {obstacleInfo.map((obstacle) =>
+        obstacle.isActive === 0 ? (
+          <RenderWarning key={obstacle.objectId} obstacle={obstacle} />
+        ) : (
+          <RenderObstacle key={obstacle.objectId} obstacle={obstacle} />
+        )
+      )}
 
       {trashInfo.map((trash) => (
         <RenderTrash key={trash.objectId} trash={trash} />
