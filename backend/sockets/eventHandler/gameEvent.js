@@ -132,7 +132,7 @@ exports.generateRandomObstacle = (io) => {
 
       // 3초후
       setTimeout(async () => {
-        removeObstaclePosition(objectId);
+        await removeObstaclePosition(objectId);
 
         const obstacleList = await getObstaclePositions();
 
