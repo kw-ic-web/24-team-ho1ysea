@@ -10,12 +10,14 @@ import { isCollidingStore } from "@utils/isCollidingStore";
 
 interface PlayerStoreType {
   playerPos: PlayerPos;
+  confusionDirection: 1 | -1;
   isCollideStore: boolean;
   updatePlayerPos: (
     dx: number,
     dy: number,
     direction: PlayerPos["direction"]
   ) => void;
+  toggleConfusionDirection: (duration: number) => void;
   resetPlayerPos: () => void;
 }
 
@@ -28,11 +30,12 @@ export const usePlayerStore = create<PlayerStoreType>((set) => ({
     y: WORLD_H - 60,
     direction: "bottom",
   },
+  confusionDirection: 1,
   isCollideStore: false,
   updatePlayerPos: (dx, dy, direction) =>
     set((prev) => {
-      const newX = prev.playerPos.x + dx;
-      const newY = prev.playerPos.y + dy;
+      const newX = prev.playerPos.x + dx * prev.confusionDirection;
+      const newY = prev.playerPos.y + dy * prev.confusionDirection;
       if (!isCollidingStore(newX, newY)) {
         return {
           isCollideStore: false,
@@ -52,6 +55,14 @@ export const usePlayerStore = create<PlayerStoreType>((set) => ({
         };
       }
     }),
+  toggleConfusionDirection: (duration: number) => {
+    set({
+      confusionDirection: -1,
+    });
+    setTimeout(() => {
+      set({ confusionDirection: 1 });
+    }, duration);
+  },
   resetPlayerPos: () => {
     set({
       isCollideStore: false,

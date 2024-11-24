@@ -1,5 +1,10 @@
 // backend/sockets/eventHandler/playerMove.js
 
+const {
+  BASE_SPEED,
+  BASE_RANGE,
+  COLLISION_JELLYFISH_DURATION,
+} = require("../../config/constant");
 const obstacle = require("../../models/obstacle");
 const {
   checkCollision,
@@ -46,9 +51,6 @@ exports.playerMove = (io, socket) => {
       socket.emit("getItem", collisionResult.id);
       // 프론트에서는 이 이벤트를 수신하면 item 습득 API로 다시 요청을 날리고, 인벤토리 정보를 새로고침함
     } else if (collisionResult && collisionResult.type === "obstacle") {
-      // 전체 플레이어에게 장애물이 사라졌음을 알림
-      io.to("gameRoom").emit("collisionObstacle", collisionResult.data);
-
       console.log("충돌한 장애물 정보:", collisionResult.id);
 
       if (collisionResult.id === "obstacle001") {
@@ -70,9 +72,12 @@ exports.playerMove = (io, socket) => {
         socket.emit("generateRandomTrash", []);
         socket.emit("generateRandomObstacle", []);
         socket.emit("generateRandomItem", []);
+        // 이동속도, 사거리 초기화
+        socket.emit("getPlayerSpeed", BASE_SPEED);
+        socket.emit("getPlayerRange", BASE_RANGE);
       } else if (collisionResult.id === "obstacle002") {
         // 해파리와 충돌한 경우
-        socket.emit("collisionJellyfish");
+        socket.emit("collisionJellyfish", COLLISION_JELLYFISH_DURATION);
         console.log(`${userId}가 해파리에 쏘여 어지러워집니다.`);
       } else {
         console.log(`${userId}가 미확인 수중 물체와 충돌했습니다! USO`);
