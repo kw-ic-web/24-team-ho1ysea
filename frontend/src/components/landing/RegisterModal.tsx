@@ -92,13 +92,13 @@ export default function RegisterModal() {
               닉네임 확인
             </button>
           </div>
-          <div className="flex justify-end items-center mb-4">
+          <div className="flex justify-end items-center mt-1 mb-2">
             <p
               className={`w-fit text-end text-sm ${
                 isChecks.nickName ? "text-green-500" : "text-red-500"
               }`}
             >
-              {infoMsgs.nickName}
+              {infoMsgs.nickName || "\u00A0"}
             </p>
           </div>
           <div className="flex relative">
@@ -118,13 +118,13 @@ export default function RegisterModal() {
               ID 확인
             </button>
           </div>
-          <div className="flex justify-end items-center mb-4">
+          <div className="flex justify-end items-center mt-1 mb-2">
             <p
               className={`w-fit text-end text-sm ${
                 isChecks.id ? "text-green-500" : "text-red-500"
               }`}
             >
-              {infoMsgs.id}
+              {infoMsgs.id || "\u00A0"}
             </p>
           </div>
           <input
@@ -145,13 +145,13 @@ export default function RegisterModal() {
             value={inputs.checkPw}
             onChange={(e) => handleInputChange(e.target.name, e.target.value)}
           />
-          <div className="flex justify-end items-center mb-4">
+          <div className="flex justify-end items-center mt-1 mb-2">
             <p
               className={`w-fit text-end text-sm ${
                 isChecks.pw ? "text-green-500" : "text-red-500"
               }`}
             >
-              {infoMsgs.pw}
+              {infoMsgs.pw || "\u00A0"}
             </p>
           </div>
           <input
