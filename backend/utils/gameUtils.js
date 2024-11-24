@@ -13,8 +13,10 @@ const {
   removeObstaclePosition,
   getUserRange,
 } = require("./redisHandler");
-const { v4: uuidv4 } = require("uuid");
+
 // 이거 고유id를 부여하는 방법 중 하나라, 좀 더 편한 대체 방안 있으면 수정해도 좋아요!
+const { v4: uuidv4 } = require("uuid");
+
 // Mongoose 모델 임포트
 const Item = require("../models/item");
 const Trash = require("../models/trash");
@@ -35,7 +37,7 @@ exports.getUserTrashData = async (userId) => {
   return { userId, trashAmount: parseInt(trashAmount) || 0 };
 };
 
-// 유저의 보유 쓰레기량을 증가시키고, 반환하는 함수
+// 유저의 보유 쓰레기량을 증가시키고, leaderboard 채널로 publish한 뒤 반환하는 함수
 exports.updateUserTrashAmount = async (userId, increase) => {
   // 해당 유저가 처음 쓰레기를 주울 때는 Redis에 값이 없을거임
   const trashAmount = (await redisClient.hGet("user_trash", userId)) || "0";
@@ -44,12 +46,22 @@ exports.updateUserTrashAmount = async (userId, increase) => {
     userId,
     JSON.stringify(parseFloat(trashAmount) + increase)
   );
+
+  // 업데이트를 했으면, 전체를 받아와서 publish 수행
+  const userTrashData = await redisClient.hGetAll("user_trash");
+  await redisClient.publish("leaderboard", JSON.stringify(userTrashData));
+
   return parseFloat(trashAmount) + increase;
 };
 
 // 유저의 보유 쓰레기량을 제거하는 함수
 exports.removeUserTrashAmount = async (userId) => {
+  console.log(userId);
   await redisClient.hDel("user_trash", userId);
+
+  // 유저 쓰레기량을 제거한 뒤, 전체를 받아와서 publish 수행
+  const userTrashData = await redisClient.hGetAll("user_trash");
+  await redisClient.publish("leaderboard", JSON.stringify(userTrashData));
 };
 
 // 랜덤 위치 생성 함수 (좌표 제한 적용)

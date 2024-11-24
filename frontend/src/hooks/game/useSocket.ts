@@ -37,5 +37,5 @@ export const useSocket = () => {
     }
   }, [isJoinGameRoom, playerY, userId]);
 
-  return socketRef;
+  return { isJoinGameRoom, socketRef };
 };

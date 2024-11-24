@@ -18,6 +18,7 @@ const {
 const { playerStatus } = require("./eventHandler/playerStatus");
 const { redisClient } = require("../config/db");
 const { removeUserTrashAmount } = require("../utils/gameUtils");
+const { leaderboard } = require("./eventHandler/leaderboard");
 
 // userId-socketId 매핑
 const userSocketIdMap = new Map(); // key: userId, value: socketId
@@ -46,6 +47,7 @@ module.exports = socketHandler = (io) => {
     leaveGameRoom(io, socket);
     playerMove(io, socket);
     playerStatus(io, userSocketIdMap);
+    leaderboard(io);
     // getUserTrash(socket);
 
     // 소켓 연결이 끊겼을 때

@@ -5,10 +5,10 @@ const {
   BASE_RANGE,
   COLLISION_JELLYFISH_DURATION,
 } = require("../../config/constant");
-const obstacle = require("../../models/obstacle");
 const {
   checkCollision,
   updateUserTrashAmount,
+  removeUserTrashAmount,
 } = require("../../utils/gameUtils");
 const { updateUserData, removeUserData } = require("../../utils/redisHandler");
 
@@ -27,8 +27,6 @@ exports.playerMove = (io, socket) => {
 
     // 사용자가 gameRoom에 join 되어있으면, Redis에 업데이트
     const broadcastData = await updateUserData(userId, nickName, position);
-
-    // console.log(broadcastData);
 
     // 충돌 체크 수행 (checkCollision 함수 내에서 redis로 해당 플레이어 사거리 가져옴)
     const collisionResult = await checkCollision(userId, position);
@@ -72,6 +70,8 @@ exports.playerMove = (io, socket) => {
         socket.emit("generateRandomTrash", []);
         socket.emit("generateRandomObstacle", []);
         socket.emit("generateRandomItem", []);
+        // 해당 플레이어의 보유 쓰레기 제거 -> pub -> sub이 받아서 leaderboard 이벤트를 소켓으로 쏨
+        await removeUserTrashAmount(userId);
         // 이동속도, 사거리 초기화
         socket.emit("getPlayerSpeed", BASE_SPEED);
         socket.emit("getPlayerRange", BASE_RANGE);

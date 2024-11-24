@@ -20,11 +20,11 @@ exports.exchangeTrash = async (req, res) => {
     }
 
     // 쓰레기 수량 확인
-    if (user.trash < trashAmount) {
-      return res
-        .status(400)
-        .json({ message: "환전할 쓰레기 수량이 부족합니다." });
-    }
+    // if (user.trash < trashAmount) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "환전할 쓰레기 수량이 부족합니다." });
+    // }
 
     const exchangedGold = trashAmount * COIN_EXCHANGE_RATE;
 

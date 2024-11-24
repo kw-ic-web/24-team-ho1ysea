@@ -14,3 +14,8 @@ export type ObjectPos = {
   x: number;
   y: number;
 };
+
+export type TopUser = {
+  userId: string;
+  trashAmount: number;
+};
