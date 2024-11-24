@@ -1,6 +1,5 @@
 // backend/utils/gameUtils.js
 
-const { redisClient } = require("../config/db");
 const {
   updateTrashPositions,
   getTrashPositions,
@@ -30,39 +29,6 @@ function isColliding(position1, position2, collisionDistance) {
   ); // 유클리디안 거리 사용
   return distance < collisionDistance;
 }
-
-// 유저의 보유 쓰레기량 조회 함수
-exports.getUserTrashData = async (userId) => {
-  const trashAmount = await redisClient.hGet("user_trash", userId);
-  return { userId, trashAmount: parseInt(trashAmount) || 0 };
-};
-
-// 유저의 보유 쓰레기량을 증가시키고, leaderboard 채널로 publish한 뒤 반환하는 함수
-exports.updateUserTrashAmount = async (userId, increase) => {
-  // 해당 유저가 처음 쓰레기를 주울 때는 Redis에 값이 없을거임
-  const trashAmount = (await redisClient.hGet("user_trash", userId)) || "0";
-  await redisClient.hSet(
-    "user_trash",
-    userId,
-    JSON.stringify(parseFloat(trashAmount) + increase)
-  );
-
-  // 업데이트를 했으면, 전체를 받아와서 publish 수행
-  const userTrashData = await redisClient.hGetAll("user_trash");
-  await redisClient.publish("leaderboard", JSON.stringify(userTrashData));
-
-  return parseFloat(trashAmount) + increase;
-};
-
-// 유저의 보유 쓰레기량을 제거하는 함수
-exports.removeUserTrashAmount = async (userId) => {
-  console.log(userId);
-  await redisClient.hDel("user_trash", userId);
-
-  // 유저 쓰레기량을 제거한 뒤, 전체를 받아와서 publish 수행
-  const userTrashData = await redisClient.hGetAll("user_trash");
-  await redisClient.publish("leaderboard", JSON.stringify(userTrashData));
-};
 
 // 랜덤 위치 생성 함수 (좌표 제한 적용)
 // 활용도 높아서 같은 파일 내 다른 함수들도 이 유틸 참조합니다 :)

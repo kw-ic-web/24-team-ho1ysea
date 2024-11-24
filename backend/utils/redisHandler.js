@@ -1,5 +1,39 @@
 const { BASE_SPEED, BASE_RANGE } = require("../config/constant");
 const { redisClient } = require("../config/db");
+const { makeLeaderBoard } = require("./makeLeaderBoard");
+
+// 유저의 보유 쓰레기량 조회 함수
+exports.getUserTrashData = async (userId) => {
+  const trashAmount = await redisClient.hGet("user_trash", userId);
+  return { userId, trashAmount: parseInt(trashAmount) || 0 };
+};
+
+// 유저의 보유 쓰레기량을 증가시키고, leaderboard 채널로 publish한 뒤 반환하는 함수
+exports.updateUserTrashAmount = async (userId, increase) => {
+  // 해당 유저가 처음 쓰레기를 주울 때는 Redis에 값이 없을거임
+  const trashAmount = (await redisClient.hGet("user_trash", userId)) || "0";
+  await redisClient.hSet(
+    "user_trash",
+    userId,
+    JSON.stringify(parseFloat(trashAmount) + increase)
+  );
+
+  // 업데이트를 했으면, 전체를 받아와서 publish 수행
+  const userTrashData = await redisClient.hGetAll("user_trash");
+  await redisClient.publish("leaderboard", JSON.stringify(userTrashData));
+
+  return parseFloat(trashAmount) + increase;
+};
+
+// 유저의 보유 쓰레기량을 제거하는 함수
+exports.removeUserTrashAmount = async (userId) => {
+  console.log(userId);
+  await redisClient.hDel("user_trash", userId);
+
+  // 유저 쓰레기량을 제거한 뒤, 전체를 받아와서 publish 수행
+  const userTrashData = await redisClient.hGetAll("user_trash");
+  await redisClient.publish("leaderboard", JSON.stringify(userTrashData));
+};
 
 // 특정 장애물을 Redis에서 제거하는 함수
 exports.removeObstaclePosition = async (objectId) => {
@@ -14,6 +48,15 @@ exports.removeObstaclePosition = async (objectId) => {
     }
   }
   return false;
+};
+
+// 리더보드 데이터를 가져오는 함수
+exports.getLeaderBoard = async () => {
+  // Redis에서 모든 유저와 쓰레기량 데이터 가져오기
+  const userTrashData = await redisClient.hGetAll("user_trash");
+
+  const topUsers = makeLeaderBoard(userTrashData);
+  return topUsers;
 };
 
 // 연결 해제된 플레이어를 플레이어 포지션 Redis에서 제거하고, 남은 전체 데이터 리턴

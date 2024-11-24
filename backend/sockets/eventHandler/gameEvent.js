@@ -1,16 +1,13 @@
 // backend/sockets/eventHandler/gameEvents.js
 
 const { redisClient, subscriber } = require("../../config/db");
-const {
-  getUserTrashData,
-  generateTrash,
-  generateItem,
-} = require("../../utils/gameUtils");
+const { generateTrash, generateItem } = require("../../utils/gameUtils");
 const {
   getObstaclePositions,
   updateObstaclePositions,
   removeObstaclePosition,
   updateObstacleStatus,
+  getUserTrashData,
 } = require("../../utils/redisHandler");
 const Obstacle = require("../../models/obstacle");
 const { v4: uuidv4 } = require("uuid");

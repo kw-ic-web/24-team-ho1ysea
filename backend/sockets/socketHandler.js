@@ -9,6 +9,7 @@ const {
   removeUserData,
   removeUserSpeed,
   removeUserRange,
+  removeUserTrashAmount,
 } = require("../utils/redisHandler");
 const {
   generateRandomTrash,
@@ -17,7 +18,6 @@ const {
 } = require("./eventHandler/gameEvent");
 const { playerStatus } = require("./eventHandler/playerStatus");
 const { redisClient } = require("../config/db");
-const { removeUserTrashAmount } = require("../utils/gameUtils");
 const { leaderboard } = require("./eventHandler/leaderboard");
 
 // userId-socketId 매핑

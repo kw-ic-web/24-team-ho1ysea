@@ -1,4 +1,5 @@
 import { TopUser } from "@@types/GameType";
+import { useGameDataStore } from "@store/gameDataStore";
 import { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 
@@ -9,6 +10,8 @@ interface Props {
 
 export default function LeaderBoard({ isJoinGameRoom, socket }: Props) {
   const [topUsers, setTopUsers] = useState<TopUser[]>([]);
+  const myUserId = useGameDataStore((s) => s.userId);
+  const myTrash = useGameDataStore((s) => s.myCurrency.trash);
 
   useEffect(() => {
     if (socket) {
@@ -36,6 +39,12 @@ export default function LeaderBoard({ isJoinGameRoom, socket }: Props) {
             <span>{trashAmount}</span>
           </li>
         ))}
+        {!topUsers.some(({ userId }) => userId === myUserId) && (
+          <li className="flex justify-between text-sm py-1 px-2 bg-gray-800 rounded">
+            <span>{myUserId}</span>
+            <span>{myTrash}</span>
+          </li>
+        )}
       </ul>
     </div>
   );

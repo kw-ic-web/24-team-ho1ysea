@@ -5,12 +5,13 @@ const {
   BASE_RANGE,
   COLLISION_JELLYFISH_DURATION,
 } = require("../../config/constant");
+const { checkCollision } = require("../../utils/gameUtils");
 const {
-  checkCollision,
-  updateUserTrashAmount,
+  updateUserData,
+  removeUserData,
   removeUserTrashAmount,
-} = require("../../utils/gameUtils");
-const { updateUserData, removeUserData } = require("../../utils/redisHandler");
+  updateUserTrashAmount,
+} = require("../../utils/redisHandler");
 
 /**
  * @description 특정 플레이어가 이동하면, gameRoom 내의 모든 플레이어들에게 브로드캐스트
