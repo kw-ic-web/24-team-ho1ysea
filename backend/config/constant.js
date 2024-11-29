@@ -11,6 +11,10 @@ exports.COIN_EXCHANGE_RATE = 4;
 exports.BASE_SPEED = 5;
 exports.BASE_RANGE = 50;
 
+// 캐릭터 최대 이동속도, 최대 사거리(값은 추후 수정)
+exports.MAX_SPEED = 30;
+exports.MAX_RANGE = 150;
+
 // 최대 방해요소 수, 최대 아이템 수
 exports.MAX_OBSTACLE = 20;
 exports.MAX_ITEMS = 8;
