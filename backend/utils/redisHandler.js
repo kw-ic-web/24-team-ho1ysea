@@ -1,21 +1,6 @@
 const { BASE_SPEED, BASE_RANGE } = require("../config/constant");
 const { redisClient } = require("../config/db");
 
-// 특정 장애물을 Redis에서 제거하는 함수
-exports.removeObstaclePosition = async (objectId) => {
-  const obstacleList = await redisClient.lRange("obstaclePositions", 0, -1);
-
-  for (let obstacle of obstacleList) {
-    const parsedObstacle = JSON.parse(obstacle);
-    if (parsedObstacle.objectId === objectId) {
-      await redisClient.lRem("obstaclePositions", 1, obstacle);
-      // console.log(`장애물 ${objectId}가 제거되었습니다.`);
-      return true;
-    }
-  }
-  return false;
-};
-
 // 연결 해제된 플레이어를 플레이어 포지션 Redis에서 제거하고, 남은 전체 데이터 리턴
 exports.removeUserData = async (userId) => {
   await redisClient.hDel("playerPositions", userId);
