@@ -11,7 +11,7 @@ const app = express();
 // 소켓 서버 초기 설정
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] },
+  cors: { origin: process.env.FRONT_URL, methods: ["GET", "POST"] },
 });
 socketHandler(io);
 
