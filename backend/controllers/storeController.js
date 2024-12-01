@@ -3,8 +3,8 @@
 const User = require("../models/User");
 const Item = require("../models/item");
 const Inventory = require("../models/inventory");
-const { removeUserTrashAmount } = require("../utils/gameUtils");
 const { COIN_EXCHANGE_RATE } = require("../config/constant");
+const { removeUserTrashAmount } = require("../utils/redisHandler");
 
 // trash -> coin 환전
 exports.exchangeTrash = async (req, res) => {
@@ -20,15 +20,15 @@ exports.exchangeTrash = async (req, res) => {
     }
 
     // 쓰레기 수량 확인
-    if (user.trash < trashAmount) {
-      return res
-        .status(400)
-        .json({ message: "환전할 쓰레기 수량이 부족합니다." });
-    }
+    // if (user.trash < trashAmount) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "환전할 쓰레기 수량이 부족합니다." });
+    // }
 
     const exchangedGold = trashAmount * COIN_EXCHANGE_RATE;
 
-    // 쓰레기 환전을 마치면, redis에서 쓰레기 삭제
+    // 쓰레기 환전을 마치면, redis에서 쓰레기 삭제 -> 리더보드에 자동 반영
     await removeUserTrashAmount(req.user.id);
 
     // 쓰레기 차감 및 골드 추가

@@ -1,8 +1,9 @@
 import { isAdminApi } from "@apis/adminRestful";
-import { getLocalStorage } from "@utils/localStorage";
+import { useToastStore } from "@store/toastStore";
+import { deleteLocalStorage, getLocalStorage } from "@utils/localStorage";
 import { useEffect, useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface Props {
   isOpen: boolean;
@@ -14,11 +15,19 @@ export default function SettingModal({
   onClose,
 }: Props): JSX.Element | null {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const showToast = useToastStore((s) => s.showToast);
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
+  };
+
+  const handleLogoutBtn = () => {
+    deleteLocalStorage("token");
+    navigate("/");
+    showToast("로그아웃 되었습니다.");
   };
 
   useEffect(() => {
@@ -74,6 +83,13 @@ export default function SettingModal({
                 className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer"
               />
             </div>
+
+            <button
+              onClick={handleLogoutBtn}
+              className="pb-2 text-sm font-semibold text-blue-600 hover:text-blue-800"
+            >
+              로그아웃하기
+            </button>
 
             {isAdmin && (
               <Link

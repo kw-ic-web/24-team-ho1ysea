@@ -1,6 +1,5 @@
 // backend/utils/gameUtils.js
 
-const { redisClient } = require("../config/db");
 const {
   updateTrashPositions,
   getTrashPositions,
@@ -13,8 +12,10 @@ const {
   removeObstaclePosition,
   getUserRange,
 } = require("./redisHandler");
-const { v4: uuidv4 } = require("uuid");
+
 // 이거 고유id를 부여하는 방법 중 하나라, 좀 더 편한 대체 방안 있으면 수정해도 좋아요!
+const { v4: uuidv4 } = require("uuid");
+
 // Mongoose 모델 임포트
 const Item = require("../models/item");
 const Trash = require("../models/trash");
@@ -28,29 +29,6 @@ function isColliding(position1, position2, collisionDistance) {
   ); // 유클리디안 거리 사용
   return distance < collisionDistance;
 }
-
-// 유저의 보유 쓰레기량 조회 함수
-exports.getUserTrashData = async (userId) => {
-  const trashAmount = await redisClient.hGet("user_trash", userId);
-  return { userId, trashAmount: parseInt(trashAmount) || 0 };
-};
-
-// 유저의 보유 쓰레기량을 증가시키고, 반환하는 함수
-exports.updateUserTrashAmount = async (userId, increase) => {
-  // 해당 유저가 처음 쓰레기를 주울 때는 Redis에 값이 없을거임
-  const trashAmount = (await redisClient.hGet("user_trash", userId)) || "0";
-  await redisClient.hSet(
-    "user_trash",
-    userId,
-    JSON.stringify(parseFloat(trashAmount) + increase)
-  );
-  return parseFloat(trashAmount) + increase;
-};
-
-// 유저의 보유 쓰레기량을 제거하는 함수
-exports.removeUserTrashAmount = async (userId) => {
-  await redisClient.hDel("user_trash", userId);
-};
 
 // 랜덤 위치 생성 함수 (좌표 제한 적용)
 // 활용도 높아서 같은 파일 내 다른 함수들도 이 유틸 참조합니다 :)

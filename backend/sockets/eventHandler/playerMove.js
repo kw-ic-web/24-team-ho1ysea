@@ -1,11 +1,17 @@
 // backend/sockets/eventHandler/playerMove.js
 
-const obstacle = require("../../models/obstacle");
 const {
-  checkCollision,
+  BASE_SPEED,
+  BASE_RANGE,
+  COLLISION_JELLYFISH_DURATION,
+} = require("../../config/constant");
+const { checkCollision } = require("../../utils/gameUtils");
+const {
+  updateUserData,
+  removeUserData,
+  removeUserTrashAmount,
   updateUserTrashAmount,
-} = require("../../utils/gameUtils");
-const { updateUserData, removeUserData } = require("../../utils/redisHandler");
+} = require("../../utils/redisHandler");
 
 /**
  * @description 특정 플레이어가 이동하면, gameRoom 내의 모든 플레이어들에게 브로드캐스트
@@ -22,8 +28,6 @@ exports.playerMove = (io, socket) => {
 
     // 사용자가 gameRoom에 join 되어있으면, Redis에 업데이트
     const broadcastData = await updateUserData(userId, nickName, position);
-
-    // console.log(broadcastData);
 
     // 충돌 체크 수행 (checkCollision 함수 내에서 redis로 해당 플레이어 사거리 가져옴)
     const collisionResult = await checkCollision(userId, position);
@@ -46,9 +50,6 @@ exports.playerMove = (io, socket) => {
       socket.emit("getItem", collisionResult.id);
       // 프론트에서는 이 이벤트를 수신하면 item 습득 API로 다시 요청을 날리고, 인벤토리 정보를 새로고침함
     } else if (collisionResult && collisionResult.type === "obstacle") {
-      // 전체 플레이어에게 장애물이 사라졌음을 알림
-      io.to("gameRoom").emit("collisionObstacle", collisionResult.data);
-
       console.log("충돌한 장애물 정보:", collisionResult.id);
 
       if (collisionResult.id === "obstacle001") {
@@ -70,9 +71,14 @@ exports.playerMove = (io, socket) => {
         socket.emit("generateRandomTrash", []);
         socket.emit("generateRandomObstacle", []);
         socket.emit("generateRandomItem", []);
+        // 해당 플레이어의 보유 쓰레기 제거 -> pub -> sub이 받아서 leaderboard 이벤트를 소켓으로 쏨
+        await removeUserTrashAmount(userId);
+        // 이동속도, 사거리 초기화
+        socket.emit("getPlayerSpeed", BASE_SPEED);
+        socket.emit("getPlayerRange", BASE_RANGE);
       } else if (collisionResult.id === "obstacle002") {
         // 해파리와 충돌한 경우
-        socket.emit("collisionJellyfish");
+        socket.emit("collisionJellyfish", COLLISION_JELLYFISH_DURATION);
         console.log(`${userId}가 해파리에 쏘여 어지러워집니다.`);
       } else {
         console.log(`${userId}가 미확인 수중 물체와 충돌했습니다! USO`);
