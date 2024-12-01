@@ -35,21 +35,6 @@ exports.removeUserTrashAmount = async (userId) => {
   await redisClient.publish("leaderboard", JSON.stringify(userTrashData));
 };
 
-// 특정 장애물을 Redis에서 제거하는 함수
-exports.removeObstaclePosition = async (objectId) => {
-  const obstacleList = await redisClient.lRange("obstaclePositions", 0, -1);
-
-  for (let obstacle of obstacleList) {
-    const parsedObstacle = JSON.parse(obstacle);
-    if (parsedObstacle.objectId === objectId) {
-      await redisClient.lRem("obstaclePositions", 1, obstacle);
-      // console.log(`장애물 ${objectId}가 제거되었습니다.`);
-      return true;
-    }
-  }
-  return false;
-};
-
 // 리더보드 데이터를 가져오는 함수
 exports.getLeaderBoard = async () => {
   // Redis에서 모든 유저와 쓰레기량 데이터 가져오기
