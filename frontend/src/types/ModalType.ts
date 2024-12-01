@@ -3,4 +3,5 @@ export type IsOpen = {
   share: boolean;
   tutorial: boolean;
   store: boolean;
+  playerInfo: boolean;
 };

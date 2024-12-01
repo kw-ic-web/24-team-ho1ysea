@@ -1,9 +1,11 @@
+import { useEffect, useState } from "react";
 import * as PIXI from "pixi.js";
+import { Sprite, Text } from "@pixi/react";
 import { PlayerInfo } from "@@types/GameType";
 import { usePlayerAnimation } from "@hooks/game/usePlayerAnimation";
-import { useEffect, useState } from "react";
 import { CHARACTER_H, CHARACTER_W } from "@constants/game";
-import { Sprite, Text } from "@pixi/react";
+import { usePlayerInfoStore } from "@store/playerInfoStore";
+import { useModalStore } from "@store/modalStore";
 
 const baseTexture = PIXI.BaseTexture.from("/images/character.png");
 
@@ -15,6 +17,13 @@ function RenderAnotherPlayer({ anotherPlayerInfo }: Props) {
   const { x, y, direction } = anotherPlayerInfo.position;
   const frame = usePlayerAnimation(anotherPlayerInfo.position);
   const [texture, setTexture] = useState<PIXI.Texture | null>(null);
+  const setPlayerInfo = usePlayerInfoStore((s) => s.setPlayerInfo);
+  const toggleModal = useModalStore((s) => s.toggleModal);
+
+  const handleClick = () => {
+    setPlayerInfo(anotherPlayerInfo.userId, anotherPlayerInfo.nickName);
+    toggleModal("playerInfo");
+  };
 
   useEffect(() => {
     let row: number;
@@ -57,7 +66,7 @@ function RenderAnotherPlayer({ anotherPlayerInfo }: Props) {
         y={y}
         scale={0.1}
         interactive={true}
-        pointerdown={() => console.log("클릭")}
+        pointerdown={handleClick}
       />
     </>
   );

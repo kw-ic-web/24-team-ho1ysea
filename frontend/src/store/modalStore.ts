@@ -12,6 +12,7 @@ export const useModalStore = create<ModalStore>((set) => ({
     share: false,
     tutorial: false,
     store: false,
+    playerInfo: false,
   },
 
   toggleModal: (modalName) =>

@@ -6,6 +6,7 @@ import SettingModal from "@components/game/modal/SettingModal";
 import ShareModal from "@components/game/modal/ShareModal";
 import StoreModal from "@components/game/modal/StoreModal";
 import TutorialModal from "@components/game/modal/TutorialModal";
+import PlayerInfoModal from "@components/game/modal/PlayerInfoModal";
 import RenderGame from "@components/game/render/RenderGame";
 import { useKeyListener } from "@hooks/game/useKeyListener";
 import { usePlayerStore } from "@store/playerStore";
@@ -52,6 +53,7 @@ export default function GamePage() {
       <ShareModal />
       <SettingModal />
       <StoreModal />
+      <PlayerInfoModal />
       <LeaderBoard isJoinGameRoom={isJoinGameRoom} socket={socketRef.current} />
       <ItemInventory />
       <SideButton toggleModal={toggleModal} />
