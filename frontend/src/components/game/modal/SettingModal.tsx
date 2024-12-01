@@ -63,7 +63,7 @@ export default function SettingModal(): JSX.Element | null {
                 type="range"
                 min="0"
                 max="100"
-                className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer"
+                className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer appearance-none"
               />
             </div>
 
@@ -75,7 +75,7 @@ export default function SettingModal(): JSX.Element | null {
                 type="range"
                 min="0"
                 max="100"
-                className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer"
+                className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer appearance-none"
               />
             </div>
 
