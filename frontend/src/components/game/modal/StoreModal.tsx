@@ -1,15 +1,12 @@
 import { useItemStore } from "@hooks/game/useItemStore";
+import { useModalStore } from "@store/modalStore";
 import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { BsCoin, BsTrash } from "react-icons/bs";
 import { CgArrowsExchange } from "react-icons/cg";
 
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function StoreModal({ isOpen, onClose }: Props) {
+export default function StoreModal() {
+  const { isOpen, toggleModal } = useModalStore();
   const [activeTab, setActiveTab] = useState<"buy" | "sell">("buy");
   const {
     storeItems,
@@ -18,16 +15,16 @@ export default function StoreModal({ isOpen, onClose }: Props) {
     handleBuyItem,
     handleSellItem,
     handleTrashExchange,
-  } = useItemStore(isOpen);
+  } = useItemStore(isOpen.store);
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
-      onClose();
+      toggleModal("store");
       setActiveTab("buy");
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen.store) return null;
 
   return (
     <div
@@ -39,7 +36,7 @@ export default function StoreModal({ isOpen, onClose }: Props) {
           <AiFillCloseSquare
             className="absolute top-1.5 p-1 w-7 h-7 sm:w-11 sm:h-11 cursor-pointer hover:text-red-500"
             onClick={() => {
-              onClose();
+              toggleModal("store");
               setActiveTab("buy");
             }}
           />

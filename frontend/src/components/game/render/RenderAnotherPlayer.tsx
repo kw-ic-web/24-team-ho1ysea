@@ -51,7 +51,14 @@ function RenderAnotherPlayer({ anotherPlayerInfo }: Props) {
         anchor={0.5}
         style={new PIXI.TextStyle({ align: "center" })}
       />
-      <Sprite texture={texture} x={x} y={y} scale={0.1} />
+      <Sprite
+        texture={texture}
+        x={x}
+        y={y}
+        scale={0.1}
+        interactive={true}
+        pointerdown={() => console.log("클릭")}
+      />
     </>
   );
 }

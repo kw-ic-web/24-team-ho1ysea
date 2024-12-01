@@ -1,20 +1,14 @@
+import { useModalStore } from "@store/modalStore";
 import { useToastStore } from "@store/toastStore";
 import { AiFillCloseSquare } from "react-icons/ai";
 
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function ShareModal({
-  isOpen,
-  onClose,
-}: Props): JSX.Element | null {
+export default function ShareModal(): JSX.Element | null {
+  const { isOpen, toggleModal } = useModalStore();
   const showToast = useToastStore((s) => s.showToast);
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
-      onClose();
+      toggleModal("share");
     }
   };
 
@@ -28,7 +22,7 @@ export default function ShareModal({
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen.share) return null;
 
   return (
     <div
@@ -39,7 +33,7 @@ export default function ShareModal({
         <div className="relative w-full text-center font-bold text-xs sm:text-2xl py-3 mx-auto mb-1">
           <AiFillCloseSquare
             className="absolute top-1.5 p-1 w-7 h-7 sm:w-11 sm:h-11 cursor-pointer hover:text-red-500"
-            onClick={onClose}
+            onClick={() => toggleModal("share")}
           />
           <h1>게임 공유하기</h1>
         </div>
