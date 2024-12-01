@@ -19,8 +19,6 @@ interface Props {
  */
 function RenderPlayer({ socket }: Props) {
   const [playerSpeed, setPlayerSpeed] = useState<number>(5);
-  const [playerRange, setPlayerRange] = useState<number>(50);
-
   const playerPos = usePlayerStore((s) => s.playerPos);
   const nickName = useGameDataStore((s) => s.nickName);
   const userId = useGameDataStore((s) => s.userId);
@@ -35,10 +33,6 @@ function RenderPlayer({ socket }: Props) {
       socket.on("getPlayerSpeed", (speed: number) => {
         console.log("getPlayerSpeed: ", speed);
         setPlayerSpeed(speed);
-      });
-      socket.on("getPlayerRange", (range: number) => {
-        console.log("getPlayerRange: ", range);
-        setPlayerRange(range);
       });
     }
   }, [socket]);

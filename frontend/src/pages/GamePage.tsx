@@ -48,7 +48,7 @@ export default function GamePage() {
   useCheckLogin();
 
   return (
-    <div className={`relative bg-stone-800`}>
+    <div className="relative bg-stone-800">
       <TutorialModal />
       <ShareModal />
       <SettingModal />
