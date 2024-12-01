@@ -5,6 +5,7 @@ const {
   getTrashPositions,
   getObstaclePositions,
   getItemPositions,
+  getLeaderBoard,
 } = require("../../utils/redisHandler");
 
 /**
@@ -16,12 +17,14 @@ exports.joinGameRoom = (io, socket) => {
     socket.join("gameRoom");
 
     // 방에 새로 들어온 유저에게 게임 데이터를 모두 전달
-    const trashs = await getTrashPositions();
+    const trashes = await getTrashPositions();
     const obstacles = await getObstaclePositions();
     const items = await getItemPositions();
-    socket.emit("generateRandomTrash", trashs);
+    const topUsers = await getLeaderBoard();
+    socket.emit("generateRandomTrash", trashes);
     socket.emit("generateRandomObstacle", obstacles);
     socket.emit("generateRandomItem", items);
+    socket.emit("getLeaderBoard", topUsers);
   });
 };
 

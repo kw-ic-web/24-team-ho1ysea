@@ -71,7 +71,6 @@ export const useGameDataStore = create<GameDataStore>((set) => ({
     }
   },
   setMyTrashAmount: (newTrashAmount) => {
-    console.log(newTrashAmount);
     set((prev) => ({
       ...prev,
       myCurrency: { ...prev.myCurrency, trash: newTrashAmount },

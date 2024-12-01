@@ -56,11 +56,11 @@ export default function ItemInventory(): JSX.Element {
               <div className="p-1">
                 <img src={`/images/items/${item.image}`} />
               </div>
-              {/* 아이템 사용 단축키가 들어갈 p 태그 */}
+              {/* 아이템 사용 단축키 */}
               <p className="font-semibold absolute left-0.5 bottom-0.5 text-[5px] sm:text-[10px] md:text-[15px] lg:text-[20px] lg:left-1 lg:bottom-1">
                 {idx + 1}
               </p>
-              {/* 아이템 보유 개수가 들어갈 p 태그 */}
+              {/* 아이템 보유 개수 */}
               <p className="absolute right-0.5 bottom-0.5 text-[3px] sm:text-[6px] md:text-[10px] lg:text-[17px] lg:right-1 lg:bottom-1">
                 {item.quantity}
               </p>

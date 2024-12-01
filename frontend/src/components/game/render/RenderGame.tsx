@@ -1,22 +1,15 @@
+import { Stage } from "@pixi/react";
+import { Socket } from "socket.io-client";
 import { WORLD_H, WORLD_W } from "@constants/game";
 import { useStageInit } from "@hooks/game/useStageInit";
+import { useSocketRecv } from "@hooks/game/useSocketRecv";
 import RenderMap from "@components/game/render/RenderMap";
 import RenderPlayer from "@components/game/render/RenderPlayer";
 import RenderObstacle from "@components/game/render/RenderObstacle";
 import RenderAnotherPlayer from "@components/game/render/RenderAnotherPlayer";
-import { Stage } from "@pixi/react";
-import { Socket } from "socket.io-client";
-import { useEffect, useState } from "react";
-import { PlayerInfo } from "@@types/GameType";
-import { Obstacle } from "@@types/obstacleType";
-import { GameItem } from "@@types/itemsType";
-import { Trash } from "@@types/trashType";
-import { useGameDataStore } from "@store/gameDataStore";
 import RenderTrash from "./RenderTrash";
 import RenderItem from "./RenderItem";
 import RenderWarning from "./RenderWarning";
-import { getItemApi } from "@apis/itemRestful";
-import { getLocalStorage } from "@utils/localStorage";
 
 interface Props {
   socket: Socket | null;
@@ -28,66 +21,10 @@ interface Props {
 export default function RenderGame({ socket }: Props) {
   // 초기 pixi.js 스테이지의 비율과 크기를 세팅
   const { width, height } = useStageInit();
-  // 플레이어의 아이디
-  const userId = useGameDataStore((s) => s.userId);
-  const setMyTrashAmount = useGameDataStore((s) => s.setMyTrashAmount);
-  const fetchMyItems = useGameDataStore((s) => s.fetchMyItems);
-  // 플레이어를 제외한 나머지 유저의 정보가 담길 배열 <- 소켓에서 가져오는 데이터를 필터링해서 저장
-  const [anotherPlayersInfo, setAnotherPlayersInfo] = useState<PlayerInfo[]>(
-    []
-  );
-  const [obstacleInfo, setObstacleInfo] = useState<Obstacle[]>([]);
-  const [trashInfo, setTrashInfo] = useState<Trash[]>([]);
-  const [itemInfo, setItemInfo] = useState<GameItem[]>([]);
 
-  // 소켓이 오픈됐고, 플레이어 아이디를 잘 받아왔으면 서버로부터 updateCharacterPosition 이벤트 수신 시작
-  useEffect(() => {
-    if (socket && userId) {
-      socket.on("updateCharacterPosition", (data: PlayerInfo[]) => {
-        setAnotherPlayersInfo(data.filter((d) => d.userId !== userId));
-      });
-      socket.on("generateRandomObstacle", (data: Obstacle[]) => {
-        setObstacleInfo(data);
-      });
-      socket.on("generateRandomItem", (data: GameItem[]) => {
-        setItemInfo(data);
-      });
-      socket.on("generateRandomTrash", (data: Trash[]) => {
-        setTrashInfo(data);
-      });
-      socket.on("collisionTrash", (collisionTrashRes: Trash[]) => {
-        setTrashInfo(collisionTrashRes);
-      });
-      socket.on("collisionItem", (collisionItemRes: GameItem[]) => {
-        setItemInfo(collisionItemRes);
-      });
-      socket.on("collisionObstacle", (collisionObstacleRes: Obstacle[]) => {
-        setObstacleInfo(collisionObstacleRes);
-      });
-      socket.on("getTrashAmount", (trashAmountRes: number) => {
-        setMyTrashAmount(trashAmountRes);
-      });
-      socket.on("getItem", async (itemId: string) => {
-        console.log(`itemId: ${itemId}`);
-        try {
-          const token = getLocalStorage("token");
-          if (token) {
-            // 습득한 아이템을 백엔드 mongodb에 업데이트하도록 요청을 날리고
-            await getItemApi(token, itemId);
-            // 끝나면 인벤토리 내 아이템 정보를 다시 받아와서 zustand state를 업데이트하는 함수 실행
-            await fetchMyItems(token);
-          }
-        } catch (e) {
-          console.error("아이템 주운거 처리하다 에러 발생", e);
-        }
-      });
-    } else if (!socket) {
-      setAnotherPlayersInfo([]);
-      setObstacleInfo([]);
-      setTrashInfo([]);
-      setItemInfo([]);
-    }
-  }, [fetchMyItems, setMyTrashAmount, socket, userId]);
+  // 게임과 관련된 모든 이벤트를 수신 및 처리하는 커스텀 훅
+  const { anotherPlayersInfo, obstacleInfo, trashInfo, itemInfo } =
+    useSocketRecv(socket);
 
   return (
     <Stage
