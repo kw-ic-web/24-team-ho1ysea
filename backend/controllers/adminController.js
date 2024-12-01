@@ -28,6 +28,36 @@ exports.getBannedUsers = async (req, res) => {
   }
 };
 
+// 제제 갱신 로직
+exports.updateBannedUsers = async (req, res) => {
+  try {
+    const today = new Date();
+
+    // freedomAt 날짜가 오늘 이전인 모든 제제 찾기
+    const expiredBans = await Ban.find({ freedomAt: { $lte: today } });
+
+    if (expiredBans.length === 0) {
+      return res.status(200).json({ message: "해제할 제제가 없습니다." });
+    }
+
+    // 제제 해제할 유저 ID 목록
+    const unbannedUserIds = expiredBans.map((ban) => ban.userId);
+
+    // 해당 제제 삭제 (제제 해제)
+    await Ban.deleteMany({ freedomAt: { $lte: today } });
+
+    // 필요 시 사용자 상태 업데이트 등 추가 로직을 여기에 작성할 수 있습니다.
+
+    return res.status(200).json({
+      message: `${unbannedUserIds.length}명의 사용자가 제제 해제되었습니다.`,
+      unbannedUserIds,
+    });
+  } catch (err) {
+    console.error("Error in updateBannedUsers:", err);
+    return res.status(500).json({ message: "서버 오류입니다." });
+  }
+};
+
 // 전체유저 데이터 조회 로직
 exports.allUsers = async (req, res) => {
   try {
