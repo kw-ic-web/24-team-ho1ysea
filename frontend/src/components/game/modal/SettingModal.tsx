@@ -1,31 +1,26 @@
 import { isAdminApi } from "@apis/adminRestful";
+import { useModalStore } from "@store/modalStore";
 import { useToastStore } from "@store/toastStore";
 import { deleteLocalStorage, getLocalStorage } from "@utils/localStorage";
 import { useEffect, useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function SettingModal({
-  isOpen,
-  onClose,
-}: Props): JSX.Element | null {
+export default function SettingModal(): JSX.Element | null {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const { isOpen, toggleModal } = useModalStore();
   const navigate = useNavigate();
   const showToast = useToastStore((s) => s.showToast);
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
-      onClose();
+      toggleModal("setting");
     }
   };
 
   const handleLogoutBtn = () => {
     deleteLocalStorage("token");
+    toggleModal("setting");
     navigate("/");
     showToast("로그아웃 되었습니다.");
   };
@@ -43,7 +38,7 @@ export default function SettingModal({
     }
   }, []);
 
-  if (!isOpen) return null;
+  if (!isOpen.setting) return null;
 
   return (
     <div
@@ -54,7 +49,7 @@ export default function SettingModal({
         <div className="relative w-full text-center font-bold text-xs sm:text-2xl py-3 mx-auto mb-1">
           <AiFillCloseSquare
             className="absolute top-1.5 p-1 w-7 h-7 sm:w-11 sm:h-11 cursor-pointer hover:text-red-500"
-            onClick={onClose}
+            onClick={() => toggleModal("setting")}
           />
           <h1>게임 설정</h1>
         </div>
@@ -68,7 +63,7 @@ export default function SettingModal({
                 type="range"
                 min="0"
                 max="100"
-                className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer"
+                className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer appearance-none"
               />
             </div>
 
@@ -80,7 +75,7 @@ export default function SettingModal({
                 type="range"
                 min="0"
                 max="100"
-                className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer"
+                className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer appearance-none"
               />
             </div>
 
@@ -94,6 +89,7 @@ export default function SettingModal({
             {isAdmin && (
               <Link
                 to="/admin"
+                onClick={() => toggleModal("setting")}
                 className="block pb-2 text-sm font-semibold text-blue-600 hover:text-blue-800"
               >
                 관리자 페이지로 이동

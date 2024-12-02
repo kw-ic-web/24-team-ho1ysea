@@ -5,21 +5,15 @@ import {
 } from "react-icons/ai";
 import { tutorialDataList } from "@constants/tutorial";
 import { useState } from "react";
+import { useModalStore } from "@store/modalStore";
 
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function TutorialModal({
-  isOpen,
-  onClose,
-}: Props): JSX.Element | null {
+export default function TutorialModal(): JSX.Element | null {
+  const { isOpen, toggleModal } = useModalStore();
   const [pageIdx, setPageIdx] = useState<number>(0);
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
-      onClose();
+      toggleModal("tutorial");
     }
   };
 
@@ -35,7 +29,7 @@ export default function TutorialModal({
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen.tutorial) return null;
 
   return (
     <div
@@ -46,7 +40,7 @@ export default function TutorialModal({
         <div className="relative w-full text-center font-bold text-xs sm:text-2xl py-3 mx-auto">
           <AiFillCloseSquare
             className="absolute top-1.5 p-1 w-7 h-7 sm:w-11 sm:h-11 cursor-pointer hover:text-red-500"
-            onClick={onClose}
+            onClick={() => toggleModal("tutorial")}
           />
           {tutorialDataList[pageIdx].title}
         </div>

@@ -39,7 +39,6 @@ export default function RenderGame({ socket }: Props) {
       }}
     >
       <RenderMap />
-      {/* 플레이어와 다른 사용자 렌더링 */}
       <RenderPlayer socket={socket} />
       {anotherPlayersInfo.map((anotherPlayerInfo) => (
         <RenderAnotherPlayer
@@ -47,8 +46,6 @@ export default function RenderGame({ socket }: Props) {
           key={anotherPlayerInfo.userId}
         />
       ))}
-
-      {/* 방해요소 (상어, 해파리) 렌더링 */}
       {obstacleInfo.map((obstacle) =>
         obstacle.isActive === 0 ? (
           <RenderWarning key={obstacle.objectId} obstacle={obstacle} />
@@ -56,11 +53,9 @@ export default function RenderGame({ socket }: Props) {
           <RenderObstacle key={obstacle.objectId} obstacle={obstacle} />
         )
       )}
-
       {trashInfo.map((trash) => (
         <RenderTrash key={trash.objectId} trash={trash} />
       ))}
-
       {itemInfo.map((item) => (
         <RenderItem key={item.objectId} item={item} />
       ))}

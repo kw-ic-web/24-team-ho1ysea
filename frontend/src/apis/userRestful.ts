@@ -74,3 +74,31 @@ export const userInfoApi = (token: string) => {
     }
   );
 };
+
+/**
+ * @description 특정 플레이어를 신고하는 API
+ * @param token JWT 토큰
+ * @param reportedUserId 신고당하는 userId
+ * @param reportedNickName 신고당하는 nickName
+ * @param reason 신고 사유
+ */
+export const reportApi = (
+  token: string,
+  reportedUserId: string,
+  reportedNickName: string,
+  reason: string
+) => {
+  return axios.post<{ message: string }>(
+    `${import.meta.env.VITE_API_URL}/user/report`,
+    {
+      reportedUserId,
+      reportednickName: reportedNickName,
+      reason,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
