@@ -1,6 +1,6 @@
 // controllers/storeController.js
 
-const User = require("../models/User");
+const User = require("../models/user");
 const Item = require("../models/item");
 const Inventory = require("../models/inventory");
 const { COIN_EXCHANGE_RATE } = require("../config/constant");

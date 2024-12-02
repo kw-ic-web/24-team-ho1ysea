@@ -3,7 +3,7 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 // .env 파일의 내용을 로드 (cf. '.env' 내용 참조하는 파일들은 명시 필요)
-const User = require("../models/User");
+const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 // 이걸 넘겨준 엔드포인트는 인증된 사용자만 접근할 수 있음
@@ -28,8 +28,7 @@ module.exports = async function (req, res, next) {
 
     req.user = user; // 요청 객체에 사용자 정보 추가
 
-    next(); //  현성이 요청대로 응답코드로 보내주려 했는데.. 사용자가 관리자 페이지에 접근하는 불상사가 생겨서 미들웨어 추가했다..ㅠㅠ  
-
+    next(); //  현성이 요청대로 응답코드로 보내주려 했는데.. 사용자가 관리자 페이지에 접근하는 불상사가 생겨서 미들웨어 추가했다..ㅠㅠ
   } catch (err) {
     res.status(401).json({ message: "유효하지 않은 토큰입니다." });
   }
