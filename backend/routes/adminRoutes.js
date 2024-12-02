@@ -18,6 +18,13 @@ router.get(
   adminController.getBannedUsers
 );
 
+// 제제 갱신 엔드포인트 (API 키 검증 미들웨어 추가)
+router.post(
+  "/update-banned-users",
+  validateApiKey, // API 키 검증 미들웨어
+  adminController.updateBannedUsers
+);
+
 // // 전체 유저 데이터 조회 엔드포인트
 router.get("/users", authMiddleware, adminMiddleware, adminController.allUsers);
 
