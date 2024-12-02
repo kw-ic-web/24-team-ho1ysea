@@ -3,12 +3,13 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
-const User = require("../models/User");
+const User = require("../models/user");
 // const Report = require("../models/report");
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middlewares/authMiddleware");
 const adminMiddleware = require("../middlewares/adminMiddleware");
 const adminController = require("../controllers/adminController.js");
+const validateApiKey = require("../middlewares/validateApiKey.js");
 
 // 제재당한 유저 조회 엔드포인트
 router.get(

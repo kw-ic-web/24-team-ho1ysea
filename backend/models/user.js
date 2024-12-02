@@ -16,7 +16,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["active", "withdrawnPlanned", "withdrawn"], // 활성 상태, (탈퇴)예정 상태, 탈퇴 상태
     default: "active",
-
   },
 });
 

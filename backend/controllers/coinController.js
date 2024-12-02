@@ -1,6 +1,6 @@
 // controllers/coinController.js
 
-const User = require("../models/User");
+const User = require("../models/user");
 
 exports.getMyCoin = async (req, res) => {
   const userId = req.user._id;
