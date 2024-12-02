@@ -50,6 +50,11 @@ exports.generateRandomTrash = async (io) => {
   let trashLimit = Number(await redisClient.get("trashGenerationLimit")); // 쓰레기 최대치 redis에서 가져와서 기억
   let intervalId = null; // interval 이벤트를 지우고 새로 생성하기 위해 필요
 
+  if (isNaN(trashSpeed) || isNaN(trashLimit)) {
+    redisClient.set("trashGenerationSpeed", "10");
+    redisClient.set("trashGenerationLimit", "20");
+  }
+
   // 클로저 활용! 해당 함수를 한 번 실행시키면 기존 이벤트를 지우고 새 이벤트를 등록한다.
   const startTrashGeneration = () => {
     // 해당 함수가 실행되었을 때, intervalId가 존재하면 이벤트 제거 후 재등록
