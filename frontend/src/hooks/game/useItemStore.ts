@@ -8,6 +8,7 @@ import { getLocalStorage } from "@utils/localStorage";
 import { isAxiosError } from "axios";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAudio } from "./useAudio";
 
 /**
  * @description 상점 아이템, 내 보유 아이템, 아이템 구매, 아이템 판매 등을 위한 함수 / state를 반환하는 커스텀 훅
@@ -21,6 +22,7 @@ export const useItemStore = (isOpen: boolean) => {
   const setMyTrashAmount = useGameDataStore((s) => s.setMyTrashAmount);
   const fetchMyItems = useGameDataStore((s) => s.fetchMyItems);
   const fetchMyCurrency = useGameDataStore((s) => s.fetchMyCurrency);
+  const playCoinExchangeSound = useAudio("/sound/coin_exchange.mp3");
 
   /**
    * @description 아이템 구매 핸들 함수
@@ -38,7 +40,7 @@ export const useItemStore = (isOpen: boolean) => {
 
         await buyStoreItemApi(itemId, 1, token);
         showToast(itemName + " 구매 성공!");
-
+        playCoinExchangeSound();
         fetchMyItems(token);
         fetchMyCurrency(token);
       } catch (err) {
@@ -57,7 +59,7 @@ export const useItemStore = (isOpen: boolean) => {
         }
       }
     },
-    [fetchMyCurrency, fetchMyItems, navigate, showToast]
+    [fetchMyCurrency, fetchMyItems, navigate, playCoinExchangeSound, showToast]
   );
 
   /**
@@ -76,7 +78,7 @@ export const useItemStore = (isOpen: boolean) => {
 
         await sellStoreItemApi(itemId, 1, token);
         showToast(itemName + " 판매 성공!");
-
+        playCoinExchangeSound();
         fetchMyItems(token);
         fetchMyCurrency(token);
       } catch (err) {
@@ -95,7 +97,7 @@ export const useItemStore = (isOpen: boolean) => {
         }
       }
     },
-    [fetchMyCurrency, fetchMyItems, navigate, showToast]
+    [fetchMyCurrency, fetchMyItems, navigate, playCoinExchangeSound, showToast]
   );
 
   /**
@@ -109,11 +111,16 @@ export const useItemStore = (isOpen: boolean) => {
         navigate("/");
         return;
       }
+      if (myCurrency.trash === 0) {
+        showToast("환전할 쓰레기가 없습니다.");
+        return;
+      }
 
       const exchangedGold = await trashExchangeApi(
         myCurrency.trash,
         token
       ).then((res) => res.data.exchangedGold);
+      playCoinExchangeSound();
       showToast(exchangedGold + " 원 환전 성공!");
       setMyTrashAmount(0); // 환전 끝나면 쓰레기 량 초기화
       fetchMyCurrency(token);
@@ -130,6 +137,7 @@ export const useItemStore = (isOpen: boolean) => {
     }
   }, [
     myCurrency.trash,
+    playCoinExchangeSound,
     showToast,
     setMyTrashAmount,
     fetchMyCurrency,

@@ -9,6 +9,7 @@ import { usePlayerStore } from "@store/playerStore";
 import { getLocalStorage } from "@utils/localStorage";
 import { getItemApi } from "@apis/itemRestful";
 import { useToastStore } from "@store/toastStore";
+import { useAudio } from "./useAudio";
 
 export const useSocketRecv = (socket: Socket | null) => {
   const userId = useGameDataStore((s) => s.userId); // 플레이어 아이디
@@ -26,6 +27,9 @@ export const useSocketRecv = (socket: Socket | null) => {
   const [trashInfo, setTrashInfo] = useState<Trash[]>([]); // 쓰레기 정보 + 좌표 배열
   const [itemInfo, setItemInfo] = useState<GameItem[]>([]); // 아이템 정보 + 좌표 배열
 
+  const playGetSound = useAudio("/sound/get.mp3");
+  const playHitSound = useAudio("/sound/hit.mp3");
+
   useEffect(() => {
     if (socket && userId) {
       socket.on("updateCharacterPosition", (data: PlayerInfo[]) => {
@@ -42,9 +46,11 @@ export const useSocketRecv = (socket: Socket | null) => {
       });
       socket.on("collisionTrash", (collisionTrashRes: Trash[]) => {
         setTrashInfo(collisionTrashRes);
+        playGetSound();
       });
       socket.on("collisionItem", (collisionItemRes: GameItem[]) => {
         setItemInfo(collisionItemRes);
+        playGetSound();
       });
       socket.on("collisionObstacle", (collisionObstacleRes: Obstacle[]) => {
         setObstacleInfo(collisionObstacleRes);
@@ -69,10 +75,12 @@ export const useSocketRecv = (socket: Socket | null) => {
       socket.on("collisionShark", () => {
         resetPlayerPos(); // 초기위치로 이동시킴
         setMyTrashAmount(0); // 쓰레기를 전부 잃음
+        playHitSound();
         showToast("상어에게 공격받아 수집한 쓰레기를 모두 잃었습니다!!");
       });
       socket.on("collisionJellyfish", (duration: number) => {
         toggleConfusionDirection(duration); // 방향 전환 효과를 duration동안 적용
+        playHitSound();
         showToast(`해파리와 부딧쳐 ${duration / 1000}초 동안 어지러워집니다!!`);
       });
     } else if (!socket) {
@@ -83,6 +91,8 @@ export const useSocketRecv = (socket: Socket | null) => {
     }
   }, [
     fetchMyItems,
+    playGetSound,
+    playHitSound,
     resetPlayerPos,
     setMyTrashAmount,
     showToast,
