@@ -51,8 +51,10 @@ exports.generateRandomTrash = async (io) => {
   let intervalId = null; // interval 이벤트를 지우고 새로 생성하기 위해 필요
 
   if (isNaN(trashSpeed) || isNaN(trashLimit)) {
-    redisClient.set("trashGenerationSpeed", "10");
-    redisClient.set("trashGenerationLimit", "20");
+    await redisClient.set("trashGenerationSpeed", "10");
+    await redisClient.publish("trashGenerationSpeed", speed.toString());
+    await redisClient.set("trashGenerationLimit", "20");
+    await redisClient.publish("trashGenerationLimit", quantity.toString());
   }
 
   // 클로저 활용! 해당 함수를 한 번 실행시키면 기존 이벤트를 지우고 새 이벤트를 등록한다.
