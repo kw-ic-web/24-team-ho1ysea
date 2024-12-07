@@ -169,7 +169,7 @@ exports.checkCollision = async (userId, position) => {
 
     if (isColliding(position, obstacle.position, BASE_RANGE)) {
       // 충돌한 장애물을 Redis에서 제거
-      await removeObstaclePosition(obstacle.objectId);
+      // await removeObstaclePosition(obstacle.objectId);
       // console.log(`장애물 ${obstacle.objectId}에 충돌했습니다.`);
       // 충돌한 장애물 정보를 반환
       const updatedObstacleList = await getObstaclePositions();
