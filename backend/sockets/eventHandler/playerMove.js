@@ -63,36 +63,50 @@ exports.playerMove = (io, socket) => {
     } else if (collisionResult && collisionResult.type === "obstacle") {
       console.log("충돌한 장애물 정보:", collisionResult.id);
 
-      if (collisionResult.id === "obstacle001") {
-        // 상어와 충돌한 경우
-        socket.emit("collisionShark");
-        console.log(`${userId}가 상어와 충돌하여 사망했습니다.`);
+      const obstacleId = collisionResult.id;
 
-        // 먼저 소켓을 gameRoom에서 제거
-        socket.leave("gameRoom");
-
-        // 플레이어를 Redis에서 제거
-        const broadcastData = await removeUserData(userId);
-
-        // 제거한 후, 남은 플레이어들에게 업데이트된 캐릭터 위치를 브로드캐스트
-        io.to("gameRoom").emit("updateCharacterPosition", broadcastData);
-
-        // 플레이어의 게임 데이터를 초기화
-        socket.emit("updateCharacterPosition", []);
-        socket.emit("generateRandomTrash", []);
-        socket.emit("generateRandomObstacle", []);
-        socket.emit("generateRandomItem", []);
-        // 해당 플레이어의 보유 쓰레기 제거 -> pub -> sub이 받아서 leaderboard 이벤트를 소켓으로 쏨
-        await removeUserTrashAmount(userId);
-        // 이동속도, 사거리 초기화
-        socket.emit("getPlayerSpeed", BASE_SPEED);
-        socket.emit("getPlayerRange", BASE_RANGE);
-      } else if (collisionResult.id === "obstacle002") {
-        // 해파리와 충돌한 경우
-        socket.emit("collisionJellyfish", COLLISION_JELLYFISH_DURATION);
-        console.log(`${userId}가 해파리에 쏘여 어지러워집니다.`);
+      // 이전에 처리한 방해요소인지 검사 (아이템과 동일하게 처리)
+      if (
+        socket.data.lastProcessedObstacleId && // null이 아니고
+        socket.data.lastProcessedObstacleId === obstacleId // 현재 충돌값과 일치하면
+      ) {
+        // 이미 처리한 방해요소면 무시
+        console.log("중복 방해요소 처리 요청 무시:", obstacleId);
       } else {
-        console.log(`${userId}가 미확인 수중 물체와 충돌했습니다! USO`);
+        // 처음 처리하는 방해요소이면 기록
+        socket.data.lastProcessedObstacleId = obstacleId;
+
+        if (obstacleId === "obstacle001") {
+          // 상어와 충돌한 경우
+          socket.emit("collisionShark");
+          console.log(`${userId}가 상어와 충돌하여 사망했습니다.`);
+
+          // 먼저 소켓을 gameRoom에서 제거
+          socket.leave("gameRoom");
+
+          // 플레이어를 Redis에서 제거
+          const broadcastData = await removeUserData(userId);
+
+          // 제거한 후, 남은 플레이어들에게 업데이트된 캐릭터 위치를 브로드캐스트
+          io.to("gameRoom").emit("updateCharacterPosition", broadcastData);
+
+          // 플레이어의 게임 데이터를 초기화
+          socket.emit("updateCharacterPosition", []);
+          socket.emit("generateRandomTrash", []);
+          socket.emit("generateRandomObstacle", []);
+          socket.emit("generateRandomItem", []);
+          // 해당 플레이어의 보유 쓰레기 제거 -> pub -> sub이 받아서 leaderboard 이벤트를 소켓으로 쏨
+          await removeUserTrashAmount(userId);
+          // 이동속도, 사거리 초기화
+          socket.emit("getPlayerSpeed", BASE_SPEED);
+          socket.emit("getPlayerRange", BASE_RANGE);
+        } else if (obstacleId === "obstacle002") {
+          // 해파리와 충돌한 경우
+          socket.emit("collisionJellyfish", COLLISION_JELLYFISH_DURATION);
+          console.log(`${userId}가 해파리에 쏘여 어지러워집니다.`);
+        } else {
+          console.log(`${userId}가 미확인 수중 물체와 충돌했습니다! USO`);
+        }
       }
     }
 
