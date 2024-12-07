@@ -8,6 +8,8 @@ const {
   removeObstaclePosition,
   updateObstacleStatus,
   getUserTrashData,
+  getTrashPositions,
+  getItemPositions,
 } = require("../../utils/redisHandler");
 const Obstacle = require("../../models/obstacle");
 const { v4: uuidv4 } = require("uuid");
@@ -18,6 +20,8 @@ const {
   TIMER_ITEM_GENERATION,
   TIMER_OBSTACLE_ACTIVATION,
   TIMER_OBSTACLE_REMOVE,
+  TIMER_DEFAULT_TRASH_GENERATION,
+  DEFAULT_MAX_TRASH,
 } = require("../../config/constant");
 
 const generateRandomPosition = () => {
@@ -46,17 +50,14 @@ exports.getUserTrash = (socket) => {
 
 // 쓰레기 랜덤 생성 이벤트
 exports.generateRandomTrash = async (io) => {
-  let trashSpeed = Number(await redisClient.get("trashGenerationSpeed")); // 쓰레기 생성속도 redis에서 가져와서 기억
-  let trashLimit = Number(await redisClient.get("trashGenerationLimit")); // 쓰레기 최대치 redis에서 가져와서 기억
+  let trashSpeed = Number(
+    (await redisClient.get("trashGenerationSpeed")) ||
+      TIMER_DEFAULT_TRASH_GENERATION
+  );
+  let trashLimit = Number(
+    (await redisClient.get("trashGenerationLimit")) || DEFAULT_MAX_TRASH
+  );
   let intervalId = null; // interval 이벤트를 지우고 새로 생성하기 위해 필요
-
-  if (isNaN(trashSpeed) || isNaN(trashLimit)) {
-    await redisClient.set("trashGenerationSpeed", "10");
-    await redisClient.publish("trashGenerationSpeed", "10");
-
-    await redisClient.set("trashGenerationLimit", "20");
-    await redisClient.publish("trashGenerationLimit", "20");
-  }
 
   // 클로저 활용! 해당 함수를 한 번 실행시키면 기존 이벤트를 지우고 새 이벤트를 등록한다.
   const startTrashGeneration = () => {
@@ -65,16 +66,10 @@ exports.generateRandomTrash = async (io) => {
     console.log("쓰레기 생성을 시작합니다...");
 
     intervalId = setInterval(async () => {
-      const trashData = await generateTrash();
-
-      // 쓰레기 최대치 도달 시 생성 X
-      if (trashData.length > trashLimit) {
-        // console.log("쓰레기가 꽉 찼습니다.");
-        return;
-      }
+      await generateTrash();
+      const trashData = await getTrashPositions();
 
       io.to("gameRoom").emit("generateRandomTrash", trashData); // gameRoom 내의 모든 클라이언트에게 브로드캐스트
-      console.log("쓰레기 생성 이벤트 실행!");
     }, trashSpeed * 1000);
   };
 
@@ -155,12 +150,8 @@ exports.generateRandomObstacle = (io) => {
 exports.generateRandomItem = (io) => {
   console.log("아이템 생성을 시작합니다...");
   setInterval(async () => {
-    const itemData = await generateItem();
-    // 최대치 도달 시 생성 X
-    if (itemData.length > MAX_ITEMS) {
-      console.log("아이템이 꽉 찼습니다.");
-      return;
-    }
+    await generateItem();
+    const itemData = await getItemPositions();
     io.to("gameRoom").emit("generateRandomItem", itemData);
     // console.log("아이템 생성 이벤트 실행!");
   }, TIMER_ITEM_GENERATION);
