@@ -11,7 +11,7 @@ export default function RenderItem({ item }: Props) {
       image={`/images/items/${item.image}`}
       x={item.position.x}
       y={item.position.y}
-      scale={0.1}
+      scale={0.3}
     />
   );
 }
