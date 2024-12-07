@@ -35,10 +35,11 @@
 
 ### 1. 접속 화면
 
-| ![Landing Page](./docs/landing.png) | ![Register Page](./docs/register.png) | ![Login Page](./docs/login.png) |
-| ----------------------------------- | ------------------------------------- | ------------------------------- |
+![Landing Page](./docs/landing.png)
 
 랜딩 페이지 입니다. 우측 하단 로그인, 회원가입 버튼을 눌러 로그인과 회원가입을 수행할 수 있습니다.
+
+![Register Page](./docs/register.png)
 
 회원가입 시에는 닉네임 중복과 아이디 중복 여부를 체크해야 합니다. 모두 통과하지 못하면 회원가입이 불가능합니다.
 
