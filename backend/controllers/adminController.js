@@ -1,12 +1,9 @@
 // controllers/adminController.js
-const { redisClient, subscriber } = require("../config/db");
-const mongoose = require("mongoose");
+const { redisClient } = require("../config/db");
 require("dotenv").config(); // 환경 변수를 로드
-const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const Report = require("../models/report");
 const Ban = require("../models/ban");
-const jwt = require("jsonwebtoken");
 
 // 제제당한 유저 조회 로직
 exports.getBannedUsers = async (req, res) => {

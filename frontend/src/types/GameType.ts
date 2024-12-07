@@ -17,5 +17,6 @@ export type ObjectPos = {
 
 export type TopUser = {
   userId: string;
+  nickName: string;
   trashAmount: number;
 };

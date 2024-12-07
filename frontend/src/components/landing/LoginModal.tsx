@@ -72,7 +72,7 @@ export default function LoginModal() {
             type="text"
             autoComplete="username"
             placeholder="ID"
-            className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 mb-4 border-2 rounded-lg outline-none focus:border-blue-500"
             value={inputs.id}
             onChange={(e) =>
               setInputs((prev) => ({ ...prev, id: e.target.value }))
@@ -82,7 +82,7 @@ export default function LoginModal() {
             type="password"
             autoComplete="current-password"
             placeholder="Password"
-            className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 mb-4 border-2 rounded-lg outline-none focus:border-blue-500"
             value={inputs.pw}
             onChange={(e) =>
               setInputs((prev) => ({ ...prev, pw: e.target.value }))

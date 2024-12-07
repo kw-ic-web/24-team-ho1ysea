@@ -46,17 +46,16 @@ export const useSocketRecv = (socket: Socket | null) => {
       });
       socket.on("collisionTrash", (collisionTrashRes: Trash[]) => {
         setTrashInfo(collisionTrashRes);
-        playGetSound(); // 획득 효과음 실행
       });
       socket.on("collisionItem", (collisionItemRes: GameItem[]) => {
         setItemInfo(collisionItemRes);
-        playGetSound(); // 획득 효과음 실행
       });
       socket.on("collisionObstacle", (collisionObstacleRes: Obstacle[]) => {
         setObstacleInfo(collisionObstacleRes);
       });
       socket.on("getTrashAmount", (trashAmountRes: number) => {
         setMyTrashAmount(trashAmountRes);
+        playGetSound(); // 획득 효과음 실행
       });
       socket.on("getItem", async (itemId: string) => {
         console.log(`itemId: ${itemId}`);
@@ -65,6 +64,7 @@ export const useSocketRecv = (socket: Socket | null) => {
           if (token) {
             // 습득한 아이템을 백엔드 mongodb에 업데이트하도록 요청을 날리고
             await getItemApi(token, itemId);
+            playGetSound(); // 획득 효과음 실행
             // 끝나면 인벤토리 내 아이템 정보를 다시 받아와서 zustand state를 업데이트하는 함수 실행
             await fetchMyItems(token);
           }
@@ -81,7 +81,7 @@ export const useSocketRecv = (socket: Socket | null) => {
       socket.on("collisionJellyfish", (duration: number) => {
         toggleConfusionDirection(duration); // 방향 전환 효과를 duration동안 적용
         playHitSound(); // 충돌 효과음 실행
-        showToast(`해파리와 부딧쳐 ${duration / 1000}초 동안 어지러워집니다!!`);
+        showToast(`해파리와 부딪쳐 ${duration / 1000}초 동안 어지러워집니다!!`);
       });
     } else if (!socket) {
       setAnotherPlayersInfo([]);

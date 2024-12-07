@@ -40,7 +40,7 @@ exports.getLeaderBoard = async () => {
   // Redis에서 모든 유저와 쓰레기량 데이터 가져오기
   const userTrashData = await redisClient.hGetAll("user_trash");
 
-  const topUsers = makeLeaderBoard(userTrashData);
+  const topUsers = await makeLeaderBoard(userTrashData);
   return topUsers;
 };
 

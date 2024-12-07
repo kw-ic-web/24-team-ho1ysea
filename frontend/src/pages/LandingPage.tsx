@@ -33,20 +33,31 @@ export default function LandingPage() {
   }, [navigate, showToast]);
 
   return (
-    <div className="w-screen h-screen relative flex justify-center items-center bg-sky-100 text-gray-800">
+    <div
+      className="w-screen h-screen relative text-gray-800"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/landing.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       <div className="absolute top-20 left-20">
-        <p className="text-3xl font-bold">바다 이야기</p>
+        <p className="text-slate-200 text-5xl font-black drop-shadow-2xl">
+          바다 이야기
+        </p>
       </div>
       <div className="absolute flex flex-col text-center right-20 bottom-20">
         <Link
           to="login"
-          className="bg-blue-500 hover:bg-blue-600 min-w-28 px-3 py-2 m-2 border rounded-xl text-slate-200"
+          className="bg-blue-500 hover:bg-blue-600 min-w-28 px-3 py-2 m-2 rounded-xl text-slate-200 font-bold"
         >
           로그인
         </Link>
         <Link
           to="register"
-          className="bg-blue-500 hover:bg-blue-600 min-w-28 px-3 py-2 m-2 border rounded-xl text-slate-200"
+          className="bg-blue-500 hover:bg-blue-600 min-w-28 px-3 py-2 m-2 rounded-xl text-slate-200 font-bold"
         >
           회원가입
         </Link>

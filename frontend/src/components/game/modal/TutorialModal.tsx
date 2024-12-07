@@ -13,7 +13,7 @@ export default function TutorialModal(): JSX.Element | null {
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
-      toggleModal("tutorial");
+      closeModal();
     }
   };
 
@@ -29,6 +29,11 @@ export default function TutorialModal(): JSX.Element | null {
     }
   };
 
+  const closeModal = () => {
+    toggleModal("tutorial");
+    setPageIdx(0);
+  };
+
   if (!isOpen.tutorial) return null;
 
   return (
@@ -36,16 +41,16 @@ export default function TutorialModal(): JSX.Element | null {
       className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-40"
       onClick={handleBgClick}
     >
-      <div className="bg-slate-200 p-2 m-2 mx-8 sm:max-w-2xl sm:w-full sm:h-fit sm:p-8 sm:m-4 flex flex-col justify-center items-center shadow-lg rounded-lg">
+      <div className="min-h-64 h-64 bg-slate-200 p-2 m-2 mx-8 sm:max-w-2xl sm:w-full sm:h-fit sm:p-8 sm:m-4 flex gap-3 flex-col justify-center items-center shadow-lg rounded-lg">
         <div className="relative w-full text-center font-bold text-xs sm:text-2xl py-3 mx-auto">
           <AiFillCloseSquare
             className="absolute top-1.5 p-1 w-7 h-7 sm:w-11 sm:h-11 cursor-pointer hover:text-red-500"
-            onClick={() => toggleModal("tutorial")}
+            onClick={closeModal}
           />
           {tutorialDataList[pageIdx].title}
         </div>
 
-        <p className="text-[8px] sm:text-base self-start">
+        <p className="text-[8px] sm:text-base self-start whitespace-pre-wrap px-12">
           {tutorialDataList[pageIdx].description}
         </p>
         <div className="w-full flex justify-between items-center mt-1">
