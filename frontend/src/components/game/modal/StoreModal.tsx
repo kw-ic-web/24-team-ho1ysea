@@ -61,9 +61,9 @@ export default function StoreModal() {
             </div>
           </div>
 
-          <div className="mx-2 flex justify-around mb-1 rounded-lg shadow-lg text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base">
+          <div className="mx-1 my-0.5 flex justify-around rounded-lg shadow-lg text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base">
             <button
-              className={`px-3 py-1 rounded-l-lg ${
+              className={`px-2 py-0.5 rounded-l-lg ${
                 activeTab === "buy"
                   ? "bg-blue-500 text-slate-200"
                   : "bg-gray-300"
@@ -73,7 +73,7 @@ export default function StoreModal() {
               구매
             </button>
             <button
-              className={`px-3 py-1 rounded-r-lg ${
+              className={`px-2 py-0.5 rounded-r-lg ${
                 activeTab === "sell"
                   ? "bg-blue-500 text-slate-200"
                   : "bg-gray-300"
@@ -137,9 +137,6 @@ export default function StoreModal() {
 
                 <p className="hidden sm:block mx-auto text-gray-700 text-[8px] sm:text-sm">
                   {item.description}
-                </p>
-                <p className="text-blue-400 mx-auto text-[12px] sm:text-sm">
-                  {} 원
                 </p>
 
                 <button
