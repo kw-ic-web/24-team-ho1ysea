@@ -39,6 +39,7 @@ module.exports = socketHandler = (io) => {
     // 소켓 연결을 하는 과정에서 (handshake) userId를 받아 미리 저장해둠!
     console.log("사용자 연결:", socket.handshake.query.userId);
     socket.data = { userId: socket.handshake.query.userId };
+    socket.data.lastProcessedItemId = null; // 마지막에 처리한 아이템을 저장해서 중복처리 방지
     // userId - socketId 맵에 추가
     userSocketIdMap.set(socket.handshake.query.userId, socket.id);
 

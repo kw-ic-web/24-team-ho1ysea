@@ -13,6 +13,8 @@ const {
   getUserRange,
 } = require("./redisHandler");
 
+const { BASE_RANGE } = require("../config/constant");
+
 // 이거 고유id를 부여하는 방법 중 하나라, 좀 더 편한 대체 방안 있으면 수정해도 좋아요!
 const { v4: uuidv4 } = require("uuid");
 
@@ -167,9 +169,9 @@ exports.checkCollision = async (userId, position) => {
   for (let obstacle of obstacleList) {
     if (obstacle.isActive === 0) continue; // isActive가 0이면 충돌 검사에서 제외 -> 1인 장애물만 체크
 
-    if (isColliding(position, obstacle.position, collisionDistance)) {
+    if (isColliding(position, obstacle.position, BASE_RANGE)) {
       // 충돌한 장애물을 Redis에서 제거
-      await removeObstaclePosition(obstacle.objectId);
+      // await removeObstaclePosition(obstacle.objectId);
       // console.log(`장애물 ${obstacle.objectId}에 충돌했습니다.`);
       // 충돌한 장애물 정보를 반환
       const updatedObstacleList = await getObstaclePositions();

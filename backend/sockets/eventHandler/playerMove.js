@@ -43,12 +43,23 @@ exports.playerMove = (io, socket) => {
       );
       socket.emit("getTrashAmount", trashAmount);
     } else if (collisionResult && collisionResult.type === "item") {
-      // 전체 플레이어한테는 아이템이 사라짐을 전달하고
-      io.to("gameRoom").emit("collisionItem", collisionResult.data);
-      // 아이템과 충돌한 플레이어에게 아이템 충돌했다고 알려주면서 충돌한 itemId를 전달
-      console.log("충돌한 아이템 정보:", collisionResult.id);
-      socket.emit("getItem", collisionResult.id);
-      // 프론트에서는 이 이벤트를 수신하면 item 습득 API로 다시 요청을 날리고, 인벤토리 정보를 새로고침함
+      const itemId = collisionResult.id;
+
+      // 이전에 처리한 아이템인지 검사
+      if (
+        socket.data.lastProcessedItemId && // null이 아니고
+        socket.data.lastProcessedItemId === itemId // 현재 충돌값과 일치하면
+      ) {
+        // 이미 처리한 아이템이면 무시
+        console.log("중복 아이템 처리 요청 무시:", itemId);
+      } else {
+        // 처음 처리하는 아이템이면 기록
+        socket.data.lastProcessedItemId = itemId;
+
+        io.to("gameRoom").emit("collisionItem", collisionResult.data);
+        console.log("충돌한 아이템 정보:", itemId);
+        socket.emit("getItem", itemId);
+      }
     } else if (collisionResult && collisionResult.type === "obstacle") {
       console.log("충돌한 장애물 정보:", collisionResult.id);
 
