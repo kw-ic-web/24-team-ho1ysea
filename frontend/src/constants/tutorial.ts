@@ -1,27 +1,26 @@
 export const tutorialDataList = [
   {
-    title: "게임 소개 1",
+    title: "바다 이야기에 오신 것을 환영합니다",
     description:
-      "게임 소개 1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga iure nisi illo dicta. Quasi explicabo, ullam aut quidem voluptate consectetur soluta possimus commodi non fuga quos, reiciendis magni maxime id.",
+      "이곳은 환경 보존의 마지막 보루인 OOO으로, 이곳을 지킬 용사로 당신을 초대하였습니다. 부디 환경 수호를 위해 함께해 주세요. ",
   },
   {
-    title: "게임 소개 2",
+    title: "플레이 방법",
     description:
-      "게임 소개 2 Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga iure nisi illo dicta. Quasi explicabo, ullam aut quidem voluptate consectetur soluta possimus commodi non fuga quos, reiciendis magni maxime id.",
+      "해양에서 스폰된 당신의 캐릭터는 방향키를 활용해 해변으로 출동하여 모험을 시작합니다. 푸른 바다의 정기를 받으며 쓰레기를 수집하는 당신의 사명감과, 용사들과의 경쟁을 통해 사기를 끌어올릴 수 있습니다.",
   },
   {
-    title: "게임 소개 3",
+    title: "플레이 방법",
     description:
-      "게임 소개 3 Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga iure nisi illo dicta. Quasi explicabo, ullam aut quidem voluptate consectetur soluta possimus commodi non fuga quos, reiciendis magni maxime id.",
+      "수집된 쓰레기는 해변으로 복귀하여 상점(우측 하단)에서 재화로 환전해 장비를 구매할 수 있습니다. 상점으로 가 스페이스바를 클릭해 상점에 입장하세요. 더욱 강화된 장비를 통해 000을 지켜주세요.",
   },
   {
-    title: "게임 소개 4",
+    title: "플레이어 신고",
     description:
-      "게임 소개 4 Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga iure nisi illo dicta. Quasi explicabo, ullam aut quidem voluptate consectetur soluta possimus commodi non fuga quos, reiciendis magni maxime id.",
+      "해양 수호의 임무를 저해하는 용사들은 우리와 함께 할 수 없습니다. 플레이어를 클릭해 신속히 처단하세요.",
   },
   {
-    title: "게임 소개 5",
-    description:
-      "게임 소개 5 Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga iure nisi illo dicta. Quasi explicabo, ullam aut quidem voluptate consectetur soluta possimus commodi non fuga quos, reiciendis magni maxime id.",
+    title: "건투를 빕니다!",
+    description: "이제 모든 준비는 끝났습니다. 용사님의 행운을 빌게요!",
   },
 ];
