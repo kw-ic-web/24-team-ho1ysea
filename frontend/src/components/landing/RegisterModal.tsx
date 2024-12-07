@@ -68,7 +68,7 @@ export default function RegisterModal() {
       onClick={handleBgClick}
     >
       <Loading isLoading={isLoading} />
-      <div className="bg-sky-50 text-gray-800 p-8 rounded-lg shadow-lg w-full max-w-sm">
+      <div className="bg-sky-50 text-gray-800 p-8 rounded-lg shadow-lg w-full max-w-sm min-w-sm">
         <AiFillCloseSquare
           size={30}
           className=" hover:text-red-500"
@@ -76,17 +76,17 @@ export default function RegisterModal() {
         />
         <div className="text-xl font-semibold text-center mb-6">회원가입</div>
         <form onSubmit={(e) => e.preventDefault()}>
-          <div className="flex relative">
+          <div className="flex">
             <input
               name="nickName"
               type="text"
               placeholder="Your nickname"
-              className="w-full h-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full flex-[3] p-3 border-2 rounded-lg border-r-0 rounded-r-none outline-none focus:border-blue-500"
               value={inputs.nickName}
               onChange={(e) => handleInputChange(e.target.name, e.target.value)}
             />
             <button
-              className="absolute right-0 p-[10.5px] border-slate-700 bg-slate-700 text-slate-200 transition-colors rounded-r-lg hover:bg-slate-600"
+              className="flex-1 min-w-20 border-slate-700 bg-slate-700 text-sm text-slate-200 transition-colors rounded-r-lg hover:bg-slate-600"
               onClick={() => handleInputCheck("nickName")}
             >
               닉네임 확인
@@ -101,18 +101,18 @@ export default function RegisterModal() {
               {infoMsgs.nickName || "\u00A0"}
             </p>
           </div>
-          <div className="flex relative">
+          <div className="flex">
             <input
               name="id"
               type="text"
               autoComplete="username"
               placeholder="ID"
-              className="w-full h-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full flex-[3] p-3 border-2 rounded-lg border-r-0 rounded-r-none outline-none focus:border-blue-500"
               value={inputs.id}
               onChange={(e) => handleInputChange(e.target.name, e.target.value)}
             />
             <button
-              className="absolute right-0 p-[10.5px] border-slate-700 bg-slate-700 text-slate-200 transition-colors rounded-r-lg hover:bg-slate-600"
+              className="flex-1 min-w-20 border-slate-700 bg-slate-700 text-sm text-slate-200 transition-colors rounded-r-lg hover:bg-slate-600"
               onClick={() => handleInputCheck("id")}
             >
               ID 확인
@@ -132,7 +132,7 @@ export default function RegisterModal() {
             type="password"
             autoComplete="new-password"
             placeholder="Password"
-            className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 mb-4 border-2 rounded-lg outline-none focus:border-blue-500"
             value={inputs.pw}
             onChange={(e) => handleInputChange(e.target.name, e.target.value)}
           />
@@ -141,7 +141,7 @@ export default function RegisterModal() {
             type="password"
             autoComplete="new-password"
             placeholder="Check again password"
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 mb-4 border-2 rounded-lg outline-none focus:border-blue-500"
             value={inputs.checkPw}
             onChange={(e) => handleInputChange(e.target.name, e.target.value)}
           />
