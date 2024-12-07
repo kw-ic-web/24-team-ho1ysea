@@ -167,7 +167,7 @@ exports.checkCollision = async (userId, position) => {
   for (let obstacle of obstacleList) {
     if (obstacle.isActive === 0) continue; // isActive가 0이면 충돌 검사에서 제외 -> 1인 장애물만 체크
 
-    if (isColliding(position, obstacle.position, collisionDistance)) {
+    if (isColliding(position, obstacle.position, BASE_RANGE)) {
       // 충돌한 장애물을 Redis에서 제거
       await removeObstaclePosition(obstacle.objectId);
       // console.log(`장애물 ${obstacle.objectId}에 충돌했습니다.`);
