@@ -81,7 +81,7 @@ export const useSocketRecv = (socket: Socket | null) => {
       socket.on("collisionJellyfish", (duration: number) => {
         toggleConfusionDirection(duration); // 방향 전환 효과를 duration동안 적용
         playHitSound(); // 충돌 효과음 실행
-        showToast(`해파리와 부딧쳐 ${duration / 1000}초 동안 어지러워집니다!!`);
+        showToast(`해파리와 부딪쳐 ${duration / 1000}초 동안 어지러워집니다!!`);
       });
     } else if (!socket) {
       setAnotherPlayersInfo([]);

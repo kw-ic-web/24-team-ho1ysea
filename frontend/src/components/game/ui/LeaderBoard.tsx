@@ -27,7 +27,7 @@ export default function LeaderBoard({ isJoinGameRoom, socket }: Props) {
   return (
     <div className="absolute rounded bg-black bg-opacity-30 text-white text-xs p-2 top-4 right-4 w-40 shadow-md">
       <div className="mb-2 font-medium text-center border-b border-white pb-1">
-        리더보드
+        순위
       </div>
       <ul className="space-y-1">
         {topUsers.map(({ userId, trashAmount }, idx) => (
