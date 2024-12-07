@@ -1,6 +1,7 @@
 import { isAdminApi } from "@apis/adminRestful";
 import { useModalStore } from "@store/modalStore";
 import { useToastStore } from "@store/toastStore";
+import { useVolumeStore } from "@store/volumeStore";
 import { deleteLocalStorage, getLocalStorage } from "@utils/localStorage";
 import { useEffect, useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
@@ -9,6 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 export default function SettingModal(): JSX.Element | null {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const { isOpen, toggleModal } = useModalStore();
+  const { effectVolume, setEffectVolume } = useVolumeStore();
   const navigate = useNavigate();
   const showToast = useToastStore((s) => s.showToast);
 
@@ -57,24 +59,15 @@ export default function SettingModal(): JSX.Element | null {
           <div className="mt-6 space-y-4 text-center">
             <div className="space-y-0.5">
               <label className="block text-start text-sm font-medium text-gray-800">
-                배경음악 조절
+                효과음 볼륨 조절: {(effectVolume * 100).toFixed(0)}%
               </label>
               <input
                 type="range"
                 min="0"
-                max="100"
-                className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer appearance-none"
-              />
-            </div>
-
-            <div className="space-y-0.5">
-              <label className="block text-start text-sm font-medium text-gray-800">
-                효과음 조절
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="100"
+                max="1"
+                step="0.01"
+                value={effectVolume}
+                onChange={(e) => setEffectVolume(parseFloat(e.target.value))}
                 className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer appearance-none"
               />
             </div>

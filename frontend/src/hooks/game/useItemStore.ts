@@ -40,7 +40,7 @@ export const useItemStore = (isOpen: boolean) => {
 
         await buyStoreItemApi(itemId, 1, token);
         showToast(itemName + " 구매 성공!");
-        playCoinExchangeSound();
+        playCoinExchangeSound(); // 환전 효과음 실행
         fetchMyItems(token);
         fetchMyCurrency(token);
       } catch (err) {
@@ -78,7 +78,7 @@ export const useItemStore = (isOpen: boolean) => {
 
         await sellStoreItemApi(itemId, 1, token);
         showToast(itemName + " 판매 성공!");
-        playCoinExchangeSound();
+        playCoinExchangeSound(); // 환전 효과음 실행
         fetchMyItems(token);
         fetchMyCurrency(token);
       } catch (err) {
@@ -120,7 +120,7 @@ export const useItemStore = (isOpen: boolean) => {
         myCurrency.trash,
         token
       ).then((res) => res.data.exchangedGold);
-      playCoinExchangeSound();
+      playCoinExchangeSound(); // 환전 효과음 실행
       showToast(exchangedGold + " 원 환전 성공!");
       setMyTrashAmount(0); // 환전 끝나면 쓰레기 량 초기화
       fetchMyCurrency(token);
