@@ -1,14 +1,16 @@
-import { useItemStore } from "@hooks/game/useItemStore";
-import { useModalStore } from "@store/modalStore";
 import { useState } from "react";
+import Loading from "@components/common/Loading";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { BsCoin, BsTrash } from "react-icons/bs";
 import { CgArrowsExchange } from "react-icons/cg";
+import { useItemStore } from "@hooks/game/useItemStore";
+import { useModalStore } from "@store/modalStore";
 
 export default function StoreModal() {
   const { isOpen, toggleModal } = useModalStore();
   const [activeTab, setActiveTab] = useState<"buy" | "sell">("buy");
   const {
+    isLoading,
     storeItems,
     myItems,
     myCurrency,
@@ -31,6 +33,7 @@ export default function StoreModal() {
       className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-50"
       onClick={handleBgClick}
     >
+      <Loading isLoading={isLoading} />
       <div className="bg-slate-200 p-2 m-1 mx-4 w-full max-w-screen-lg flex flex-col justify-center items-center shadow-lg rounded-lg">
         <div className="relative w-full text-center font-bold text-xs sm:text-2xl pt-2 pb-0 mx-auto mb-1">
           <AiFillCloseSquare
