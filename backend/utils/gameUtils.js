@@ -146,7 +146,12 @@ exports.checkCollision = async (userId, position) => {
       // 충돌한 쓰레기 정보를 반환
       const updatedTrashList = await getTrashPositions();
       // 충돌한 쓰레기의 아이디를 함께 리턴해서 신문지인지 플라스틱 병인지 확인
-      return { type: "trash", id: trash.trashId, data: updatedTrashList };
+      return {
+        type: "trash",
+        id: trash.trashId,
+        objectId: trash.objectId,
+        data: updatedTrashList,
+      };
     }
   }
 
@@ -160,7 +165,12 @@ exports.checkCollision = async (userId, position) => {
       // 충돌한 아이템 정보를 반환
       const updatedItemList = await getItemPositions();
       // 충돌한 아이템의 아이디를 함께 리턴해서 어떤 아이템인지 확인
-      return { type: "item", id: item.itemId, data: updatedItemList };
+      return {
+        type: "item",
+        id: item.itemId,
+        objectId: item.objectId,
+        data: updatedItemList,
+      };
     }
   }
 
@@ -179,6 +189,7 @@ exports.checkCollision = async (userId, position) => {
       return {
         type: "obstacle",
         id: obstacle.obstacleId,
+        objectId: obstacle.objectId,
         data: updatedObstacleList,
       };
     }

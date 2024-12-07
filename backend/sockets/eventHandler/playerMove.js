@@ -44,17 +44,18 @@ exports.playerMove = (io, socket) => {
       socket.emit("getTrashAmount", trashAmount);
     } else if (collisionResult && collisionResult.type === "item") {
       const itemId = collisionResult.id;
+      const objectId = collisionResult.objectId;
 
       // 이전에 처리한 아이템인지 검사
       if (
         socket.data.lastProcessedItemId && // null이 아니고
-        socket.data.lastProcessedItemId === itemId // 현재 충돌값과 일치하면
+        socket.data.lastProcessedItemId === objectId // 현재 충돌값과 일치하면
       ) {
         // 이미 처리한 아이템이면 무시
         console.log("중복 아이템 처리 요청 무시:", itemId);
       } else {
         // 처음 처리하는 아이템이면 기록
-        socket.data.lastProcessedItemId = itemId;
+        socket.data.lastProcessedItemId = objectId;
 
         io.to("gameRoom").emit("collisionItem", collisionResult.data);
         console.log("충돌한 아이템 정보:", itemId);
@@ -62,19 +63,19 @@ exports.playerMove = (io, socket) => {
       }
     } else if (collisionResult && collisionResult.type === "obstacle") {
       console.log("충돌한 장애물 정보:", collisionResult.id);
-
       const obstacleId = collisionResult.id;
+      const objectId = collisionResult.objectId;
 
       // 이전에 처리한 방해요소인지 검사 (아이템과 동일하게 처리)
       if (
         socket.data.lastProcessedObstacleId && // null이 아니고
-        socket.data.lastProcessedObstacleId === obstacleId // 현재 충돌값과 일치하면
+        socket.data.lastProcessedObstacleId === objectId // 현재 충돌값과 일치하면
       ) {
         // 이미 처리한 방해요소면 무시
         console.log("중복 방해요소 처리 요청 무시:", obstacleId);
       } else {
         // 처음 처리하는 방해요소이면 기록
-        socket.data.lastProcessedObstacleId = obstacleId;
+        socket.data.lastProcessedObstacleId = objectId;
 
         if (obstacleId === "obstacle001") {
           // 상어와 충돌한 경우
