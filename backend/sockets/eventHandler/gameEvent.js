@@ -52,9 +52,10 @@ exports.generateRandomTrash = async (io) => {
 
   if (isNaN(trashSpeed) || isNaN(trashLimit)) {
     await redisClient.set("trashGenerationSpeed", "10");
-    await redisClient.publish("trashGenerationSpeed", speed.toString());
+    await redisClient.publish("trashGenerationSpeed", "10");
+
     await redisClient.set("trashGenerationLimit", "20");
-    await redisClient.publish("trashGenerationLimit", quantity.toString());
+    await redisClient.publish("trashGenerationLimit", "20");
   }
 
   // 클로저 활용! 해당 함수를 한 번 실행시키면 기존 이벤트를 지우고 새 이벤트를 등록한다.
