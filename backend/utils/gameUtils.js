@@ -13,6 +13,8 @@ const {
   getUserRange,
 } = require("./redisHandler");
 
+const { BASE_RANGE } = require("../config/constant");
+
 // 이거 고유id를 부여하는 방법 중 하나라, 좀 더 편한 대체 방안 있으면 수정해도 좋아요!
 const { v4: uuidv4 } = require("uuid");
 
