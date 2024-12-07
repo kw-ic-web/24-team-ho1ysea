@@ -27,9 +27,6 @@ export default function ViewUsers() {
                     Nickname
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold border-b">
-                    Play Count
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold border-b">
                     Report Count
                   </th>
                   <th className="px-6 py-3 text-center text-sm font-semibold border-b">
@@ -42,7 +39,6 @@ export default function ViewUsers() {
                   <tr key={index} className="hover:bg-sky-100">
                     <td className="px-6 py-4 border-b">{userData.userId}</td>
                     <td className="px-6 py-4 border-b">{userData.nickName}</td>
-                    <td className="px-6 py-4 border-b">{userData.countPlay}</td>
                     <td className="px-6 py-4 border-b">
                       {userData.reportCount}
                     </td>
