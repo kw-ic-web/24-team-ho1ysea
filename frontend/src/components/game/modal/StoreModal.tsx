@@ -1,14 +1,16 @@
-import { useItemStore } from "@hooks/game/useItemStore";
-import { useModalStore } from "@store/modalStore";
 import { useState } from "react";
+import Loading from "@components/common/Loading";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { BsCoin, BsTrash } from "react-icons/bs";
 import { CgArrowsExchange } from "react-icons/cg";
+import { useItemStore } from "@hooks/game/useItemStore";
+import { useModalStore } from "@store/modalStore";
 
 export default function StoreModal() {
   const { isOpen, toggleModal } = useModalStore();
   const [activeTab, setActiveTab] = useState<"buy" | "sell">("buy");
   const {
+    isLoading,
     storeItems,
     myItems,
     myCurrency,
@@ -31,6 +33,7 @@ export default function StoreModal() {
       className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-50"
       onClick={handleBgClick}
     >
+      <Loading isLoading={isLoading} />
       <div className="bg-slate-200 p-2 m-1 mx-4 w-full max-w-screen-lg flex flex-col justify-center items-center shadow-lg rounded-lg">
         <div className="relative w-full text-center font-bold text-xs sm:text-2xl pt-2 pb-0 mx-auto mb-1">
           <AiFillCloseSquare
@@ -61,9 +64,9 @@ export default function StoreModal() {
             </div>
           </div>
 
-          <div className="mx-2 flex justify-around mb-1 rounded-lg shadow-lg text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base">
+          <div className="mx-1 my-0.5 flex justify-around rounded-lg shadow-lg text-[6px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base">
             <button
-              className={`px-3 py-1 rounded-l-lg ${
+              className={`px-2 py-0.5 rounded-l-lg ${
                 activeTab === "buy"
                   ? "bg-blue-500 text-slate-200"
                   : "bg-gray-300"
@@ -73,7 +76,7 @@ export default function StoreModal() {
               구매
             </button>
             <button
-              className={`px-3 py-1 rounded-r-lg ${
+              className={`px-2 py-0.5 rounded-r-lg ${
                 activeTab === "sell"
                   ? "bg-blue-500 text-slate-200"
                   : "bg-gray-300"
@@ -137,9 +140,6 @@ export default function StoreModal() {
 
                 <p className="hidden sm:block mx-auto text-gray-700 text-[8px] sm:text-sm">
                   {item.description}
-                </p>
-                <p className="text-blue-400 mx-auto text-[12px] sm:text-sm">
-                  {} 원
                 </p>
 
                 <button

@@ -20,7 +20,6 @@ export default function Router() {
           <Route path="view-users" element={<ViewUsers />} />
           <Route path="edit-setting" element={<EditSetting />} />
           <Route index element={<Navigate to="view-users" replace />} />
-          {/* <Route index />는 부모 경로에 대한 기본 경로를 처리 */}
         </Route>
       </Routes>
     </BrowserRouter>

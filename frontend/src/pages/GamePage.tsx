@@ -23,9 +23,7 @@ export default function GamePage() {
   const { isJoinGameRoom, socketRef } = useSocket();
 
   // 캐릭터 이동 && 아이템 사용 관련 키보드 이벤트 리스너 연결
-  useKeyListener(
-    !isOpen.tutorial && !isOpen.share && !isOpen.setting && !isOpen.store
-  );
+  useKeyListener(Object.values(isOpen).every((e) => !e));
 
   // 초기접속이면 튜토리얼 모달을 열고, 히스토리를 로컬스토리지에 저장
   useEffect(() => {

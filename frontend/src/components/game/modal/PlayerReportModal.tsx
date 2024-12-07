@@ -1,13 +1,15 @@
+import { MouseEvent, useState } from "react";
+import Loading from "@components/common/Loading";
 import { reportApi } from "@apis/userRestful";
 import { useModalStore } from "@store/modalStore";
 import { usePlayerInfoStore } from "@store/playerInfoStore";
 import { useToastStore } from "@store/toastStore";
 import { getLocalStorage } from "@utils/localStorage";
-import { MouseEvent, useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 
 function PlayerReportModal(): JSX.Element | null {
   const [textInput, setTextInput] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { isOpen, toggleModal } = useModalStore();
   const { playerInfo, removePlayerInfo } = usePlayerInfoStore();
   const showToast = useToastStore((s) => s.showToast);
@@ -27,6 +29,7 @@ function PlayerReportModal(): JSX.Element | null {
     if (!textInput || !token || !playerInfo) return;
 
     try {
+      setIsLoading(true);
       const { data } = await reportApi(
         token,
         playerInfo.userId,
@@ -35,8 +38,10 @@ function PlayerReportModal(): JSX.Element | null {
       );
       console.log(data);
       showToast("신고가 완료되었습니다. 관리자가 추후 처리할 예정입니다.");
+      setIsLoading(false);
       toggleModal("playerInfo");
     } catch (e) {
+      setIsLoading(false);
       console.error(e);
       showToast("신고 과정에서 에러가 발생했습니다.");
     }
@@ -49,6 +54,7 @@ function PlayerReportModal(): JSX.Element | null {
       className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-gray-800 z-50"
       onClick={handleBgClick}
     >
+      <Loading isLoading={isLoading} />
       <div className="bg-slate-200 p-2 m-1 mx-4 w-full max-w-screen-lg flex flex-col justify-center items-center shadow-lg rounded-lg">
         <div className="relative w-full text-center font-bold text-base sm:text-2xl pt-2 pb-0 mx-auto mb-1">
           <AiFillCloseSquare
