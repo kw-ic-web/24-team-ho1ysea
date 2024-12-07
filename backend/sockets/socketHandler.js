@@ -40,6 +40,7 @@ module.exports = socketHandler = (io) => {
     console.log("사용자 연결:", socket.handshake.query.userId);
     socket.data = { userId: socket.handshake.query.userId };
     socket.data.lastProcessedItemId = null; // 마지막에 처리한 아이템을 저장해서 중복처리 방지
+    socket.data.lastProcessedObstacleId = null; // 마지막 처리 방해요소 중복처리 방지
     // userId - socketId 맵에 추가
     userSocketIdMap.set(socket.handshake.query.userId, socket.id);
 
