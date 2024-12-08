@@ -34,6 +34,6 @@ temp/
 # npm 캐시
 .npm
 
-# 패키지 잠금 파일 (선택 사항)
-package-lock.json
-yarn.lock
+
+# 도커 컴포즈 db 폴더
+/backend/data
