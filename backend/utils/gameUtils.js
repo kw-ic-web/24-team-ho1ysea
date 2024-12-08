@@ -13,7 +13,11 @@ const {
   getUserRange,
 } = require("./redisHandler");
 
-const { BASE_RANGE } = require("../config/constant");
+const {
+  BASE_RANGE,
+  DEFAULT_MAX_TRASH,
+  MAX_ITEMS,
+} = require("../config/constant");
 
 // 이거 고유id를 부여하는 방법 중 하나라, 좀 더 편한 대체 방안 있으면 수정해도 좋아요!
 const { v4: uuidv4 } = require("uuid");
@@ -22,6 +26,7 @@ const { v4: uuidv4 } = require("uuid");
 const Item = require("../models/item");
 const Trash = require("../models/trash");
 const Obstacle = require("../models/obstacle");
+const { redisClient } = require("../config/db");
 
 // 두 위치 간의 충돌 여부를 판단하는 함수
 function isColliding(position1, position2, collisionDistance) {
@@ -48,6 +53,15 @@ const generateRandomPosition = () => {
 
 // 쓰레기 생성 함수
 exports.generateTrash = async () => {
+  const trashList = await getTrashPositions();
+  let trashLimit = Number(
+    (await redisClient.get("trashGenerationLimit")) || DEFAULT_MAX_TRASH
+  );
+  if (trashList.length >= trashLimit) {
+    console.log("쓰레기가 꽉 찼습니다!");
+    return;
+  }
+
   // 데이터베이스에서 총 쓰레기 개수 가져오기
   const trashCount = await Trash.countDocuments();
 
@@ -67,10 +81,6 @@ exports.generateTrash = async () => {
 
   // Redis에 업데이트
   await updateTrashPositions(objectId, trashId, position);
-
-  // 업데이트된 전체 쓰레기 데이터 가져오기
-  const trashList = await getTrashPositions();
-  return trashList;
 };
 
 // 방해요소 생성 함수
@@ -102,6 +112,12 @@ exports.generateObstacle = async () => {
 
 // 아이템 생성 함수
 exports.generateItem = async () => {
+  const itemList = await getItemPositions();
+  if (itemList.length >= MAX_ITEMS) {
+    console.log("아이템이 꽉 찼습니다!");
+    return;
+  }
+
   // 데이터베이스에서 총 아이템 개수 가져오기
   const itemCount = await Item.countDocuments();
 
@@ -123,10 +139,6 @@ exports.generateItem = async () => {
   // Redis에 새로 생긴 아이템 업데이트할 때, mongosh에 있는 이미지명까지 저장
   console.log("아이템생성: ", itemId);
   await updateItemPositions(objectId, itemId, image, position);
-
-  // 업데이트된 전체 아이템 데이터 가져오기
-  const itemList = await getItemPositions();
-  return itemList;
 };
 
 // 충돌 체크 함수

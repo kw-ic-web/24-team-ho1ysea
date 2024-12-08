@@ -19,10 +19,14 @@ exports.MAX_RANGE = 150;
 exports.MAX_OBSTACLE = 20;
 exports.MAX_ITEMS = 8;
 
-// 쓰레기는 Adminpage에서 관리, 방해요소 생성 텀, 아이템 생성 텀
+// 쓰레기 기본 생성속도/텀, 방해요소 생성 텀, 아이템 생성 텀
+exports.TIMER_DEFAULT_TRASH_GENERATION = 10;
+exports.DEFAULT_MAX_TRASH = 20;
+
 exports.TIMER_OBSTACLE_GENERATION = 10000;
 exports.TIMER_OBSTACLE_ACTIVATION = 2000;
 exports.TIMER_OBSTACLE_REMOVE = 3000;
+
 exports.TIMER_ITEM_GENERATION = 30000;
 
 // 해파리 충돌 효과 지속시간
