@@ -68,3 +68,15 @@ db.obstacles.insertMany([
     image: "jellyfish.png",
   },
 ]);
+
+db.users.insertOne({
+  id: "admin",
+  password: "$2a$10$RMquu0zGHm.Da/CVZZ1bJOMYwAobwWKd4HYcqkfxBXyekPkkjmMqa",
+  nickName: "admin",
+  isAdmin: true,
+  topRate: 0,
+  coin: 0,
+  countPlay: 0,
+  status: "active",
+  __v: 0,
+});
