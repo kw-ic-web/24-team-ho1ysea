@@ -66,7 +66,8 @@ exports.generateTrash = async () => {
   const trashCount = await Trash.countDocuments();
 
   if (trashCount === 0) {
-    throw new Error("데이터베이스에 쓰레기가 없습니다.");
+    console.error("데이터베이스에 쓰레기가 없습니다.");
+    return;
   }
 
   // 랜덤 인덱스 생성
@@ -89,7 +90,8 @@ exports.generateObstacle = async () => {
   const obstacleCount = await Obstacle.countDocuments();
 
   if (obstacleCount === 0) {
-    throw new Error("데이터베이스에 방해요소가 없습니다.");
+    console.error("데이터베이스에 방해요소가 없습니다.");
+    return [];
   }
 
   // 랜덤 인덱스 생성
@@ -122,7 +124,8 @@ exports.generateItem = async () => {
   const itemCount = await Item.countDocuments();
 
   if (itemCount === 0) {
-    throw new Error("데이터베이스에 아이템이 없습니다.");
+    console.error("데이터베이스에 아이템이 없습니다.");
+    return;
   }
 
   // 랜덤 인덱스 생성
