@@ -3,6 +3,7 @@ services:
     build: .
     ports:
       - "20981:5000"
+    restart: always
     environment:
       - PORT=5000
       - MONGODB_URI=mongodb://mongo:27017/ocean-game
@@ -20,6 +21,7 @@ services:
     container_name: mongodb
     ports:
       - "27017:27017"
+    restart: always
     volumes:
       - ./data/mongo-data:/data/db
       - ./init-mongo:/docker-entrypoint-initdb.d
@@ -29,9 +31,8 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
-    volumes:
-      - "./data/redis-data:/data"
+    command: [sh, -c, "rm -f /data/dump.rdb && redis-server --save ''"]
+    restart: always
 
 volumes:
   mongo-data:
-  redis-data:

@@ -98,7 +98,8 @@ exports.generateRandomObstacle = (io) => {
     const obstacleCount = await Obstacle.countDocuments();
 
     if (obstacleCount === 0) {
-      throw new Error("데이터베이스에 방해요소가 없습니다.");
+      console.error("데이터베이스에 방해요소가 없습니다.");
+      return;
     }
 
     // 랜덤 인덱스 생성
@@ -140,7 +141,6 @@ exports.generateRandomObstacle = (io) => {
         const obstacleList = await getObstaclePositions();
 
         io.to("gameRoom").emit("generateRandomObstacle", obstacleList); // gameRoom 내의 모든 클라이언트에게 브로드캐스트
-        // console.log("방해요소 상태 업데이트");
       }, TIMER_OBSTACLE_REMOVE);
     }, TIMER_OBSTACLE_ACTIVATION);
   }, TIMER_OBSTACLE_GENERATION);
