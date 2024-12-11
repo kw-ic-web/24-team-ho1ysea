@@ -5,7 +5,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { connectDB } = require("./config/db");
 const socketHandler = require("./sockets/socketHandler");
-
+const initData = require("./init-mongo/initData");
 const app = express();
 
 // 소켓 서버 초기 설정
@@ -16,7 +16,9 @@ const io = new Server(server, {
 socketHandler(io);
 
 // MongoDB + Redis 연결
-connectDB();
+connectDB().then(() => {
+  initData(); // 초기 데이터 삽입 함수 호출
+});
 
 // 미들웨어 설정
 app.use(express.json());

@@ -53,95 +53,115 @@ const generateRandomPosition = () => {
 
 // 쓰레기 생성 함수
 exports.generateTrash = async () => {
-  const trashList = await getTrashPositions();
-  let trashLimit = Number(
-    (await redisClient.get("trashGenerationLimit")) || DEFAULT_MAX_TRASH
-  );
-  if (trashList.length >= trashLimit) {
-    console.log("쓰레기가 꽉 찼습니다!");
-    return;
+  try {
+    const trashList = await getTrashPositions();
+    let trashLimit = Number(
+      (await redisClient.get("trashGenerationLimit")) || DEFAULT_MAX_TRASH
+    );
+    if (trashList.length >= trashLimit) {
+      console.log("쓰레기가 꽉 찼습니다!");
+      return;
+    }
+
+    // 데이터베이스에서 총 쓰레기 개수 가져오기
+    const trashCount = await Trash.countDocuments();
+
+    if (trashCount === 0) {
+      console.error("데이터베이스에 쓰레기가 없습니다.");
+      return;
+    }
+
+    // 랜덤 인덱스 생성
+    const randomIndex = Math.floor(Math.random() * trashCount);
+
+    // 랜덤한 쓰레기 아이템 가져오기
+    const randomTrash = await Trash.findOne().skip(randomIndex).exec();
+
+    if (!randomTrash) {
+      console.error("랜덤으로 쓰레기를 가져오는 데 실패했습니다.");
+      return;
+    }
+
+    const objectId = uuidv4();
+    const trashId = randomTrash.trashId; // Trash 모델의 trashId 필드 사용
+    const position = generateRandomPosition();
+
+    // Redis에 업데이트
+    await updateTrashPositions(objectId, trashId, position);
+
+    console.log(`쓰레기 생성 완료: ${trashId}`);
+  } catch (error) {
+    console.error("쓰레기 생성 중 오류 발생:", error);
   }
-
-  // 데이터베이스에서 총 쓰레기 개수 가져오기
-  const trashCount = await Trash.countDocuments();
-
-  if (trashCount === 0) {
-    console.error("데이터베이스에 쓰레기가 없습니다.");
-    return;
-  }
-
-  // 랜덤 인덱스 생성
-  const randomIndex = Math.floor(Math.random() * trashCount);
-
-  // 랜덤한 쓰레기 아이템 가져오기
-  const randomTrash = await Trash.findOne().skip(randomIndex).exec();
-
-  const objectId = uuidv4();
-  const trashId = randomTrash.trashId; // Trash 모델의 trashId 필드 사용
-  const position = generateRandomPosition();
-
-  // Redis에 업데이트
-  await updateTrashPositions(objectId, trashId, position);
 };
 
 // 방해요소 생성 함수
 exports.generateObstacle = async () => {
-  // 데이터베이스에서 총 방해요소 개수 가져오기
-  const obstacleCount = await Obstacle.countDocuments();
+  try {
+    // 데이터베이스에서 총 방해요소 개수 가져오기
+    const obstacleCount = await Obstacle.countDocuments();
 
-  if (obstacleCount === 0) {
-    console.error("데이터베이스에 방해요소가 없습니다.");
-    return [];
+    if (obstacleCount === 0) {
+      console.error("데이터베이스에 방해요소가 없습니다.");
+      return [];
+    }
+
+    // 랜덤 인덱스 생성
+    const randomIndex = Math.floor(Math.random() * obstacleCount);
+
+    // 랜덤한 방해요소 가져오기
+    const randomObstacle = await Obstacle.findOne().skip(randomIndex).exec();
+
+    const objectId = uuidv4();
+    const obstacleId = randomObstacle.obstacleId; // Obstacle 모델의 obstacleId 필드 사용
+    const position = generateRandomPosition();
+
+    // Redis에 저장
+    await updateObstaclePositions(objectId, obstacleId, position);
+
+    // 업데이트된 전체 방해요소 데이터 가져오기
+    const obstacleList = await getObstaclePositions();
+
+    console.log(`방해요소 생성 완료: ${obstacleId}`);
+    return obstacleList; // 전에 방해요소, 3초 후에 삭제하려고 구조 변경한 것 때문에 리턴!
+  } catch (error) {
+    console.error("방해요소 생성 중 오류 발생:", error);
   }
-
-  // 랜덤 인덱스 생성
-  const randomIndex = Math.floor(Math.random() * obstacleCount);
-
-  // 랜덤한 방해요소 가져오기
-  const randomObstacle = await Obstacle.findOne().skip(randomIndex).exec();
-
-  const objectId = uuidv4();
-  const obstacleId = randomObstacle.obstacleId; // Obstacle 모델의 obstacleId 필드 사용
-  const position = generateRandomPosition();
-
-  // Redis에 저장
-  await updateObstaclePositions(objectId, obstacleId, position);
-
-  // 업데이트된 전체 방해요소 데이터 가져오기
-  const obstacleList = await getObstaclePositions();
-  return obstacleList;
 };
 
 // 아이템 생성 함수
 exports.generateItem = async () => {
-  const itemList = await getItemPositions();
-  if (itemList.length >= MAX_ITEMS) {
-    console.log("아이템이 꽉 찼습니다!");
-    return;
+  try {
+    const itemList = await getItemPositions();
+    if (itemList.length >= MAX_ITEMS) {
+      console.log("아이템이 꽉 찼습니다!");
+      return;
+    }
+
+    // 데이터베이스에서 총 아이템 개수 가져오기
+    const itemCount = await Item.countDocuments();
+
+    if (itemCount === 0) {
+      console.error("데이터베이스에 아이템이 없습니다.");
+      return;
+    }
+
+    // 랜덤 인덱스 생성
+    const randomIndex = Math.floor(Math.random() * itemCount);
+
+    // 랜덤한 아이템 가져오기
+    const randomItem = await Item.findOne().skip(randomIndex).exec();
+
+    const objectId = uuidv4();
+    const itemId = randomItem.itemId; // Item 모델의 itemId 필드 사용
+    const image = randomItem.image; // Item 모델에 명시된 이미지명 사용
+    const position = generateRandomPosition();
+
+    console.log(`아이템 생성 완료: ${itemId}`);
+    await updateItemPositions(objectId, itemId, image, position);
+  } catch (error) {
+    console.error("아이템 생성 중 오류 발생:", error);
   }
-
-  // 데이터베이스에서 총 아이템 개수 가져오기
-  const itemCount = await Item.countDocuments();
-
-  if (itemCount === 0) {
-    console.error("데이터베이스에 아이템이 없습니다.");
-    return;
-  }
-
-  // 랜덤 인덱스 생성
-  const randomIndex = Math.floor(Math.random() * itemCount);
-
-  // 랜덤한 아이템 가져오기
-  const randomItem = await Item.findOne().skip(randomIndex).exec();
-
-  const objectId = uuidv4();
-  const itemId = randomItem.itemId; // Item 모델의 itemId 필드 사용
-  const image = randomItem.image; // Item 모델에 명시된 이미지명 사용
-  const position = generateRandomPosition();
-
-  // Redis에 새로 생긴 아이템 업데이트할 때, mongosh에 있는 이미지명까지 저장
-  console.log("아이템생성: ", itemId);
-  await updateItemPositions(objectId, itemId, image, position);
 };
 
 // 충돌 체크 함수
